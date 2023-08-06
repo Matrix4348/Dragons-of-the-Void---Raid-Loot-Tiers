@@ -1,0 +1,15 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**.csv"
+
+jobs:
+  merge_csv_and_convert_to_json:
+    name: Merge the various csv and convert the result to json
+    runs-on: windows-latest
+    
