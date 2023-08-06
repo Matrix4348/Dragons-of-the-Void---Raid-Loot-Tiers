@@ -1,2 +1,3 @@
-Raid name,Raid size,Raid type,Loot format,Damage type,Damage taken (easy),Damage taken (hard), Damage taken (legendary)
-Corrupted Golem,Medium,"",EHL,Physical,30,50,210
+Raid name,Raid size,Maximum number of participants,Raid type,Health on easy,Loot format,Has summoner loot?,Has hidden loot?
+Corrupted Golem,Medium,,,,EHL,,
+Greater Ent,,,,,EHL,,
