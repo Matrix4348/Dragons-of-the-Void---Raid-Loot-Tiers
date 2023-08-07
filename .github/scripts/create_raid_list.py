@@ -18,7 +18,7 @@ def itc(n): # Takes an number and writes it with comma separators.
     else:
         return "{:,}".format(n)
 
-os.chdir("C:/Users/Utilisateur/Desktop/My-user-scripts-for-Dragons-of-the-Void/main")
+#os.chdir("C:/Users/Utilisateur/Desktop/My-user-scripts-for-Dragons-of-the-Void/main")
 base_file = "./community-gathered data/Basic raid data.csv" #C:\Users\Utilisateur\Desktop\My-user-scripts-for-Dragons-of-the-Void\main\community-gathered data\Basic raid data.csv
 damage_file = "./community-gathered data/Base damage taken.csv"
 loot_path = "./community-gathered data/Loot tiers and drop data/"
