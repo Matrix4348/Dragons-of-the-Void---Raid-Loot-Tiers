@@ -17,5 +17,5 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: First step
-        run: ./.github/scripts/create_raid_list.py
+        run: .github/scripts/create_raid_list.py
         shell: python
