@@ -16,5 +16,6 @@ jobs:
     name: Create the raid list json
     runs-on: windows-latest
     steps:
-      - run: ./.github/scripts/create_raid_list.py
+      - name: First step
+        run: ./.github/scripts/create_raid_list.py
         shell: python
