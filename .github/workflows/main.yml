@@ -36,3 +36,7 @@ jobs:
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #upload_raid_list_to_udrop:
+    #name: Upload raid_list.json to udrop
+    #needs: create_raid_list_json
+    #runs-on: ubuntu-latest
