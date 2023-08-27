@@ -19,5 +19,5 @@ jobs:
       - name: Finally run the Python file
         env:
           app_secret: ${{ secrets.FILESTACK_APP_SECRET }}
-          handle: ${{ variables.FILESTACK_FILE_HANDLE }}
+          handle: ${{ vars.FILESTACK_FILE_HANDLE }}
         run: python .github/scripts/upload_raid_list_json_to_Filestack.py      
