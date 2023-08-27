@@ -12,8 +12,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  create_raid_list_json:
-    name: Create the raid list json
+  create_raid_list_json_then_export_it:
+    name: Create the raid list json then export it to Filestack
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository content
@@ -36,7 +36,10 @@ jobs:
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #upload_raid_list_to_udrop:
-    #name: Upload raid_list.json to udrop
-    #needs: create_raid_list_json
-    #runs-on: ubuntu-latest
+      - name: Upload raid_list.json to Filestack
+        env:
+          app_secret: ${{ secrets.FILESTACK_APP_SECRET }}
+          handle: ${{ variables.FILESTACK_FILE_HANDLE }}
+        run: |
+          python -m pip install filestack-python
+          python .github/scripts/upload_raid_list_json_to_Filestack.py
