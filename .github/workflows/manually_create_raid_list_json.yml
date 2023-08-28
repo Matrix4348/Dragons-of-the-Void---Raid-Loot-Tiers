@@ -21,7 +21,7 @@ jobs:
           git config --global user.email "Matrix4348FirstWorkflow@github.com"
           git config --global user.name "Matrix4348's first workflow"
           git add ./"community-gathered data"/raid_list.json
-          git commit -m "Magically create raid_list.json"
+          git commit --allow-empty -m "Magically create raid_list.json"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git push
         env:
