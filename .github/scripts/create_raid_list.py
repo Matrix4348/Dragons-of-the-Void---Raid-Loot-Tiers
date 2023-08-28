@@ -18,8 +18,7 @@ def itc(n): # Takes an number and writes it with comma separators.
     else:
         return "{:,}".format(n)
 
-#os.chdir("C:/Users/Utilisateur/Desktop/My-user-scripts-for-Dragons-of-the-Void/main")
-base_file = "./community-gathered data/Basic raid data.csv" #C:\Users\Utilisateur\Desktop\My-user-scripts-for-Dragons-of-the-Void\main\community-gathered data\Basic raid data.csv
+base_file = "./community-gathered data/Basic raid data.csv"
 damage_file = "./community-gathered data/Base damage taken.csv"
 loot_path = "./community-gathered data/Loot tiers and drop data/"
 output_file = "./community-gathered data/raid_list.json"
@@ -34,11 +33,11 @@ with open(base_file, 'r') as f:
 
 raid_list = {raid[0]:{v1:v2 for v1,v2 in raid[1].items()} for raid in default_dict.items()}
 
-# Let us replace empty cells with "?":
+# Let us replace empty cells with "?", besides raid type:
 for r in raid_list:
     raid=raid_list[r]
     for v in raid:
-        if raid[v]=="":
+        if raid[v]=="" and v!="Raid type":
             raid_list[r][v]="?"
 
 with open(damage_file, 'r') as f:
