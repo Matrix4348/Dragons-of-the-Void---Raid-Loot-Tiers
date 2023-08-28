@@ -1,3 +1,4 @@
 Raid name,Raid size,Maximum number of participants,Raid type,Health on easy,Loot format,Has summoner loot?,Has hidden loot?
 Corrupted Golem,Medium,,,,EHL,,
 Greater Ent,,,,,EHL,,
+Nitroglycergnat,,10,Guild raid,"750,000",EHL,false,false
