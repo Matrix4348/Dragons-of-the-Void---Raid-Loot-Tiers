@@ -23,7 +23,9 @@ jobs:
         with:
           python-version: 3.8 # Install the python version needed
       - name: Install Python dependencies
-        run: python -m pip install --upgrade pip requests      
+        run: |
+          python -m pip install --upgrade pip requests
+          python -m pip install filestack-python
       - name: Finally run the Python file
         run: python .github/scripts/create_raid_list.py
       - name: Commit changes
@@ -37,9 +39,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload raid_list.json to Filestack
-        run: |
-          python -m pip install filestack-python
-          python .github/scripts/upload_raid_list_json_to_Filestack.py
+        run: python .github/scripts/upload_raid_list_json_to_Filestack.py
         env:
           app_secret: ${{ secrets.FILESTACK_APP_SECRET }}
           handle: ${{ vars.FILESTACK_FILE_HANDLE }}
