@@ -99,11 +99,11 @@ for r in raid_list:
                     raid_list[r]["Rare"][d].append(line.pop('Rare') or "?")
                     raid_list[r]["Mythic"][d].append(line.pop('Mythic') or "?")
                     if raid_list[r]["Has summoner loot?"]== False:
-                        raid_list[r]["Summoner"][d].append(0)
+                        raid_list[r]["Summoner"][d].append("0")
                     else:
                         raid_list[r]["Summoner"][d].append(line.pop('Summoner'))
                     if raid_list[r]["Has hidden loot?"]== False:
-                        raid_list[r]["Hidden"][d].append(0)
+                        raid_list[r]["Hidden"][d].append("0")
                     else:
                         raid_list[r]["Hidden"][d].append(line.pop('Hidden'))
                 f.close()
@@ -115,11 +115,11 @@ for r in raid_list:
                 raid_list[r]["Rare"][d].append("?")
                 raid_list[r]["Mythic"][d].append("?")
                 if raid_list[r]["Has hidden loot?"]== False:
-                    raid_list[r]["Hidden"][d].append(0)
+                    raid_list[r]["Hidden"][d].append("0")
                 else:
                     raid_list[r]["Hidden"][d].append("?")
                 if raid_list[r]["Has summoner loot?"]== False:
-                    raid_list[r]["Summoner"][d].append(0)
+                    raid_list[r]["Summoner"][d].append("0")
                 else:
                     raid_list[r]["Summoner"][d].append("?")
             # Tiers, as a single character string:
