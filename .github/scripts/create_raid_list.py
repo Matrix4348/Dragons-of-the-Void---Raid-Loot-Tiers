@@ -33,12 +33,20 @@ with open(base_file, 'r') as f:
 
 raid_list = {raid[0]:{v1:v2 for v1,v2 in raid[1].items()} for raid in default_dict.items()}
 
-# Let us replace empty cells with "?", besides raid type:
+# Let us replace empty cells with "?" and correct a few values:
 for r in raid_list:
     raid=raid_list[r]
     for v in raid:
-        if raid[v]=="" and v!="Raid type":
+        if raid[v]=="":
             raid_list[r][v]="?"
+    if raid["Has summoner loot?"].lower() in ["false","no","0"]:
+        raid["Has summoner loot?"]=False
+    elif raid["Has summoner loot?"].lower() in ["true","yes","1"]:
+        raid["Has summoner loot?"]=True
+    if raid["Has hidden loot?"].lower() in ["false","no","0"]:
+        raid["Has hidden loot?"]=False
+    elif raid["Has hidden loot?"].lower() in ["true","yes","1"]:
+        raid["Has hidden loot?"]=True
 
 with open(damage_file, 'r') as f:
     reader = csv.DictReader(f, delimiter=',')
@@ -149,15 +157,6 @@ for r in raid_list:
             else:
                 raid_list[r]["Loot table"]="<i>No loot table URL found.</i>"
             f.close()
-    # Variable duplication, until I update the user script:
-    raid_list[r]["raid_type"]=raid_list[r]["Raid type"]
-    raid_list[r]["raid_size"]=raid_list[r]["Raid size"]
-    raid_list[r]["has_summoner_loot"]=raid_list[r]["Has summoner loot?"]
-    raid_list[r]["has_hidden_loot"]=raid_list[r]["Has hidden loot?"]
-    raid_list[r]["loot_format"]=raid_list[r]["Loot format"]
 
 with open(output_file, 'w') as f:
     json.dump(raid_list, f)
-
-### To-do ###
-# Removing duplicates made for compatibility.
