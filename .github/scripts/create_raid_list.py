@@ -37,7 +37,7 @@ raid_list = {raid[0]:{v1:v2 for v1,v2 in raid[1].items()} for raid in default_di
 for r in raid_list:
     raid=raid_list[r]
     for v in raid:
-        if raid[v]=="":
+        if raid[v]=="" and v!="Raid type":
             raid_list[r][v]="?"
     if raid["Has summoner loot?"].lower() in ["false","no","0"]:
         raid["Has summoner loot?"]=False
