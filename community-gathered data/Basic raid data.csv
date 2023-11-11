@@ -1,4 +1,16 @@
 Raid name,Raid size,Maximum number of participants,Raid type,Health on easy,Loot format,Has summoner loot?,Has hidden loot?
-Corrupted Golem,Medium,,,,EHL,,
-Greater Ent,,,,,EHL,,
-Nitroglycergnat,Medium,10,Guild raid,"750,000",EHL,false,false
+Basiliscus,Medium,10,Guild raid,"3,200,000",EHL,No,Yes
+Corrupted Golem,Medium,50,,"12,000,000",EHL,Yes,No
+Elven Rangers,Small,10,,"1,000,000",EHL,No,No
+Fungal Fiend,Small,5,Guild raid,"100,000",EHL,No,No
+Galeohog,Large,100,,"22,000,000",EHL,No,Yes
+Greater Ent,Medium,50,,"8,000,000",EHL,No,No
+Jagar the Red,Immense,250,,"80,000,000",EHL,No,No
+Lesser Tree,Small,10,,"200,000",EHL,No,No
+Naga Karamati,Large,100,,"24,000,000",EHL,No,No
+Naga Risaldar,Large,100,,"15,000,000",EHL,No,No
+Nitroglycergnat,Medium,10,Guild raid,"750,000",EHL,No,No
+Rogue Slime,Small,5,Guild raid,"750,000",EHL,No,No
+Sand Wyrm,Small,10,,"2,500,000",EHL,No,Yes
+Skliros,World,?,World raid,0,Image,No,No
+Superior Watcher,Medium,50,,"4,000,000",EHL,No,No
