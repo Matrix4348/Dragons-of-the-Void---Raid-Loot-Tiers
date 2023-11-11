@@ -144,16 +144,16 @@ for r in raid_list:
                 d5=raid_list[r]["Summoner"][d][k]
                 raid_list[r]["drops"][d].append(d1+" | "+d2+" | "+d3+" | "+d4+" | "+d5)
         raid_list[r].pop("Health on easy") # At this point, we no longer need this key as it was moved to raid_list[r]["Health"]["Easy"].
-    elif r["Loot format"]=="Image":
+    elif raid_list[r]["Loot format"]=="Image":
         try:
             f=open(loot_path+r+"/Loot tables.csv", 'r')
         except:
             f=open(loot_path+"Example/Loot tables.csv", 'r')
         finally:
-            headers=f.readline(0)
-            last_line=f.readline(-1)
-            if last_line!="":
-                raid_list[r]["Loot table"]=last_line.split(",")[headers.split(",").index("Address")]
+            headers=csv.DictReader(f,delimiter=",").fieldnames
+            last_line=list(csv.reader(f,delimiter=","))[-1]
+            if last_line!=headers and "Address" in headers:
+                raid_list[r]["Loot table"]=last_line[headers.index("Address")]
             else:
                 raid_list[r]["Loot table"]="<i>No loot table URL found.</i>"
             f.close()
