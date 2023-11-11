@@ -12,11 +12,11 @@ def cti(n): # Takes a character string containing a number with comma separators
         except:
             return n # In case the initial value was a "?", a word or anything of this kind.
 
-def itc(n): # Takes an number and writes it with comma separators.
+def itc(n): # Takes a number and writes it with comma separators.
     if isinstance(n,str):
         return n
     else:
-        return "{:,}".format(n)
+        return "{:,}".format(int(n))
 
 base_file = "./community-gathered data/Basic raid data.csv"
 damage_file = "./community-gathered data/Base damage taken.csv"
