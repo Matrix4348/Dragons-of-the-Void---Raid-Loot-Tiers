@@ -144,7 +144,7 @@ for r in raid_list:
                 d5=raid_list[r]["Summoner"][d][k]
                 raid_list[r]["drops"][d].append(d1+" | "+d2+" | "+d3+" | "+d4+" | "+d5)
         raid_list[r].pop("Health on easy") # At this point, we no longer need this key as it was moved to raid_list[r]["Health"]["Easy"].
-    elif r["Loot format"]=="image":
+    elif r["Loot format"]=="Image":
         try:
             f=open(loot_path+r+"/Loot tables.csv", 'r')
         except:
