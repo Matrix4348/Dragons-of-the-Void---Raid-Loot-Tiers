@@ -124,7 +124,7 @@ for r in raid_list:
                     raid_list[r]["Summoner"][d].append("?")
             # Tiers, as a single character string:
             raid_list[r][d]=""
-            if raid_list[r][d+" tiers"][0]=="?":
+            if raid_list[r][d+" tiers"][0]=="?" and raid_list[r]["FS"][d] not in raid_list[r][d+" tiers"]:
                 raid_list[r][d]="<b> ??? | "+raid_list[r][d+" tiers"][0]+"=FS | ???</b>"
             elif raid_list[r][d+" tiers"][0]==raid_list[r]["FS"][d]:
                 raid_list[r][d]="<b>"+raid_list[r][d+" tiers"][0]+"=FS</b>"
