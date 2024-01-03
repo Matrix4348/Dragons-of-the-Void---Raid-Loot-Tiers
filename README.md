@@ -10,7 +10,7 @@ All the relevant files are in the csv format and located in the "community-gathe
 * Base damage taken.csv
 * "Loot tiers and drop data" folder
 
-Once the files have been modified, raid_list.json will automatically be updated and ready to be used by the user script.
+Once the files have been modified, raid_list.json will automatically and immediately be updated and exported to Filestack, the site from which the script will fetch it.
 
 ## What are csv files?
 
