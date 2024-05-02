@@ -1,6 +1,6 @@
 # Dragons of the Void - Raid Loot Tiers
 
-This repository is for gathering the data displayed by my [Dragons of the Void - Raid Loot Tiers](https://greasyfork.org/en/scripts/450685-dragons-of-the-void-raid-loot-tiers) user script, that I wrote players of the game *Dragons of the Void*. To install the script itself, go to Greasyfork (even though I will probably update it using GitHub, at some point).
+This repository is for gathering the data displayed by my [Dragons of the Void - Raid Loot Tiers](https://greasyfork.org/en/scripts/450685-dragons-of-the-void-raid-loot-tiers) user script, that I wrote for players of the game *Dragons of the Void*. To install the script itself, go to Greasyfork (even though I will probably update it using GitHub, at some point).
 
 ## How to contribute?
 
@@ -42,7 +42,7 @@ About a few columns:
 * Raid type: for regular raids, use an empty cell
 * Health on easy: it is the health of the raid on easy difficulty (obviously...); put 0 for raids without health
 * Loot format: "EHL" for raids with raids to be found, and "Image" for raids with a pre-existing loot table (like world raids)
-* Has summoner loot? Has hidden loot?: "Yes", "No" or "?"
+* Has summoner loot? and Has hidden loot?: "Yes", "No" or "?"
 
 ## Base damage taken.csv
 
@@ -53,7 +53,7 @@ If a raid does not exist on every difficulties, then leave the cells for the mis
 
 This folder contains folder named after raids.<br>
 If a raid has an image loot table, then you will find the file "Loot table.csv" with the URL and dates of first use of each image (the loot table could be updated over time, hence why there could be several rows).<br>
-Else, you will find files named after each difficulty the raid is available in: Easy.csv, Hard.csv, Legendary.csv. Nothing more to explain about the columns, besides maybe that you should input a question mark in drop rarity cells (common, rare...) if you ignore the answer. Do not bother with the files if you do not know any tier.
+Else, you will find files named after each difficulty the raid is available in: Easy.csv, Hard.csv, Legendary.csv. Nothing more to explain about the columns, besides maybe that you should input a question mark in drop rarity cells (common, rare...) if you ignore the answer. Do not bother with these files if you do not know any tier.
 
 **If the folder does not exist**, then:
 * you will find templates for each file in ./community-gathered data/Loot tiers and drop data/Example/
