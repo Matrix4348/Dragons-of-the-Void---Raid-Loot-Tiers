@@ -109,7 +109,7 @@ for r in raid_list:
                 f.close()
             l=len(raid_list[r][d+" tiers"]) # This will be used several times below.
             if l==0:
-                raid_list[r][d+" tiers"].append("?")
+                raid_list[r][d+" tiers"].append(raid_list[r]["FS"][d])
                 l+=1
                 raid_list[r]["Common"][d].append("?")
                 raid_list[r]["Rare"][d].append("?")
