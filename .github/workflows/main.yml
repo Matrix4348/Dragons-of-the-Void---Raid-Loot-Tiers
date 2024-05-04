@@ -4,11 +4,6 @@ on:
       - main
     paths:
       - "**.csv"
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "**.csv"
   workflow_dispatch:
 
 jobs:
