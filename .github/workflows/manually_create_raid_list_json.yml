@@ -38,7 +38,7 @@ jobs:
           git config --global user.name "Workflow"
           git add ./"community-gathered data"/raid_list.json
           git commit --allow-empty -m "Magically create raid_list.json"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/matrix4348.github.io
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Matrix4348/matrix4348.github.io
           git push
           # git add https://github.com/Matrix4348/matrix4348.github.io/raid_list.json
         env:
