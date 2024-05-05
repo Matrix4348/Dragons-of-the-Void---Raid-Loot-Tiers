@@ -27,6 +27,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   add_raid_list_json_to_github_io:
+    needs: create_raid_list_json
     permissions:
       contents: read
       pages: write 
