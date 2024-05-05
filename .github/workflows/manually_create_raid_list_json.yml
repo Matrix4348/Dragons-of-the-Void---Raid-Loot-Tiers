@@ -42,7 +42,8 @@ jobs:
           git config --global user.name "Workflow"
           git add ./"community-gathered data"/raid_list.json
           git commit --allow-empty -m "Teleport raid_list.json to another world"
-          git remote set-url --push origin https://Matrix4348:$GITHUB_TOKEN@github.com/Matrix4348/matrix4348.github.io
+          git remote set-url --push origin https://Matrix4348:$MY_PAT@github.com/Matrix4348/matrix4348.github.io
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MY_PAT: ${{ secrets.MY_PAT }}
