@@ -41,6 +41,7 @@ jobs:
           git config --global user.email "127596209+Matrix4348@users.noreply.github.com"
           git config --global user.name "Workflow"
           git add ./"community-gathered data"/raid_list.json
+          git remote add origin https://github.com/Matrix4348/matrix4348.github.io
           git commit --allow-empty -m "Teleport raid_list.json to another world"
           git remote set-url --push origin https://Matrix4348:$MY_PAT@github.com/Matrix4348/matrix4348.github.io
           git push
