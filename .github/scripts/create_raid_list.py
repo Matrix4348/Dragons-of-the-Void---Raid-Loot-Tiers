@@ -153,7 +153,7 @@ for r in raid_list:
             headers=csv.DictReader(f,delimiter=",").fieldnames
             last_line=list(csv.reader(f,delimiter=","))[-1]
             if last_line!=headers and "File name" in headers:
-                raid_list[r]["Loot table"]="https://matrix4348.github.io/Dragons-of-the-Void---Raid-Loot-Tiers/Loot%20tables/"+last_line[headers.index("File name")]
+                raid_list[r]["Loot table"]="https://matrix4348.github.io/Loot%20tables/"+last_line[headers.index("File name")]
             else:
                 raid_list[r]["Loot table"]="<i>No loot table URL found.</i>"
             f.close()
