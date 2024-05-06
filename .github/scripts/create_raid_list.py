@@ -18,11 +18,11 @@ def itc(n): # Takes a number and writes it with comma separators.
     else:
         return "{:,}".format(int(n))
 
-base_file = "./community-gathered data/Basic raid data.csv"
-damage_file = "./community-gathered data/Base damage taken.csv"
-loot_path = "./community-gathered data/Loot tiers and drop data/"
-output_file = "./community-gathered data/raid_list.json"
-io_output_file= "./raid_list.json"
+base_file = "./main/community-gathered data/Basic raid data.csv"
+damage_file = "./main/community-gathered data/Base damage taken.csv"
+loot_path = "./main/community-gathered data/Loot tiers and drop data/"
+output_file = "./main/community-gathered data/raid_list.json"
+io_output_file= "./io/raid_list.json"
 
 default_dict = defaultdict(list)
 
