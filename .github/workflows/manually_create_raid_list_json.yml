@@ -54,7 +54,7 @@ jobs:
       - name: Commit changes
         run: |
           git init
-          git add .
+          #git add .
           git config --global user.email "127596209+Matrix4348@users.noreply.github.com"
           git config --global user.name "Workflow"
           #git remote add origin https://github.com/Matrix4348/Dragons-of-the-Void---Raid-Loot-Tiers
