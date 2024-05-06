@@ -14,15 +14,15 @@ jobs:
           python-version: 3.8 # Install the python version needed
       - name: Install Python dependencies
         run: python -m pip install --upgrade pip requests      
-      - name: Finally run the Python file
-        run: python .github/scripts/create_raid_list.py
-      - name: Commit changes
-        run: |
-          git config --global user.email "127596209+Matrix4348@users.noreply.github.com"
-          git config --global user.name "Workflow"
-          git add ./"community-gathered data"/raid_list.json
-          git commit --allow-empty -m "Magically create raid_list.json"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+      #- name: Finally run the Python file
+       # run: python .github/scripts/create_raid_list.py
+      #- name: Commit changes
+       # run: |
+        #  git config --global user.email "127596209+Matrix4348@users.noreply.github.com"
+      #    git config --global user.name "Workflow"
+       #   git add ./"community-gathered data"/raid_list.json
+     #     git commit --allow-empty -m "Magically create raid_list.json"
+      #    git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   add_raid_list_json_to_github_io:
