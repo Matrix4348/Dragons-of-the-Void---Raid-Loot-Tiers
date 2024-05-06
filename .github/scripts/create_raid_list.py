@@ -22,6 +22,7 @@ base_file = "./community-gathered data/Basic raid data.csv"
 damage_file = "./community-gathered data/Base damage taken.csv"
 loot_path = "./community-gathered data/Loot tiers and drop data/"
 output_file = "./community-gathered data/raid_list.json"
+io_output_file= "./raid_list.json"
 
 default_dict = defaultdict(list)
 
@@ -159,4 +160,7 @@ for r in raid_list:
             f.close()
 
 with open(output_file, 'w') as f:
+    json.dump(raid_list, f)
+
+with open(io_output_file, 'w") as f:
     json.dump(raid_list, f)
