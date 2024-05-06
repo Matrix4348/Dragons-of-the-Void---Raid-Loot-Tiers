@@ -23,7 +23,6 @@ jobs:
           git add ./"community-gathered data"/raid_list.json
           git commit --allow-empty -m "Magically create raid_list.json"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   add_raid_list_json_to_github_io:
@@ -44,8 +43,8 @@ jobs:
           git remote add iorigin https://github.com/Matrix4348/matrix4348.github.io
           git commit --allow-empty -m "Teleport raid_list.json to another world"
           #git remote set-url --push iorigin https://Matrix4348:$MY_PAT@github.com/Matrix4348/matrix4348.github.io
-          git remote set-url origin https://x-access-token:${{ secrets.MY_PAT }}@github.com/${{ github.repository }}
-          git push
+          git remote set-url iorigin https://x-access-token:${{ secrets.MY_PAT }}@github.com/${{ github.repository }}
+          git push iorigin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MY_PAT: ${{ secrets.MY_PAT }}
