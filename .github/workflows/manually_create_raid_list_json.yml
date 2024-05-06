@@ -41,7 +41,7 @@ jobs:
       - name: Checkout io repository content
         uses: actions/checkout@v4
         with:
-          repository: https://github.com/Matrix4348/matrix4348.github.io
+          repository: Matrix4348/matrix4348.github.io
           path: io
       - name: Setup Python version
         uses: actions/setup-python@v5
