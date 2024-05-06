@@ -27,9 +27,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   add_raid_list_json_to_github_io:
     needs: create_raid_list_json
-    permissions:
-      contents: read
-      pages: write 
+    #permissions:
+      #contents: read
+      #pages: write 
     name: Add the raid list json to github.io
     runs-on: ubuntu-latest
     steps:
@@ -50,15 +50,15 @@ jobs:
           #git remote add origin https://github.com/Matrix4348/Dragons-of-the-Void---Raid-Loot-Tiers
           git remote add iorigin https://github.com/Matrix4348/matrix4348.github.io
 
-          git remote add all https://x-access-token:${{ secrets.MY_PAT }}@github.com/${{ github.repository }}
-          git remote set-url --add --push all https://x-access-token:${{ secrets.MY_PAT }}@github.com/${{ github.repository }}
-          git remote set-url --add --push all https://x-access-token:${{ secrets.MY_PAT }}@github.com/matrix4348.github.io
+          git remote add all https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git remote set-url --add --push all https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git remote set-url --add --push all https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/matrix4348.github.io
 
           git add ./raid_list.json
           git commit --allow-empty -m "Teleport raid_list.json to another world"
           #git remote set-url --push iorigin https://Matrix4348:$MY_PAT@github.com/Matrix4348/matrix4348.github.io
           #git remote set-url iorigin https://x-access-token:${{ secrets.MY_PAT }}@github.com/${{ github.repository }}
-          git push
+          git push all
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MY_PAT: ${{ secrets.MY_PAT }}
