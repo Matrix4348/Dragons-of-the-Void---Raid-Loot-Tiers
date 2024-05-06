@@ -56,14 +56,16 @@ jobs:
           git config --global user.email "127596209+Matrix4348@users.noreply.github.com"
           git config --global user.name "Workflow"
           #git remote add origin https://github.com/Matrix4348/Dragons-of-the-Void---Raid-Loot-Tiers
-          git remote add iorigin https://github.com/Matrix4348/matrix4348.github.io
+          #%git remote add iorigin https://github.com/Matrix4348/matrix4348.github.io
 
           git remote add all https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git remote set-url --add --push all https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git remote set-url --add --push all https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Matrix4348/matrix4348.github.io
+          #%git remote set-url --add --push all https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Matrix4348/matrix4348.github.io
 
-          git add ./io/raid_list.json
-          git commit --allow-empty -m "Teleport raid_list.json to another world"
+          #%git add ./io/raid_list.json
+          #%git commit --allow-empty -m "Teleport raid_list.json to another world"
+          git add ./main/"community-gathered data"/raid_list.json
+          git commit --allow-empty -m "Magically create raid_list.json"
           #git remote set-url --push iorigin https://Matrix4348:$MY_PAT@github.com/Matrix4348/matrix4348.github.io
           #git remote set-url iorigin https://x-access-token:${{ secrets.MY_PAT }}@github.com/${{ github.repository }}
           git push all
