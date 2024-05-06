@@ -162,5 +162,5 @@ for r in raid_list:
 with open(output_file, 'w') as f:
     json.dump(raid_list, f)
 
-with open(io_output_file, 'w") as f:
+with open(io_output_file, 'w') as f:
     json.dump(raid_list, f)
