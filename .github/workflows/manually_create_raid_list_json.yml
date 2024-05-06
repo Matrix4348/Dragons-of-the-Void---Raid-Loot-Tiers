@@ -52,7 +52,7 @@ jobs:
 
           git remote add all https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git remote set-url --add --push all https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git remote set-url --add --push all https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/matrix4348.github.io
+          git remote set-url --add --push all https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Matrix4348/matrix4348.github.io
 
           git add ./raid_list.json
           git commit --allow-empty -m "Teleport raid_list.json to another world"
