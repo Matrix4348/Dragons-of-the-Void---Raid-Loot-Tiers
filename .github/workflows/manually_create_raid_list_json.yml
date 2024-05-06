@@ -35,6 +35,8 @@ jobs:
     steps:
       - name: Checkout repository content
         uses: actions/checkout@v4 # Checkout the repository content to github runner.
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Python version
         uses: actions/setup-python@v5
         with:
