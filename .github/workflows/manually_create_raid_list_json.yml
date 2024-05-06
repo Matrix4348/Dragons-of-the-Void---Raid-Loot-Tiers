@@ -50,7 +50,7 @@ jobs:
           #git remote add origin https://github.com/Matrix4348/Dragons-of-the-Void---Raid-Loot-Tiers
           git remote add iorigin https://github.com/Matrix4348/matrix4348.github.io
 
-          git remote add all https://github.com/Matrix4348/Dragons-of-the-Void---Raid-Loot-Tiers
+          git remote add all https://x-access-token:${{ secrets.MY_PAT }}@github.com/${{ github.repository }}
           git remote set-url --add --push all https://x-access-token:${{ secrets.MY_PAT }}@github.com/${{ github.repository }}
           git remote set-url --add --push all https://x-access-token:${{ secrets.MY_PAT }}@github.com/matrix4348.github.io
 
