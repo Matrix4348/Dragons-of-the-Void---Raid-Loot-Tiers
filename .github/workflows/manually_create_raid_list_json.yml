@@ -76,7 +76,7 @@ jobs:
           git add ./io/raid_list.json
           #git pull
           git commit --allow-empty -m "Teleport raid_list.json to another world"
-          git push iorigin main
+          git push iorigin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MY_PAT: ${{ secrets.MY_PAT }}
