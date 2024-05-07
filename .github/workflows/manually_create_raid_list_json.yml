@@ -63,7 +63,7 @@ jobs:
       - name: Install Python dependencies
         run: python -m pip install --upgrade pip requests      
       - name: Finally run the Python file
-        run: python main/.github/scripts/create_raid_list.py
+        run: python .github/scripts/create_raid_list.py
       - name: Commit changes
         run: |
           #git init
