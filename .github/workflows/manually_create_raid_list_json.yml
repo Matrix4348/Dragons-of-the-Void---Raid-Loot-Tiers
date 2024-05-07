@@ -37,6 +37,7 @@ jobs:
         uses: actions/checkout@v4 # Checkout the repository content to github runner.
         with:
           #token: ${{ secrets.GITHUB_TOKEN }}
+          ref: Host-image-loot-tables-on-github.io-and-fetch-them-from-there
           path: main
       - name: Checkout io repository content
         uses: actions/checkout@v4
