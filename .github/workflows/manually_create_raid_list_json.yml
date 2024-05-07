@@ -43,6 +43,14 @@ jobs:
         with:
           repository: Matrix4348/matrix4348.github.io
           path: io
+      - name: set-up the repositories
+        run: |
+          git config --global user.email "127596209+Matrix4348@users.noreply.github.com"
+          git config --global user.name "Workflow"
+          git init
+          #git commit -m "generated"
+          git add .
+          git push
       - name: Setup Python version
         uses: actions/setup-python@v5
         with:
@@ -53,10 +61,10 @@ jobs:
         run: python main/.github/scripts/create_raid_list.py
       - name: Commit changes
         run: |
-          git init
+          #git init
           #git add .
-          git config --global user.email "127596209+Matrix4348@users.noreply.github.com"
-          git config --global user.name "Workflow"
+          #git config --global user.email "127596209+Matrix4348@users.noreply.github.com"
+          #git config --global user.name "Workflow"
           #git remote add origin https://github.com/Matrix4348/Dragons-of-the-Void---Raid-Loot-Tiers
           #%git remote add iorigin https://github.com/Matrix4348/matrix4348.github.io
 
