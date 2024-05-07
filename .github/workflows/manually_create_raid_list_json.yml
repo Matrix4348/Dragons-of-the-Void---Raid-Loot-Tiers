@@ -38,7 +38,7 @@ jobs:
         with:
           token: ${{ secrets.MY_PAT }}
           ref: Host-image-loot-tables-on-github.io-and-fetch-them-from-there
-          path: main
+          #path: main
       - name: Checkout io repository content
         uses: actions/checkout@v4
         with:
