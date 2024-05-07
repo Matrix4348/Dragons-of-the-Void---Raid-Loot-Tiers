@@ -67,12 +67,13 @@ jobs:
           git push origin
 
           #git config receive.denyCurrentBranch updateInstead
+          cd ./io/
           git remote add iorigin https://x-access-token:${{ secrets.MY_PAT }}@github.com/Matrix4348/matrix4348.github.io
           git remote set-url iorigin https://x-access-token:${{ secrets.MY_PAT }}@github.com/Matrix4348/matrix4348.github.io
-          git fetch --unshallow
-          git add ./io/raid_list.json
+          #git fetch --unshallow
+          git add ./raid_list.json
           git commit --allow-empty -m "Teleport raid_list.json to another world"
-          git push iorigin
+          git push iorigin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MY_PAT: ${{ secrets.MY_PAT }}
