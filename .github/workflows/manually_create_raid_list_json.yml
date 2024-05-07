@@ -67,7 +67,7 @@ jobs:
           git push origin
 
           #cd ./io/
-          #git config receive.denyCurrentBranch updateInstead
+          git config receive.denyCurrentBranch updateInstead
           git remote add iorigin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Matrix4348/matrix4348.github.io
           git remote set-url iorigin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Matrix4348/matrix4348.github.io
           #git fetch --unshallow
