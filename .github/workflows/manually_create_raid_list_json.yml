@@ -47,10 +47,12 @@ jobs:
         run: |
           git config --global user.email "127596209+Matrix4348@users.noreply.github.com"
           git config --global user.name "Workflow"
+          git config --global init.defaultBranch "main"
           git init
+          git remote add all https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           #git commit -m "generated"
           git add .
-          git push
+          git push all
       - name: Setup Python version
         uses: actions/setup-python@v5
         with:
