@@ -66,9 +66,9 @@ jobs:
           git add ./"community-gathered data"/raid_list.json
           git commit --allow-empty -m "Magically create raid_list.json"
           git push origin
+          git reset HEAD -- .
 
           cd ../io/
-          git reset HEAD -- ../main/
           #git config receive.denyCurrentBranch updateInstead
           #git pull
           git remote add iorigin https://x-access-token:MY_PAT@github.com/Matrix4348/matrix4348.github.io
