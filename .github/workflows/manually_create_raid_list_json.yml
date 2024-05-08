@@ -67,7 +67,7 @@ jobs:
           git commit --allow-empty -m "Magically create raid_list.json"
           git push origin
 
-          cd ./io/
+          cd ../io/
           #git config receive.denyCurrentBranch updateInstead
           #git pull
           git remote add iorigin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Matrix4348/matrix4348.github.io
