@@ -68,6 +68,7 @@ jobs:
           git push origin
 
           cd ../io/
+          git reset HEAD -- ../main/
           #git config receive.denyCurrentBranch updateInstead
           #git pull
           git remote add iorigin https://x-access-token:MY_PAT@github.com/Matrix4348/matrix4348.github.io
