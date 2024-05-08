@@ -3,24 +3,18 @@ on:
 
 jobs:
   create_raid_list_json:
-    permissions:
-      contents: write
-      pages: write 
     name: Create the raid list json
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository content
         uses: actions/checkout@v4 # Checkout the repository content to github runner.
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ref: Host-image-loot-tables-on-github.io-and-fetch-them-from-there
           path: main
       - name: Checkout io repository content
         uses: actions/checkout@v4
         with:
           repository: Matrix4348/matrix4348.github.io
           path: io
-          #ref: main
       - name: Setup Python version
         uses: actions/setup-python@v5
         with:
@@ -41,9 +35,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   add_raid_list_json_to_github_io:
-    permissions:
-      contents: write
-      pages: write 
     name: Add the raid list json to github.io
     runs-on: ubuntu-latest
     steps:
@@ -53,12 +44,9 @@ jobs:
           token: ${{ secrets.MY_PAT }}
           repository: Matrix4348/matrix4348.github.io
           path: io
-          #ref: main
       - name: Checkout repository content
         uses: actions/checkout@v4 # Checkout the repository content to github runner.
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ref: test
           path: main
       - name: Setup Python version
         uses: actions/setup-python@v5
