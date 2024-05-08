@@ -50,7 +50,7 @@ jobs:
       - name: Checkout io repository content
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.MY_PAT }}
           repository: Matrix4348/matrix4348.github.io
           path: io
           #ref: main
