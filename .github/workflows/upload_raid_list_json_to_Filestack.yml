@@ -1,4 +1,9 @@
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "./community-gathered data/raid_list.json"
   workflow_dispatch:
 
 jobs:
