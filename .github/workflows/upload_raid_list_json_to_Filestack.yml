@@ -3,7 +3,7 @@ on:
     branches:
       - main
     paths:
-      - "**.csv"
+      - "./community-gathered data/raid_list.json"
   workflow_dispatch:
 
 jobs:
