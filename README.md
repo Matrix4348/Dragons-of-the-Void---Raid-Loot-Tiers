@@ -53,14 +53,15 @@ If a raid does not exist on every difficulties, then leave the cells for the mis
 
 This folder contains subfolders named after raids.<br>
 
-If a raid has an image loot table, then you will find the images (.png, .jpg, .jpeg, .webp but I prefer .png) alongside the file "Loot table.csv", which contains two columns: "file name" and "date of first use". The second column is obvious (usual format: "January 31st, 2024") and in the first column, type the name of the image that was uploaded to the folder. Format for the loot table name: Raid_Name_Number with numbers starting at 1 (0 for beta only). For example: if the John Rabbit world raid is released on April 1st, 2025, then upload John_Rabbit_1.png in community-gathered data/Loot tiers and drop data/John Rabbit/ and fill new line in community-gathered data/Loot tiers and drop data/John Rabbit/Loot tables.csv the following way: 
+* If a raid has an image loot table, then you will find the images (.png, .jpg, .jpeg, .webp but I prefer .png) alongside the file "Loot table.csv", which contains two columns: "file name" and "date of first use". The second column is obvious (usual format: "January 31st, 2024") and in the first column, type the name of the image that was uploaded to the folder (only upload **new** loot tables). Preferred format for the loot table name: Raid_Name_Number with numbers starting at 1 (0 for beta only).
+<br>For example: if the John Rabbit world raid is released on April 1st, 2025, then upload John_Rabbit_1.png in community-gathered data/Loot tiers and drop data/John Rabbit/ and fill new line in community-gathered data/Loot tiers and drop data/John Rabbit/Loot tables.csv the following way: 
 ```
 File Name,Date of first use
 John_Rabbit_1.png,"April 1st, 2025"
 ```
 <br>
 
-Else, you will find files named after each difficulty the raid is available in: Easy.csv, Hard.csv, Legendary.csv. Nothing more to explain about the columns, besides maybe that you should input a question mark in drop rarity cells (common, rare...) if you ignore the answer. Do not bother with these files if you do not know any tier.
+* Else, you will find files named after each difficulty the raid is available in: Easy.csv, Hard.csv, Legendary.csv. Nothing more to explain about the columns, besides maybe that you should input a question mark in drop rarity cells (common, rare...) if you ignore the answer. Do not bother with these files if you do not know any tier.
 
 **If the folder does not exist**, then:
 * you will find templates for each file in ./community-gathered data/Loot tiers and drop data/Example/
