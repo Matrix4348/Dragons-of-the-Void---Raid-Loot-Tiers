@@ -4,13 +4,13 @@ This repository is for gathering the data displayed by my [Dragons of the Void -
 
 ## How to contribute?
 
-First, if you do not have write access, then to modify files you will need to create a branch (click the "main" button above, then "find or create a branch), edit the files and create a pull request. Once approved, the pull request will be merged and your changes will be applied.
+First, if you do not have write access, then to modify files you will need to either create a fork (click the "Fork" button at the top of the page), edit the files and create a pull request. Once approved, the pull request will be merged and your changes will be applied.
 All the relevant files are in the csv format and located in the "community-gathered data" folder (more details about each of them down below):
 * Basic raid data.csv
 * Base damage taken.csv
 * "Loot tiers and drop data" folder
 
-Once the files have been modified, raid_list.json will automatically and immediately be updated and exported to Filestack, the site from which the script will fetch it.
+Once the files have been modified, raid_list.json will automatically be updated and immediately be available to the users of my script.
 
 ## What are csv files?
 
@@ -51,8 +51,15 @@ If a raid does not exist on every difficulties, then leave the cells for the mis
 
 ## "Loot tiers and drop data" folder
 
-This folder contains folder named after raids.<br>
-If a raid has an image loot table, then you will find the file "Loot table.csv" with the URL and dates of first use of each image (the loot table could be updated over time, hence why there could be several rows).<br>
+This folder contains subfolders named after raids.<br>
+
+If a raid has an image loot table, then you will find the images (.png, .jpg, .jpeg, .webp but I prefer .png) alongside the file "Loot table.csv", which contains two columns: "file name" and "date of first use". The second column is obvious (usual format: "January 31st, 2024") and in the first column, type the name of the image that was uploaded to the folder. Format for the loot table name: Raid_Name_Number with numbers starting at 1 (0 for beta only). For example: if the John Rabbit world raid is released on April 1st, 2025, then upload John_Rabbit_1.png in community-gathered data/Loot tiers and drop data/John Rabbit/ and fill new line in community-gathered data/Loot tiers and drop data/John Rabbit/Loot tables.csv the following way: 
+```
+File Name,Date of first use
+John_Rabbit_1.png,"April 1st, 2025"
+```
+<br>
+
 Else, you will find files named after each difficulty the raid is available in: Easy.csv, Hard.csv, Legendary.csv. Nothing more to explain about the columns, besides maybe that you should input a question mark in drop rarity cells (common, rare...) if you ignore the answer. Do not bother with these files if you do not know any tier.
 
 **If the folder does not exist**, then:
