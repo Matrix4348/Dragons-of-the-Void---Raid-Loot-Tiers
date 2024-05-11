@@ -1,5 +1,7 @@
 on:
   push:
+    branches:
+      - main
     paths:
       - "**.csv"
   workflow_dispatch:
@@ -34,7 +36,6 @@ jobs:
       - create_raid_list_json
     name: Add the raid list json to github.io
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout io repository content
         uses: actions/checkout@v4
