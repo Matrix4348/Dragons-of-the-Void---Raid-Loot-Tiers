@@ -2,7 +2,10 @@ import os
 import shutil
 
 path1 = "./main/community-gathered data/Loot tiers and drop data/"
-path2 = "./io/Loot tables/"
+path2 = "./io/loot-tables/"
+
+if not os.path.exists(path2):
+    os.mkdir(path2)
 
 for root, dirs, files in os.walk(path1):
     for dir in dirs:
