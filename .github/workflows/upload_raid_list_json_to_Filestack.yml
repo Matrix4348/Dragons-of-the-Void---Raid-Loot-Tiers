@@ -25,5 +25,5 @@ jobs:
         env:
           app_secret: ${{ secrets.FILESTACK_APP_SECRET }}
           handle: ${{ vars.FILESTACK_FILE_HANDLE }}
-          api_key: ${{ secrets.FILESTACK_APP_SECRET }}
+          api_key: ${{ secrets.FILESTACK_APP_KEY }}
         run: python .github/scripts/upload_raid_list_json_to_Filestack.py      
