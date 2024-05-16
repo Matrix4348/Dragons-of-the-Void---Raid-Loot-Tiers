@@ -11,4 +11,5 @@ handle = os.environ.get("handle")
 security = Security(policy, app_secret)
 filelink = Filelink(handle)
 
-filelink.overwrite(filepath=raid_list_file,security=security)
+#filelink.overwrite(filepath=raid_list_file,security=security)
+filelink.delete(apikey=app_secret,security=security)
