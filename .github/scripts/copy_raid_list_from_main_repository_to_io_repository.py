@@ -1,4 +1,3 @@
-import os
 import shutil
 
 # Assuming that the main repository is located in ./main and the github.io repository is located in ./io:

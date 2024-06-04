@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository content
         uses: actions/checkout@v4 # Checkout the repository content to github runner.
+        with:
+          path: main
       - name: Setup Python version
         uses: actions/setup-python@v5
         with:
@@ -20,9 +22,10 @@ jobs:
       - name: Install Python dependencies
         run: python -m pip install --upgrade pip requests      
       - name: Finally run the Python file
-        run: python .github/scripts/create_raid_list.py
+        run: python main/.github/scripts/create_raid_list.py
       - name: Commit changes
         run: |
+          cd ./main/
           git config --global user.email "127596209+Matrix4348@users.noreply.github.com"
           git config --global user.name "Workflow"
           git remote set-url origin https://x-access-token:GITHUB_TOKEN@github.com/${{ github.repository }}
@@ -32,8 +35,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   add_raid_list_json_to_github_io:
-    needs:
-      - create_raid_list_json
     name: Add the raid list json to github.io
     runs-on: ubuntu-latest
     steps:
@@ -53,7 +54,9 @@ jobs:
           python-version: 3.8 # Install the python version needed
       - name: Install Python dependencies
         run: python -m pip install --upgrade pip requests      
-      - name: Finally run the Python file
+      - name: Run the first Python script
+        run: python main/.github/scripts/create_raid_list.py
+      - name: Run the second Python script
         run: python main/.github/scripts/copy_raid_list_from_main_repository_to_io_repository.py
       - name: Commit changes
         run: |
