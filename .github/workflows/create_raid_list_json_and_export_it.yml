@@ -30,7 +30,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:GITHUB_TOKEN@github.com/${{ github.repository }}
           git add ./"community-gathered data"/raid_list.json
-          git commit --allow-empty -m ${{ fromJSON('{"false":"[${{ github.event.pusher.name }}] Update raid_list.json", "true":"Update raid_list.json"}')[${{ github.event.pusher.name }} == ''] }}
+          git commit --allow-empty -m fromJSON('{"false":"[${{ github.event.pusher.name }}] Update raid_list.json", "true":"Update raid_list.json"}')[${{ github.event.pusher.name }} == '']
           git push origin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
