@@ -11,7 +11,7 @@ jobs:
     name: Create the raid list json
     runs-on: ubuntu-latest
     env:
-      COMMIT_MESSAGE: ${{ {"false":"[${{ github.event.pusher.name }}] Update raid_list.json", "true":"Update raid_list.json"}[ github.event.pusher.name == ""] }}
+      COMMIT_MESSAGE: ${{ fromJSON('{"false":"[github.event.pusher.name] Update raid_list.json", "true":"Update raid_list.json"}')[ github.event.pusher.name == ""] }}
     steps:
       - name: Checkout repository content
         uses: actions/checkout@v4 # Checkout the repository content to github runner.
