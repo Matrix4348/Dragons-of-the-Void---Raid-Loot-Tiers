@@ -34,7 +34,7 @@ jobs:
           git push origin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TEXT: '{"false":"[${{github.event.pusher.name}}] Update raid_list.json", "true":"Update raid_list.json"}'
+          TEXT: '''{"false":"[${{github.event.pusher.name}}] Update raid_list.json", "true":"Update raid_list.json"}'''
           COMMIT_MESSAGE: ${{ fromJSON( env.TEXT )[ github.event.pusher.name == ''] }}
   add_raid_list_json_to_github_io:
     name: Add the raid list json to github.io
