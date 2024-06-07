@@ -15,6 +15,16 @@ jobs:
     name: Export new and modified files
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout io repository content
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MY_PAT }}
+          repository: Matrix4348/matrix4348.github.io
+          path: io
+      - name: Checkout repository content
+        uses: actions/checkout@v4 # Checkout the repository content to github runner.
+        with:
+          path: main
       - name: Check which files were updated
         uses: dorny/paths-filter@v3
         id: changes
@@ -27,16 +37,7 @@ jobs:
                 - "**.webp"
               raid_list:
                 - './"community-gathered data"/raid_list.json'
-      - name: Checkout io repository content
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.MY_PAT }}
-          repository: Matrix4348/matrix4348.github.io
-          path: io
-      - name: Checkout repository content
-        uses: actions/checkout@v4 # Checkout the repository content to github runner.
-        with:
-          path: main
+           working-directory: "./io"
       - name: Setup Python version
         uses: actions/setup-python@v5
         with:
