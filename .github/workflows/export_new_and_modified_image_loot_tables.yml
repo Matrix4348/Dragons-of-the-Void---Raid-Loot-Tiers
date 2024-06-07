@@ -7,13 +7,26 @@ on:
       - "**.jpg"
       - "**.jpeg"
       - "**.webp"
+      - './"community-gathered data"/raid_list.json'
   workflow_dispatch:
 
 jobs:
-  export_images:
-    name: Export new and modified 
+  export_files:
+    name: Export new and modified files
     runs-on: ubuntu-latest
     steps:
+      - name: Check which files were updated
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+           filters: |
+              images:
+                - "**.png"
+                - "**.jpg"
+                - "**.jpeg"
+                - "**.webp"
+              raid_list:
+                - './"community-gathered data"/raid_list.json'
       - name: Checkout io repository content
         uses: actions/checkout@v4
         with:
@@ -29,17 +42,18 @@ jobs:
         with:
           python-version: 3.8 # Install the python version needed
       - name: Install Python dependencies
-        run: python -m pip install --upgrade pip requests      
-      - name: Finally run the Python file
+        run: python -m pip install --upgrade pip requests
+      - name: Put the raid list into the io repository
+        if: steps.changes.outputs.raid_list == 'true'
+        run: python main/.github/scripts/copy_raid_list_from_main_repository_to_io_repository.py
+      - name: Put the images into the io repository
+        if: steps.changes.outputs.images == 'true'
         run: python main/.github/scripts/add_new_images_in_main_repository_to_io_repository.py
       - name: Commit changes
         run: |
           cd ./io/
-          git config --global user.email "127596209+Matrix4348@users.noreply.github.com"
-          git config --global user.name "Workflow"
-          git remote set-url origin https://x-access-token:GITHUB_TOKEN@github.com/Matrix4348/matrix4348.github.io.git
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit --allow-empty -m "Teleport images to another world"
-          git push origin
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git commit --allow-empty -m "Update raid_list.json and/or loot tables"
+          git push
