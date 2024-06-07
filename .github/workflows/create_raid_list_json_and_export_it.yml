@@ -35,7 +35,7 @@ jobs:
           git commit --allow-empty -m '${{ env.COMMIT_MESSAGE }}'
           git push origin
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_PAT }}
           COMMIT_MESSAGE: ${{ fromJSON(env.TEXT)[ github.event.pusher.name == '' ] }}
   add_raid_list_json_to_github_io:
     name: Add the raid list json to github.io
