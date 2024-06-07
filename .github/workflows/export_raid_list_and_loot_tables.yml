@@ -37,7 +37,7 @@ jobs:
                 - "**.webp"
               raid_list:
                 - './"community-gathered data"/raid_list.json'
-           working-directory: "./io"
+           working-directory: "./main"
       - name: Setup Python version
         uses: actions/setup-python@v5
         with:
