@@ -10,6 +10,8 @@ jobs:
   create_raid_list_json:
     name: Create the raid list json
     runs-on: ubuntu-latest
+    env:
+      TEXT: '{"false":"[${{ github.event.pusher.name }}] Update raid_list.json", "true":"[${{ github.triggering_actor }}] Update raid_list.json"}'
     steps:
       - name: Checkout repository content
         uses: actions/checkout@v4 # Checkout the repository content to github runner.
@@ -30,8 +32,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add ./"community-gathered data"/raid_list.json
-          git commit --allow-empty -m "[${{ github.triggering_actor }}] Update raid_list.json"
+          git commit --allow-empty -m '${{ env.COMMIT_MESSAGE }}'
           git push
+        env:
+          COMMIT_MESSAGE: ${{ fromJSON(env.TEXT)[ github.event.pusher.name == '' ] }}
   add_raid_list_json_to_github_io:
     name: Add the raid list json to github.io
     runs-on: ubuntu-latest
