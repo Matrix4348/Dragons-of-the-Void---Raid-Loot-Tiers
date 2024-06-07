@@ -1,0 +1,61 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**.png"
+      - "**.jpg"
+      - "**.jpeg"
+      - "**.webp"
+      - './"community-gathered data"/raid_list.json'
+  workflow_dispatch:
+
+jobs:
+  export_files:
+    name: Export new and modified files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check which files were updated
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+           filters: |
+              images:
+                - "**.png"
+                - "**.jpg"
+                - "**.jpeg"
+                - "**.webp"
+              raid_list:
+                - './"community-gathered data"/raid_list.json'
+      - name: Checkout io repository content
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MY_PAT }}
+          repository: Matrix4348/matrix4348.github.io
+          path: io
+      - name: Checkout repository content
+        uses: actions/checkout@v4 # Checkout the repository content to github runner.
+        with:
+          path: main
+      - name: Setup Python version
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.8 # Install the python version needed
+      - name: Install Python dependencies
+        run: python -m pip install --upgrade pip requests
+      - name: Put the raid list into the io repository
+        if: steps.changes.outputs.raid_list == 'true'
+        run: python main/.github/scripts/copy_raid_list_from_main_repository_to_io_repository.py
+      - name: Put the images into the io repository
+        if: steps.changes.outputs.images == 'true'
+        run: python main/.github/scripts/add_new_images_in_main_repository_to_io_repository.py
+      - name: Commit changes
+        run: |
+          cd ./io/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add raid_list.json
+          git commit --allow-empty -m "Update raid_list.json"
+          git add loot-tables/
+          git commit --allow-empty -m "Update loot tables"
+          git push
