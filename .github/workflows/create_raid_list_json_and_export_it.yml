@@ -28,6 +28,8 @@ jobs:
         run: python main/.github/scripts/create_raid_list.py
       - name: Commit changes
         run: |
+          echo "${{  github.triggering_actor  }}"
+          echo "${{  github.actor  }}"
           cd ./main/
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
