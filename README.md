@@ -4,7 +4,7 @@ This repository is for gathering the data displayed by my [Dragons of the Void -
 
 ## How to contribute?
 
-First, if you do not have write access, then to modify files you will need to either create a fork (click the "Fork" button at the top of the page), edit the files and create a pull request. Once approved, the pull request will be merged and your changes will be applied.
+First, if you do not have write access, then to modify files you will need to create a fork (click the "Fork" button at the top of the page), edit the files and create a pull request. Once approved, the pull request will be merged and your changes will be applied. If you have write access, you can either create a branch, then a pull request or update the files directly.
 All the relevant files are in the csv format and located in the "community-gathered data" folder (more details about each of them down below):
 * Basic raid data.csv
 * Base damage taken.csv
