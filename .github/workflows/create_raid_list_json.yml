@@ -11,8 +11,8 @@ jobs:
     name: Create the raid list json
     runs-on: ubuntu-latest
     env:
-      COMMITTER_NAME_TEXT: '{"false":"[${{ github.actor }}]", "true":"github-actions[bot]"}'
-      COMMITTER_ID_TEXT: '{"false":"[${{ github.actor_id }}]", "true":"41898282"}'
+      COMMITTER_NAME_TEXT: '{"false":"${{ github.actor }}", "true":"github-actions[bot]"}'
+      COMMITTER_ID_TEXT: '{"false":"${{ github.actor_id }}", "true":"41898282"}'
       TEXT: '{"false":"[${{ github.event.pusher.name }}] Update raid_list.json", "true":"[${{ github.triggering_actor }}] Update raid_list.json"}'
     steps:
       - name: Checkout repository content
