@@ -5,7 +5,7 @@ on:
       - "**.jpg"
       - "**.jpeg"
       - "**.webp"
-      - '"community-gathered data"/raid_list.json'
+      - 'community-gathered data/raid_list.json'
   workflow_dispatch:
 
 jobs:
