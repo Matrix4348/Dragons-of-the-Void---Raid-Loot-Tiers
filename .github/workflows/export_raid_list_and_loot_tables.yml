@@ -60,7 +60,7 @@ jobs:
         if: steps.changes.outputs.images == 'true'
         run: python main/.github/scripts/add_new_images_in_main_repository_to_io_repository.py
       - name: Commit changes to images on main branch
-        if: steps.changes.outputs.images == 'true' $$ github.ref_name == 'main'
+        if: steps.changes.outputs.images == 'true' && github.ref_name == 'main'
         run: |
           cd ./io/
           git config user.name "github-actions[bot]"
