@@ -34,9 +34,10 @@ jobs:
           cd ./main/
           git config user.name "${{ env.COMMITTER_NAME }}"
           git config user.email "${{ env.COMMITTER_ID }}+${{ env.COMMITTER_NAME }}@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git add ./"community-gathered data"/raid_list.json
           git commit --allow-empty -m "${{ env.COMMIT_MESSAGE }}"
-          git push
+          git push origin
         env:
           COMMITTER_NAME: ${{ fromJSON(env.COMMITTER_NAME_TEXT)[ github.ref_name == 'main' ] }}
           COMMITTER_ID: ${{ fromJSON(env.COMMITTER_ID_TEXT)[ github.ref_name == 'main' ] }}
