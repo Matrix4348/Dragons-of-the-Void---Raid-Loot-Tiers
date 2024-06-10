@@ -54,6 +54,7 @@ jobs:
           cd ./io/
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Matrix4348/matrix4348.github.io
           git add raid_list.json
           git commit --allow-empty -m "Update raid_list.json"
           git push
@@ -66,6 +67,7 @@ jobs:
           cd ./io/
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Matrix4348/matrix4348.github.io
           git add loot-tables/
           git commit --allow-empty -m "Update loot tables"
           git push
