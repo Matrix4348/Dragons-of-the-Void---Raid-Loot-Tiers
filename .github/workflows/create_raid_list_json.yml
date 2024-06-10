@@ -41,4 +41,3 @@ jobs:
           COMMITTER_NAME: ${{ fromJSON(env.COMMITTER_NAME_TEXT)[ github.ref_name == 'main' ] }}
           COMMITTER_ID: ${{ fromJSON(env.COMMITTER_ID_TEXT)[ github.ref_name == 'main' ] }}
           COMMIT_MESSAGE: ${{ fromJSON(env.TEXT)[ github.event.pusher.name == '' ] }}
-          GITHUB_TOKEN: ${{ secrets.MY_PAT }}
