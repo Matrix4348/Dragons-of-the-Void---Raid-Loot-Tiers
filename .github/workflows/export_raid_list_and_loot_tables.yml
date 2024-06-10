@@ -17,7 +17,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.MY_PAT }}
-          persist-credentials: false
           repository: Matrix4348/matrix4348.github.io
           path: io
       - name: Checkout repository content
@@ -52,10 +51,11 @@ jobs:
           cd ./io/
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Matrix4348/matrix4348.github.io
           git add raid_list.json
           git commit --allow-empty -m "Update raid_list.json"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_PAT }}
       - name: Put the images into the io repository
         if: steps.changes.outputs.images == 'true'
         run: python main/.github/scripts/add_new_images_in_main_repository_to_io_repository.py
@@ -65,10 +65,11 @@ jobs:
           cd ./io/
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Matrix4348/matrix4348.github.io
           git add loot-tables/
           git commit --allow-empty -m "Update loot tables"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_PAT }}
       - name: Inform that the workflow ran, outside of main branch
         if: ${{ github.ref_name != 'main' }}
         run: echo "The workflow was successfully triggered."
