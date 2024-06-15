@@ -18,11 +18,21 @@ def itc(n): # Takes a number and writes it with comma separators.
     else:
         return "{:,}".format(int(n))
 
-base_file = "./main/community-gathered data/Basic raid data.csv"
-damage_file = "./main/community-gathered data/Base damage taken.csv"
+base_path = "./main/community-gathered data/Basic data/"
+damage_path = "./main/community-gathered data/Base damage taken/"
 loot_path = "./main/community-gathered data/Loot tiers and drop data/"
 output_file = "./main/community-gathered data/raid_list.json"
 
+mode = { "raiding": { "folders": ["Regular raids","Guild raids"],
+                    "files": ["regular-raids.csv","guild-raids.csv"]
+                    },
+        "questing": { "folders": ["Quest bosses"],
+                    "files": ["quest-bosses.csv"]
+                   },
+        "healthless": { "folders": ["Quest bosses"],
+                    "files": ["quest-bosses.csv"]
+                      }
+       }
 default_dict = defaultdict(list)
 
 with open(base_file, 'r') as f:
