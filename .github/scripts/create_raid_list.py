@@ -24,13 +24,13 @@ loot_path = "./main/community-gathered data/Loot tiers and drop data/"
 output_file = "./main/community-gathered data/raid_list.json"
 
 paths = { "raiding": { "folders": ["Regular raids","Guild raids"],
-                      "files": ["regular-raids.csv","guild-raids.csv"]
+                      "files": ["regular_raids.csv","guild_raids.csv"]
                     },
         "questing": { "folders": ["Quest bosses"],
-                    "files": ["quest-bosses.csv"]
+                    "files": ["quest_bosses.csv"]
                    },
         "healthless": { "folders": ["World raids"],
-                    "files": ["world-raids.csv"]
+                    "files": ["world_raids.csv"]
                       }
        }
 participants = { "regular": { "small": 10, "medium": 50, "large": 100, "immense": 250 },
