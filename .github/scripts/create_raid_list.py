@@ -23,23 +23,31 @@ damage_path = "./main/community-gathered data/Base damage taken/"
 loot_path = "./main/community-gathered data/Loot tiers and drop data/"
 output_file = "./main/community-gathered data/raid_list.json"
 
-mode = { "raiding": { "folders": ["Regular raids","Guild raids"],
-                    "files": ["regular-raids.csv","guild-raids.csv"]
+paths = { "raiding": { "folders": ["Regular raids","Guild raids"],
+                      "files": ["regular-raids.csv","guild-raids.csv"]
                     },
         "questing": { "folders": ["Quest bosses"],
                     "files": ["quest-bosses.csv"]
                    },
-        "healthless": { "folders": ["Quest bosses"],
-                    "files": ["quest-bosses.csv"]
+        "healthless": { "folders": ["World raids"],
+                    "files": ["world-raids.csv"]
                       }
        }
+participants = { "regular": { "small": 10, "medium": 50, "large": 100, "immense": 250 },
+                 "guild": { "small": 5, "medium": 10, "large": 20, "immense": 30 }, # Value for immense guild raids is an assumption until one is released
+                 "world": { "world": 10000 }
+                }
 default_dict = defaultdict(list)
 
-with open(base_file, 'r') as f:
-    reader = csv.DictReader(f, delimiter=',')
-    for line in reader:
-        raid_name = line.pop('Raid name')
-        default_dict[raid_name]=line.copy()
+for m in paths:
+    for p in paths[m]["files"]:
+        with open(base_path+p, 'r') as f:
+            reader = csv.DictReader(f, delimiter=',')
+            for line in reader:
+                raid_name = line.pop('Raid name')
+                if raid_name not in default_dict:
+                    default_dict[raid_name]=defaultdict(list)
+                default_dict[raid_name][m]=line.copy()
 
 raid_list = {raid[0]:{v1:v2 for v1,v2 in raid[1].items()} for raid in default_dict.items()}
 
