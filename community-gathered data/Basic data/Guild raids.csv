@@ -1,6 +1,6 @@
-Raid name,Raid size,Health on easy,Summoner loot?,Hidden loot?,On-hit drops?,Loot expansion?
-Basiliscus,Medium,"3,200,000",No,Yes,No,No
-Fungal Fiend,Small,"100,000",No,No,No,No
-Nitroglycergnat,Medium,"750,000",No,No,No,No
-Rogue Slime,Small,"750,000",No,No,No,No
-Tunnanu,Large,"4,600,000",No,No,No,Yes
+Raid name,Raid size,Health on easy,Has summoner loot?,Has hidden loot?,Has on-hit drops?,Has bonus tiers?,Has loot expansion?
+Basiliscus,Medium,"3,200,000",No,Yes,,No,No
+Fungal Fiend,Small,"100,000",No,No,,No,No
+Nitroglycergnat,Medium,"750,000",No,No,,No,No
+Rogue Slime,Small,"750,000",No,No,,No,No
+Tunnanu,Large,"4,600,000",No,No,,No,Yes
