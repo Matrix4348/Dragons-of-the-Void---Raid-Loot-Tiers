@@ -1,4 +1,4 @@
-Raid name,Raid size,Health on easy,Has summoner loot?,Has hidden loot?,Has on-hit drops?,Has bonus tiers?,Has loot expansion?
+Raid name,Raid size,Health on easy,Summoner loot?,Hidden loot?,Bonus tiers?,On-hit drops?,Loot expansion?
 Basiliscus,Medium,"3,200,000",No,Yes,,No,No
 Fungal Fiend,Small,"100,000",No,No,,No,No
 Nitroglycergnat,Medium,"750,000",No,No,,No,No

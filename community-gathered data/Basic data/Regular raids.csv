@@ -1,4 +1,4 @@
-Raid name,Raid size,Health on easy,Has summoner loot?,Has hidden loot?,Has bonus tiers?,Has on-hit drops?,Has loot expansion?
+Raid name,Raid size,Health on easy,Summoner loot?,Hidden loot?,Bonus tiers?,On-hit drops?,Loot expansion?
 Corrupted Golem,Medium,"12,000,000",Yes,No,,No,No
 Elven Rangers,Small,"1,000,000",No,No,,Yes,No
 Galeohog,Large,"22,000,000",No,Yes,,Yes,Yes

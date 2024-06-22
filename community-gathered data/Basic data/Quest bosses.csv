@@ -1,13 +1,13 @@
-Raid name,Health on easy,Health on hard,Health on legendary,Has loot expansion?
-Corrupted Golem,"18,000",?,?,No
-Elven Rangers,"10,000",?,?,No
-Galeohog,"18,000",?,?,No
-Greater Ent,"15,000",?,?,No
-Jagar the Red,"25,000",?,?,No
-Lesser Tree Ent,"5,000",?,?,No
-Minor Watcher,"3,000",?,?,No
-Naga Karamati,"20,000",?,?,No
-Naga Risaldar,"12,000",?,?,No
-Sand Wyrm,"12,000",?,?,No
-Spiderling,"6,000",?,?,No
-Superior Watcher,"10,000",?,?,No
+Raid name,Health on easy,Health on hard,Health on legendary,Hidden loot?,Bonus tiers?,Loot expansion?
+Corrupted Golem,"18,000",?,?,No,No,No
+Elven Rangers,"10,000",?,?,No,No,No
+Galeohog,"18,000",?,?,No,No,No
+Greater Ent,"15,000",?,?,No,No,No
+Jagar the Red,"25,000",?,?,No,No,No
+Lesser Tree Ent,"5,000",?,?,No,No,No
+Minor Watcher,"3,000",?,?,No,No,No
+Naga Karamati,"20,000",?,?,No,No,No
+Naga Risaldar,"12,000",?,?,No,No,No
+Sand Wyrm,"12,000",?,?,No,No,No
+Spiderling,"6,000",?,?,No,No,No
+Superior Watcher,"10,000",?,?,No,No,No
