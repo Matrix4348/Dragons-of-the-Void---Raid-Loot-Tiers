@@ -1,11 +1,11 @@
-Raid name,Raid size,Health on easy,Summoner loot?,Hidden loot?,Bonus tiers?,On-hit drops?,Loot expansion?
-Corrupted Golem,Medium,"12,000,000",Yes,No,,No,No
-Elven Rangers,Small,"1,000,000",No,No,,Yes,No
-Galeohog,Large,"22,000,000",No,Yes,,Yes,Yes
-Greater Ent,Medium,"8,000,000",No,No,,Yes,No
-Jagar the Red,Immense,"80,000,000",No,No,,Yes,Yes
-Lesser Tree Ent,Small,"200,000",No,No,,No,No
-Naga Karamati,Large,"24,000,000",No,No,,Yes,Yes
-Naga Risaldar,Large,"15,000,000",No,No,,No,Yes
-Sand Wyrm,Small,"2,500,000",No,Yes,,No,No
-Superior Watcher,Medium,"4,000,000",No,No,,No,No
+Raid name,Raid size,Health on easy,Summoner loot?,On-hit drops?,Loot expansion?
+Corrupted Golem,Medium,"12,000,000",,No,No
+Elven Rangers,Small,"1,000,000",,Yes,No
+Galeohog,Large,"22,000,000",,Yes,Yes
+Greater Ent,Medium,"8,000,000",,Yes,No
+Jagar the Red,Immense,"80,000,000",,Yes,Yes
+Lesser Tree Ent,Small,"200,000",,No,No
+Naga Karamati,Large,"24,000,000",,Yes,Yes
+Naga Risaldar,Large,"15,000,000",,No,Yes
+Sand Wyrm,Small,"2,500,000",,No,No
+Superior Watcher,Medium,"4,000,000",,No,No
