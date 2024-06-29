@@ -30,6 +30,7 @@ def return_difficuties(d): # Returns each difficulty which first letter is in d.
 base_path = "./main/community-gathered data/Basic data/"
 damage_path = "./main/community-gathered data/Base damage taken/"
 loot_path = "./main/community-gathered data/Loot tiers and drop data/"
+on_hit_path = "./main/community-gathered data/On-hit drops/"
 output_file = "./main/community-gathered data/raid_list.json"
 
 paths = {
@@ -163,25 +164,27 @@ for m in paths:
         except:
             pass
 
+
 ### Raid tiers, drops, loot tables
 for r in raid_list:
     for M in raid_list[r]:
+        all_d = raid_list[r][M]["Available difficulties"]
+        raid_list[r][M]["Health"]={a:"" for a in all_d}
+        raid_list[r][M]["FS"]={a:0 for a in all_d}
+        raid_list[r][M]["Loot tables"]={}
+        raid_list[r][M]["Tiers"]={}
+        raid_list[r][M]["Tiers as string"]={}
+        raid_list[r][M]["Drops"]={}
+        raid_list[r][M]["Extra drops"]={}
+        raid_list[r][M]["Extra drops"]["On-hit drops"]={a:"no" for a in all_d}
+        raid_list[r][M]["Extra drops"]["Loot expansion"]={a:"no" for a in all_d}
         if raid_list[r][M]["Loot format"]=="EHL":
-            all_d = raid_list[r][M]["Available difficulties"]
-            raid_list[r][M]["Health"]={a:"" for a in all_d}
-            raid_list[r][M]["FS"]={a:0 for a in all_d}
-            raid_list[r][M]["Tiers"]={}
-            raid_list[r][M]["Tiers as string"]={}
-            raid_list[r][M]["Drops"]={}
             raid_list[r][M]["Drops"]["Common"]={a:[] for a in all_d}
             raid_list[r][M]["Drops"]["Rare"]={a:[] for a in all_d}
             raid_list[r][M]["Drops"]["Mythic"]={a:[] for a in all_d}
             for b in bonus_drops_tier_based:
                 raid_list[r][M]["Drops"][extra_drops[b]]={a:[] for a in all_d}
             raid_list[r][M]["Drops"]["as string"]={a:[] for a in all_d}
-            raid_list[r][M]["Extra drops"]={}
-            raid_list[r][M]["Extra drops"]["On-hit drops"]={a:False for a in all_d}
-            raid_list[r][M]["Extra drops"]["Loot expansion"]={a:False for a in all_d}
             # Health, FS:
             if M=="raiding":
                 diff_health_mult={"Easy":1,"Hard":3,"Legendary":9}
@@ -247,7 +250,6 @@ for r in raid_list:
                             else:
                                 raid_list[r][M]["Drops"][x][d].append("0")
                 # In hope that this will remain the same for every difficulties:
-                raid_list[r][M]["Extra drops"]["On-hit drops"][d]=raid_list[r][M]["Has extra drops"]["On-hit drops"]
                 raid_list[r][M]["Extra drops"]["Loot expansion"][d]=raid_list[r][M]["Has extra drops"]["Loot expansion"]
                 # Tiers, as a single character string:
                 is_bonus=[]
@@ -301,17 +303,41 @@ for r in raid_list:
             except:
                 f=open(loot_path+paths_to_files[raid_list[r][M]["Raid type"]]+"/"+"_Example_/Loot tables.csv", 'r')
             finally:
-                headers=csv.DictReader(f,delimiter=",").fieldnames
-                t=""
-                try:
-                    last_line=list(csv.reader(f,delimiter=","))[-1]
-                    t+="https://matrix4348.github.io/loot-tables/"
-                except:
-                    last_line=["<i>No loot table URL found.</i>","Today"]
-                finally:
-                    raid_list[r][M]["Loot table"]=t+last_line[headers.index("File name")]
+                for d in all_d:
+                    headers=csv.DictReader(f,delimiter=",").fieldnames
+                    t=""
+                    try:
+                        last_line=list(csv.reader(f,delimiter=","))[-1]
+                        t+="https://matrix4348.github.io/loot-tables/"
+                    except:
+                        last_line=["<i>No loot table URL found.</i>","Today"]
+                    finally:
+                        raid_list[r][M]["Loot tables"][d]=t+last_line[headers.index("File name")]
                 f.close()
 
 
+### On-hit drops
+# raid_list[raid_name][mode]["Has extra drops"]["On-hit drops"] will contain weither or not any difficulty has on-hit drops, even if it does not have on-hit drops on all of them
+for m in paths:
+    for p0 in paths[m]:
+        p=p0+".csv"
+        try:
+            f=open(on_hit_path+p, 'r')
+            reader = csv.DictReader(f, delimiter=',')
+            for line in reader:
+                raid_name = line.pop('Raid name')
+                if raid_name in raid_list and m in raid_list[raid_name]:
+                    drop_list={v1:v2 for v1,v2 in line.items()}
+                    raid_list[raid_name][m]["Extra drops"]["On-hit drops"]=drop_list.copy()
+                for d in raid_list[raid_name][m]["Extra drops"]["On-hit drops"]:
+                    if raid_list[raid_name][m]["Extra drops"]["On-hit drops"][d].lower() in ["","no","false","0","none"]:
+                        raid_list[raid_name][m]["Extra drops"]["On-hit drops"][d]="no"
+                    else:
+                        raid_list[raid_name][m]["Has extra drops"]["On-hit drops"]=True
+        except:
+            pass
+
+
+### File creation
 with open(output_file, 'w') as f:
     json.dump(raid_list, f)
