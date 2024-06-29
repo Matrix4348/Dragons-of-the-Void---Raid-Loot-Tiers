@@ -212,8 +212,8 @@ for r in raid_list:
                     reader = csv.DictReader(f, delimiter=',')
                     for line in reader:
                         raid_list[r][M]["Tiers"][d].append(line.pop('Damage'))
-                        if raid_list[r][M]["Tiers"][d]=="Health": # For questing, _Example_ will contain the general drop pattern
-                            raid_list[r][M]["Tiers"][d]=itc(raid_list[r][M]["Health"][d])
+                        if raid_list[r][M]["Tiers"][d][0]=="Health": # For questing, _Example_ will contain the general drop pattern
+                            raid_list[r][M]["Tiers"][d][0]=itc(raid_list[r][M]["Health"][d])
                         raid_list[r][M]["Drops"]["Common"][d].append(line.pop('Common'))
                         raid_list[r][M]["Drops"]["Rare"][d].append(line.pop('Rare'))
                         raid_list[r][M]["Drops"]["Mythic"][d].append(line.pop('Mythic'))
@@ -254,10 +254,10 @@ for r in raid_list:
                 # Tiers, as a single character string:
                 is_bonus=[]
                 for k in range(l):
-                    if raid_list[r][M]["Tiers"][d][k].lower() in ["","0","no","false"]:
+                    if raid_list[r][M]["Drops"]["Bonus"][d][k].lower() in ["","0","no","false"]:
                         is_bonus.append("")
                     else:
-                        is_bonus.append("["+raid_list[r][M]["Drops"]["Bonus"][d][0]+"] ")
+                        is_bonus.append("["+raid_list[r][M]["Drops"]["Bonus"][d][k]+"] ")
                 if M=="raiding":
                     raid_list[r][M]["Tiers as string"][d]=""
                     if raid_list[r][M]["Tiers"][d][0]=="?" and raid_list[r][M]["FS"][d] not in raid_list[r][M]["Tiers"][d]:
