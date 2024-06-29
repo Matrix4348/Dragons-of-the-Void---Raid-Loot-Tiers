@@ -11,6 +11,7 @@ All the relevant files are in the csv format and located in the "community-gathe
 * "Basic data" folder
 * "Base damage taken" folder
 * "Loot tiers and drop data" folder
+* "On-hit drops" folder
 
 It is absolutely not necessary to update everything at once. Usually, the loot tiers will come a lot later than the rest. Once the files have been modified, raid_list.json will automatically be updated and be made available to the users of my script within a minute or two.
 
@@ -63,10 +64,18 @@ There are two cases that you will encounter:<br>
 File Name,Date of first use
 John_Rabbit_1.png,"April 1st, 2025"
 ```
-<br>
 
-* Else, you will find files named after each difficulty the raid is available in: Easy.csv, Hard.csv, Legendary.csv.<br>You should input a question mark in drop rarity cells (common, rare...) if you ignore the answer.<br>In the extra drops ones (remove these columns if not needed), input the skill level(s) (like "DV7,DV9") if known.<br>In the "Bonus" column, input nothing if the tier is not a bonus one, and the needed skill level if it is a bonus tier.<br>No need to bother with these files if you do not know any tier.
+* Else, you will find files named after each difficulty the raid is available in: Easy.csv, Hard.csv, Legendary.csv.<br>
+You should input a question mark in drop rarity cells (common, rare...) if you ignore the answer.<br>
+In the extra drops ones (remove these columns if not needed), input the skill level(s) like studious inspector does (for example, "DV3,DV7") if known, 0 or leave empty if nothing drops, and input a question mark if you do not know.<br>
+In the "Bonus" column, input nothing if the tier is not a bonus one, and the needed skill level if it is a bonus tier.<br>No need to bother with these files if you do not know any tier.<br>
+**Quest bosses and minibosses are special**: generally they follow the patterns found in the associated `_Example_` folders so only create files for the exceptions.
 
 **If the folder does not exist**, then:
 * you will find templates for each file in the `_Example_` folder; some columns being optionnal
 * to create a folder on GitHub, you must create a file by adding both names in the file name: if you want to create new_folder containing new_file in existing_folder, then when you name your file type "new_folder/new_file" instead of just "new_file"
+
+## "On-hit drops" folder
+
+These files contain keen eye levels required for each raid on each difficulty. Input them like studious inspector does ("KE3,KE7", for example) if something drops, leave empty or add 0 if nothing drops. Only add raids that have at least one on-hit drop in one difficulty.<br>
+If a raid does not exist on every difficulties while there is a column for another difficulty, then leave the cells for the missing difficulties empty.
