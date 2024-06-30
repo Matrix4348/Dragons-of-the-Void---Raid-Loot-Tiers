@@ -354,11 +354,11 @@ for m in paths:
 
 ### Notes
 for name in raid_list:
-    for mode in name:
-        name[mode]["notes"]={}
-        type=name[mode]["Raid type"]
-        for difficulty in name[mode]["Available difficulties"]:
-            name[mode]["notes"][difficulty]=[]
+    for mode in raid_list[name]:
+        raid_list[name][mode]["notes"]={}
+        type=raid_list[name][mode]["Raid type"]
+        for difficulty in raid_list[name][mode]["Available difficulties"]:
+            raid_list[name][mode]["notes"][difficulty]=[]
             with open(notes_file, 'r') as f:
                 reader = csv.DictReader(f, delimiter=',')
                 for line in reader:
@@ -366,7 +366,7 @@ for name in raid_list:
                     note=line.pop("Note")
                     try:
                         if eval(condition):
-                            name[mode]["notes"][difficulty].append(note)
+                            raid_list[name][mode]["notes"][difficulty].append(note)
                     except:
                         pass
 
