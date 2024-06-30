@@ -31,6 +31,7 @@ base_path = "./main/community-gathered data/Basic data/"
 damage_path = "./main/community-gathered data/Base damage taken/"
 loot_path = "./main/community-gathered data/Loot tiers and drop data/"
 on_hit_path = "./main/community-gathered data/On-hit drops/"
+notes_file = "./main/community-gathered data/Notes.csv"
 output_file = "./main/community-gathered data/raid_list.json"
 
 paths = {
@@ -78,8 +79,19 @@ default_difficulties = {
 participants = {
     "": { "Small": 10, "Medium": 50, "Large": 100, "Immense": 250 },
     "Guild raid": { "Small": 5, "Medium": 10, "Large": 20, "Immense": 30 }, # Value for immense guild raids is an assumption until one is released
+    "Quest boss": { "Quest": 1 },
+    "Quest miniboss": {"Quest": 1},
     "Special raid": { "World": 2000 },
     "World raid": { "World": 10000 }
+}
+
+default_sizes = {
+    "": "Small",
+    "Guild raid": "Small",
+    "Quest boss": "Quest",
+    "Quest miniboss": "Quest",
+    "Special raid": "World",
+    "World raid": "World"
 }
 
 bonus_drops_tier_based = ["Summoner loot?","Hidden loot?","Bonus tiers?"]
@@ -108,6 +120,8 @@ for m in paths:
                 default_dict[raid_name][m]=line.copy()
                 if "Raid type" not in default_dict[raid_name][m]:
                     default_dict[raid_name][m]["Raid type"]=types[p]
+                if "Raid size" not in default_dict[raid_name][m]:
+                    default_dict[raid_name][m]["Raid size"]=default_sizes[default_dict[raid_name][m]["Raid type"]]
                 if "Maximum number of participants" not in default_dict[raid_name][m]:
                     if "Raid size" in default_dict[raid_name][m]:
                         default_dict[raid_name][m]["Maximum number of participants"]=participants[default_dict[raid_name][m]["Raid type"]][default_dict[raid_name][m]["Raid size"]]
@@ -337,6 +351,24 @@ for m in paths:
         except:
             pass
 
+
+### Notes
+for name in raid_list:
+    for mode in name:
+        name[mode]["notes"]={}
+        type=name[mode]["Raid type"]
+        for difficulty in name[mode]["Available difficulties"]:
+            name[mode]["notes"][difficulty]=[]
+            with open(notes_file, 'r') as f:
+                reader = csv.DictReader(f, delimiter=',')
+                for line in reader:
+                    condition=line.pop("Condition (Python)")
+                    note=line.pop("Note")
+                    try:
+                        if eval(condition):
+                            name[mode]["notes"][difficulty].append(note)
+                    except:
+                        pass
 
 ### File creation
 with open(output_file, 'w') as f:

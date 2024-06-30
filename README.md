@@ -79,3 +79,7 @@ In the "Bonus" column, input nothing if the tier is not a bonus one, and the nee
 
 These files contain keen eye levels required for each raid on each difficulty. Input them like studious inspector does ("KE3,KE7", for example) if something drops, leave empty or add 0 if nothing drops. Only add raids that have at least one on-hit drop in one difficulty.<br>
 If a raid does not exist on every difficulties while there is a column for another difficulty, then leave the cells for the missing difficulties empty.
+
+## Notes.csv
+
+Notes.csv contains messages to display above loot tables and giving additional information, for example if there is a guaranteed drop. In the first column, input a condition in Python that raids must verify for a message to appear.
