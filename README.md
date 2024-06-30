@@ -67,7 +67,7 @@ John_Rabbit_1.png,"April 1st, 2025"
 
 * Else, you will find files named after each difficulty the raid is available in: Easy.csv, Hard.csv, Legendary.csv.<br>
 You should input a question mark in drop rarity cells (common, rare...) if you ignore the answer.<br>
-In the extra drops ones (remove these columns if not needed), input the skill level(s) like studious inspector does (for example, "DV3,DV7") if known, 0 or leave empty if nothing drops, and input a question mark if you do not know.<br>
+In the extra drops ones (remove these columns if not needed), input the skill level(s) like studious inspector does (for example, "DV3,DV7") if known, 0 or leave empty if nothing drops, and input a question mark if you do not know. If you do not know which tiers benefit from the skills, you can add the skills to the maximum tier only.<br>
 In the "Bonus" column, input nothing if the tier is not a bonus one, and the needed skill level if it is a bonus tier.<br>No need to bother with these files if you do not know any tier.<br>
 **Quest bosses and minibosses are special**: generally they follow the patterns found in the associated `_Example_` folders so only create files for the exceptions.
 
