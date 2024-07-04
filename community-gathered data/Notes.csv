@@ -1,4 +1,4 @@
 Condition (Python),Note
 type == 'Guild raid' and difficulty == 'Hard',Hard guild raids always drop an additional void token.
 type == 'Guild raid' and difficulty == 'Legendary',Legendary guild raids always drop an additional void token.
-name == 'Secutor', Always drops 1 Thiadoran Fig.
+type == 'Special raids' and name == 'Secutor', Always drops 1 Thiadoran Fig.
