@@ -357,6 +357,8 @@ for name in raid_list:
     for mode in raid_list[name]:
         raid_list[name][mode]["notes"]={}
         type=raid_list[name][mode]["Raid type"]
+        size=raid_list[name][mode]["Raid size"]
+        loot_format=raid_list[name][mode]["Loot format"]
         for difficulty in raid_list[name][mode]["Available difficulties"]:
             raid_list[name][mode]["notes"][difficulty]=[]
             with open(notes_file, 'r') as f:
