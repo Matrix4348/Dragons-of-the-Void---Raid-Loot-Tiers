@@ -37,7 +37,7 @@ output_file = "./main/community-gathered data/raid_list.json"
 paths = {
     "raiding": ["Regular raids","Guild raids"],
     "questing": ["Quest bosses", "Quest minibosses"],
-    "healthless": ["Special raids","World raids"],
+    "healthless": ["Special raids","World raids","Event raids"],
 }
 
 paths_to_files = {
@@ -46,6 +46,7 @@ paths_to_files = {
     "Quest boss": "Quest bosses",
     "Quest miniboss": "Quest minibosses",
     "Special raid": "Special raids",
+    "Event raid": "Event raids",
     "World raid": "World raids"
 }
 
@@ -55,6 +56,7 @@ types = {
     "Quest bosses.csv": "Quest boss",
     "Quest minibosses.csv": "Quest miniboss",
     "Special raids.csv": "Special raid",
+    "Event raids.csv": "Event raid",
     "World raids.csv": "World raid"
 }
 
@@ -64,6 +66,7 @@ loot_formats = {
     "Quest boss": "EHL",
     "Quest miniboss": "EHL",
     "Special raid": "EHL",
+    "Event raid": "Image",
     "World raid": "Image"
 }
 
@@ -73,6 +76,7 @@ default_difficulties = {
     "Quest boss": "EHL",
     "Quest miniboss": "EHL",
     "Special raid":"E",
+    "Event raid":"L",
     "World raid": "L"
 }
 
@@ -82,6 +86,7 @@ participants = {
     "Quest boss": { "Quest": 1 },
     "Quest miniboss": {"Quest": 1},
     "Special raid": { "World": 2000 },
+    "Event raid": {"World": 10000 },
     "World raid": { "World": 10000 }
 }
 
@@ -91,6 +96,7 @@ default_sizes = {
     "Quest boss": "Quest",
     "Quest miniboss": "Quest",
     "Special raid": "World",
+    "Event raid": "World",
     "World raid": "World"
 }
 
