@@ -76,7 +76,7 @@ default_difficulties = {
     "Quest boss": "EHL",
     "Quest miniboss": "EHL",
     "Special raid":"E",
-    "Event raid":"H",
+    "Event raid":"L",
     "World raid": "L"
 }
 
@@ -86,7 +86,7 @@ participants = {
     "Quest boss": { "Quest": 1 },
     "Quest miniboss": {"Quest": 1},
     "Special raid": { "World": 2000 },
-    "Event raid": {"World": 5000 },
+    "Event raid": {"World": 10000 },
     "World raid": { "World": 10000 }
 }
 
