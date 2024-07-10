@@ -12,7 +12,7 @@ for root, dirs, files in os.walk(path1):
         p=path1+dir+"/"
         for R,D,F in os.walk(p):
             for DD in D:
-                path=path1+DD+"/"
+                path=p+DD+"/"
                 for r, d, f in os.walk(path):
                     for name in f:
                         if name.endswith((".png", ".jpg", ".jpeg", ".webp")):
