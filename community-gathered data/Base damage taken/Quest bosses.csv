@@ -1,11 +1,11 @@
 Raid name,Type,Easy,Hard,Legendary
-Corrupted Golem,Physical,40,60,210
+Corrupted Golem,Physical,20,30,105
 Elven Rangers,Physical,15,40,190
 Galeohog,Poison,30,60,220
 Greater Ent,Nature,25,50,200
 Jagar the Red,Fire,50,70,240
-Lesser Tree Ent,Nature,10,30,120
+Lesser Tree Ent,Nature,6,30,120
 Naga Karamati,Lightning,40,65,220
-Naga Risaldar,Poison,20,50,220
+Naga Risaldar,Poison,12,50,220
 Sand Wyrm,Physical,25,50,200
-Superior Watcher,Magic,15,40,190
+Superior Watcher,Magic,8,40,190
