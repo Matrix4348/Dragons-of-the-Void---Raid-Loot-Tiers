@@ -9,7 +9,6 @@
 // @grant        GM_info
 // @grant        GM_getValue
 // @grant        GM_setValue
-// @downloadURL none
 // ==/UserScript==
 
 // Global variables.

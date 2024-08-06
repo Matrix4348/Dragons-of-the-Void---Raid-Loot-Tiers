@@ -9,7 +9,6 @@
 // @grant        GM_info
 // @grant        GM_getValue
 // @grant        GM_setValue
-// @downloadURL none
 // ==/UserScript==
 
 // Global variables. Raid tiers are taken from: https://docs.google.com/spreadsheets/d/1wSilYulbp3M3f2eHHhPmDlM5AiCHFQPbNvYJU2jWYZE/edit#gid=581592972

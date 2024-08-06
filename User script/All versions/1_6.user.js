@@ -11,7 +11,6 @@
 // @grant        GM_setValue
 // @grant        GM.getValue
 // @grant        GM.setValue
-// @downloadURL none
 // ==/UserScript==
 
 // Global variables.
