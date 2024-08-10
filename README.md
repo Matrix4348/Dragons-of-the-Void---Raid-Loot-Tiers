@@ -94,5 +94,8 @@ Also, note that in csv files, GitHub does not like double quotation marks for an
 
 ## II) Contributing to the user script code
 
-The script is located in the "user script" folder, alongside archives of the previous version. Whenever latest.user.js gets updated, both the "All versions" folder and the Greasyfork copy are automatically updated, so you do not have to worry about those.<br>
-There is not much to say, despite maybe to remember to increment the version number when making a new version...
+The script is located in the "user script" folder, alongside archives of the previous version. Whenever latest.user.js gets updated, both the "All versions" folder and the Greasyfork copy are automatically updated, so you do not have to worry about those.
+
+**Important:** Changelogs on Greasyfork are created based on commits' messages here, so if you make script updates, only (and always) write user script-related changes in the commit messages or the pull request message.<br>
+
+There is not much else to say, despite maybe to remember to increment the version number when making a new version...
