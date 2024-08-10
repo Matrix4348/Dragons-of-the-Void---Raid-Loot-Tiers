@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      4.5.1
+// @version      5.0
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -84,6 +84,7 @@ var automatically_show_in_raid_div_default=1, show_detailed_div_default=true, sh
 var current_tab_default="About";
 var difficulties_to_display, automatically_show_in_raid_div, current_tab, show_detailed_div, show_advanced_view;
 var custom_colours={"Easy":"rgb(0,255,0)","Hard":"rgb(255,165,0)","Legendary":"rgb(238,130,238)","Main":"rgb(153,255,170)","Buttons":"rgb(153,187,255)"};
+var player_stats={};
 var colourless_mode_default=0, colourless_mode, rounded_corners_default=1, rounded_corners, current_difficulty;
 
 // Workaround to an unexpected compatibility issue with some GM_* functions in Greasemonkey 4.
@@ -403,6 +404,18 @@ async function initialize_saved_variables(){ // Note: Just in case, global varia
     automatically_show_in_raid_div=await GM_getValue("automatically_show_in_raid_div_stored",automatically_show_in_raid_div_default);
     show_detailed_div=await GM_getValue("show_detailed_div_stored",show_detailed_div_default);
     show_advanced_view=await GM_getValue("show_advanced_view_stored",show_advanced_view_default);
+    player_stats.defense=await GM_getValue("defense_stored",0);
+    player_stats.Physical=0;
+    player_stats.Magic=await GM_getValue("Magic_stored",0);
+    player_stats.Psychic=await GM_getValue("Psychic_stored",0);
+    player_stats.Ice=await GM_getValue("Ice_stored",0);
+    player_stats.Fire=await GM_getValue("Fire_stored",0);
+    player_stats.Poison=await GM_getValue("Poison_stored",0);
+    player_stats.Acid=await GM_getValue("Acid_stored",0);
+    player_stats.Nature=await GM_getValue("Nature_stored",0);
+    player_stats.Lightning=await GM_getValue("Lightning_stored",0);
+    player_stats.Holy=await GM_getValue("Holy_stored",0);
+    player_stats.Dark=await GM_getValue("Dark_stored",0);
     colourless_mode=await GM_getValue("colourless_mode_stored",colourless_mode_default);
     rounded_corners=await GM_getValue("rounded_corners_stored",rounded_corners_default);
 }
@@ -759,6 +772,7 @@ async function createTab(name){
     else if(name=="All"){ createTable("All raids",["raiding","healthless"],"All","All"); }
     else if(name=="Damage taken (raids)"){ createDamageTakenTable(["raiding","healthless"]); }
     else if(name=="Damage taken (quests)"){ createDamageTakenTable("questing"); }
+    else if(name=="Your stats"){ createStatsTab(); }
     current_tab=name;
     await GM_setValue("current_tab_stored",current_tab);
 }
@@ -794,6 +808,7 @@ function create_tab_buttons_div(){
     // Other buttons
     createTabButton(t3,"Damage taken (raids)");
     createTabButton(t3,"Damage taken (quests)");
+    createTabButton(t3,"Your stats");
     createTabButton(t3,"About");
 }
 
@@ -1035,7 +1050,41 @@ function THE_WATCHER(){
     observer.observe(targetNode, config);
 }
 
-function damage_taken(base,element){ return "?"; }
+function damage_taken(base,element){
+    // damage taken = (base raid damage)*(1-(damage reduction)/100)*(1-resistance/100) "rounded up"
+    // function damage_taken(b,def,r){ var dr=0.075*Math.log(1+def); return Math.ceil(b*(1-dr)*(1-r/100)); } // /!\ !!!sEEMs CORRECT!!! /!\
+    // function damage_list(){return{"rogue slime":damage_taken(10,2011,0),"naga risaldar":damage_taken(15,2011,0),"greater ent":damage_taken(16,2011,0),"galeohog":damage_taken(25,2011,0),"legendary lesser tree ent":damage_taken(120,2011,0)}}
+    // var player_stats={};player_stats.defense=2011;player_stats.Physical=0;player_stats.Magic=1.5;player_stats.Psychic=1.5;player_stats.Ice=0.25;player_stats.Fire=10.25;player_stats.Poison=0;player_stats.Acid=0;player_stats.Nature=0;player_stats.Lightning=0;player_stats.Holy=0;player_stats.Dark=0;
+    // function damage_list(){return{"rogue slime":damage_taken(10,"Physical"),"naga risaldar":damage_taken(15,"Poison"),"greater ent":damage_taken(16,"Nature"),"galeohog":damage_taken(25,"Poison"),"legendary lesser tree ent":damage_taken(120,"Nature"),"legendary sand wyrm":damage_taken(200,"Physical"),"hard superior watcher":damage_taken(32,"Magic"),"legendary superior watcher":damage_taken(180,"Magic"),"Jagar the Red":damage_taken(35,"Fire"),"Legendary Jagar the Red":damage_taken(260,"Fire")}}
+    /*
+    player_stats.defense=1;  console.log("1 : "+damage_taken(260,"Fire")+" (normalement: 260)");
+    player_stats.defense=5;  console.log("5 : "+damage_taken(260,"Fire")+" (normalement: 218)");
+    player_stats.defense=25; console.log("25 : "+damage_taken(260,"Fire")+" (normalement: 182)");
+    player_stats.defense=37; console.log("37 : "+damage_taken(260,"Fire")+" (normalement: 175)");
+    player_stats.defense=50; console.log("50 : "+damage_taken(260,"Fire")+" (normalement: 169)");
+    player_stats.defense=98; console.log("98 : "+damage_taken(260,"Fire")+" (normalement: 157)");
+    player_stats.defense=244; console.log("244 : "+damage_taken(260,"Fire")+" (normalement: 142)");
+    */
+    // superior watcher hard: 12 (1809 def, 2011 def, 2477 def) but with the healing magic. 14, normally?
+    // Ou? function damage_taken(b,def,r){ var dr=2.25*Math.log(1+(Math.E-1)*def/(10000+def)); return Math.ceil(b*(1-dr)*(1-r/100)); } // A PEU PREs
+    // OU ALORs Math.log(1+(Math.E-1)*d/(2475+d)) uniuement pour dr ?
+    // OU: var dr=Math.log(1+d)/(5.73+Math.log(1+d)); ? dr=1.3*Math.log(1+d)/(7.45+1.3*Math.log(1+d)); ?
+    // INUTILE DE E COMPLIUER A CE POINT : MATH.LOG(100000000000) E$T TR$ BA$...
+    // 0.1*Math.log(1+0.5*d)+0.04; ? Un truc comme 0.8*Math.log(1+0.07*Math.log(1+d))-0.01;
+    // MIEUX : 0.2*Math.log(1+1*d**0.5)-0.066;
+
+    // Base (pour un coup à 20... à 20... zut, devrais-je le préciser?): 20*"dmgVal". Peut-on en faire uelue chose?
+    if ( base=="?" || element=="?" ){ return "?"; }
+    else{
+        var b=base*1, d=player_stats.defense*1;
+        var dr=Math.log(1+(Math.E-1)*d/(2475+d));
+        //var A,B,C; A=0.06; B=2.4; C=0.5;
+        //var dr=A*Math.log(B*d+C)-A*Math.log(C);
+        // Ou (la défense de base vaut 1): dr=A*Math.log(B*d)-A*Math.log(B)=A*Math.log(d) ???!!!
+        var r=player_stats[element]; // If resistance is worth x%, then r=x. For now?
+        return Math.ceil(b*(1-dr)*(1-r/100));
+    }
+}
 
 function createDamageTakenTable(M){
     var modes = typeof(M)=="string" ? modes=[M] : modes=M;
@@ -1073,6 +1122,43 @@ function createDamageTakenTable(M){
         }
     }
     update_counters(counters);
+}
+
+function create_input_span(div,t,stat,t_end){
+    if(!t_end){ t_end=""; }
+    var d=document.createElement("div"); d.style.width="100%"; d.style.height="25px"; d.style.marginLeft="5%";
+    var s=document.createElement("span"); s.innerHTML=t; d.appendChild(s);
+    var i=document.createElement("input");
+    i.type="text"; i.style.width="max-content"; i.style.textAlign="right"; i.value=player_stats[stat];
+    i.oninput=async function(){ player_stats[stat]=i.value; await GM_setValue(stat+"_stored",i.value); }
+    d.appendChild(i);
+    var a=document.createElement("span"); a.innerHTML=t_end; d.appendChild(a);
+    div.appendChild(d);
+}
+
+function createStatsTab(){
+    document.getElementById("DotVRLT main title div").innerHTML="Your defense and elemental resistances";
+    var d=document.getElementById("DotVRLT main table div"); d.style.fontSize="14px";
+    create_input_span(d,"Defense: ","defense");
+    create_input_span(d,"Magic resistance: ","Magic","%");
+    create_input_span(d,"Psychic resistance: ","Psychic","%");
+    create_input_span(d,"Ice resistance: ","Ice","%");
+    create_input_span(d,"Fire resistance: ","Fire","%");
+    create_input_span(d,"Poison resistance: ","Poison","%");
+    create_input_span(d,"Acid resistance: ","Acid","%");
+    create_input_span(d,"Nature resistance: ","Nature","%");
+    create_input_span(d,"Lightning resistance: ","Lightning","%");
+    create_input_span(d,"Holy resistance: ","Holy","%");
+    create_input_span(d,"Dark resistance: ","Dark","%");
+    var info=document.createElement("div");
+    info.style.marginLeft="2%"; info.style.marginRight="2%"; info.style.marginTop="2%";
+    info.innerHTML=`
+    Input your defense and elemental resistances and you will be able to know how hard raids should hit you, either in the "Damage taken" tab or in the in-raid detailed table.
+    <br>
+    <b>Note: </b>only the above stats will be taken into account, so additional sources (magics, damage-neglecting generals or weapons...) may reduce it even further, while raid abilities
+    may increase it, instead.
+    `;
+    d.appendChild(info);
 }
 
 function assign_current_difficulty(d){ current_difficulty=d; }
@@ -1160,7 +1246,7 @@ async function DotVRLT(){
     await fetch_online_raid_data();
     await initialize_saved_variables();
     create_css();
-    create_scrollbars_css()
+    create_scrollbars_css();
     create_main_button();
     create_main_div();
     create_options_div();
