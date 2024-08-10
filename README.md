@@ -1,12 +1,13 @@
 # Dragons of the Void - Raid Loot Tiers
 
-This repository is for gathering the data displayed by my [Dragons of the Void - Raid Loot Tiers](https://greasyfork.org/en/scripts/450685-dragons-of-the-void-raid-loot-tiers) user script, that I wrote for players of the game *Dragons of the Void*. To install the script itself, go to Greasyfork (even though I will probably update it using GitHub, at some point).
+This repository was created to develop my [Dragons of the Void - Raid Loot Tiers](https://greasyfork.org/en/scripts/450685-dragons-of-the-void-raid-loot-tiers) user script, that I wrote for players of the game *Dragons of the Void*. To install the script, go to Greasyfork.
 
 ## How to contribute?
 
 First, if you do not have write access, then to modify files you will need to create a fork (click the "Fork" button at the top of the page), edit the files and create a pull request. Once approved, the pull request will be merged and your changes will be applied.<br>
 If you have write access, you can either create a branch, then a pull request or update the files directly.<br>
 
+## I) Contributing to the community-gathered data
 All the relevant files are in the csv format and located in the "community-gathered data" folder (more details about each of them down below):
 * "Basic data" folder
 * "Base damage taken" folder
@@ -15,7 +16,7 @@ All the relevant files are in the csv format and located in the "community-gathe
 
 It is absolutely not necessary to update everything at once. Usually, the loot tiers will come a lot later than the rest. Once the files have been modified, raid_list.json will automatically be updated and be made available to the users of my script within a minute or two.
 
-## What are csv files?
+### 1) What are csv files?
 
 "csv" stands for "comma-separated values". A csv file is just lines of characters (anything) separated by commas and can be read as a table. GitHub may display then as tables in preview mode, so look at the "code" tab instead if you need the syntax of the file.<br>
 If the content of a cell contains a comma, then put the whole cell between quotes but, otherwise, quotes are not needed. Please, write numbers with comma separators (1,000,000 instead of 1000000 or 1 000 000).<br>
@@ -37,7 +38,7 @@ A,12,"I love cats, dogs and birds",
 |A|12|I love cats, dogs and birds||
 |B|1,300,752||1/2|
 
-##  "Basic data" folder
+### 2) "Basic data" folder
 
 These files contain basic information about raids. It is important to know that only raids added here will appear in the script.<br>
 As a general rule, leave an empty cell or a question mark if you do not know what to put (use the option that seems the most relevant; read the rest of the file if needed).<br>
@@ -47,12 +48,12 @@ About a few columns:
 * Health on X: it is the health of the raid on X difficulty (obviously...)
 * "On-hit drops?", "Loot expansion?"...: "Yes", "No" or "?"
 
-## "Base damage taken" folder
+### 3) "Base damage taken" folder
 
 These files contain damage type and damage values for each raid on each difficulty. <br>
 If a raid does not exist on every difficulties while there is a column for another difficulty, then leave the cells for the missing difficulties empty.
 
-## "Loot tiers and drop data" folder
+### 4) "Loot tiers and drop data" folder
 
 This folder contains subfolders named after various categories of raids, each one containing folders named after raids.<br>
 
@@ -75,12 +76,12 @@ In the "Bonus" column, input nothing if the tier is not a bonus one, and the nee
 * you will find templates for each file in the `_Example_` folder; some columns being optionnal
 * to create a folder on GitHub, you must create a file by adding both names in the file name: if you want to create new_folder containing new_file in existing_folder, then when you name your file type "new_folder/new_file" instead of just "new_file"
 
-## "On-hit drops" folder
+### 5) "On-hit drops" folder
 
 These files contain keen eye levels required for each raid on each difficulty. Input them like studious inspector does ("KE3,KE7", for example) if something drops, leave empty or add 0 if nothing drops. Only add raids that have at least one on-hit drop in one difficulty.<br>
 If a raid does not exist on every difficulties while there is a column for another difficulty, then leave the cells for the missing difficulties empty.
 
-## Notes.csv
+### 6) Notes.csv
 
 Notes.csv contains messages to display above loot tables and giving additional information, for example if there is a guaranteed drop.
 * In the first column, input a condition in Python that raids must verify for a message to appear.
@@ -90,3 +91,8 @@ You can use the following variable names (everything is case sensitive and none 
 Example: ```type == 'Guild raid' and difficulty == 'Hard',Hard guild raids always drop an additional void token.```
 This note applies to guild raids on hard difficulty. The words "and" and "or" can be used, alongside parenthesis, for conditions involving several criteria.
 Also, note that in csv files, GitHub does not like double quotation marks for anything other than surrounding a whole cell. Hence why I used single ones for the two character strings ('Guild raid' and 'Hard').
+
+## II) Contributing to the user script code
+
+The script is located in the "user script" folder, alongside archives of the previous version. The "All versions" folder is automatically updated, so you do not have to worry about it.<br>
+There is not much to say, despite maybe to remember to increment the version number one making a new version...
