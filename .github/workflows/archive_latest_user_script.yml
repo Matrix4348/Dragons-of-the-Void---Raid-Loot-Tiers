@@ -1,0 +1,30 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "./user script/latest.user.js"
+  workflow_dispatch:
+
+jobs:
+  archive_latest_user_script:
+    name: Archive the latest version of the user script
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository content
+        uses: actions/checkout@v4 # Checkout the repository content to github runner.
+      - name: Setup Python version
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.8 # Install the python version needed
+      - name: Install Python dependencies
+        run: python -m pip install --upgrade pip requests      
+      - name: Run the Python script
+        run: python main/.github/scripts/add_new_user_script_version_to_archives.py
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m ${{ github.event.commits.message }}
+          git push
