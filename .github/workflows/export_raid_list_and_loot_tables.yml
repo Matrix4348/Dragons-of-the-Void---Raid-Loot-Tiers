@@ -55,12 +55,12 @@ jobs:
           cd ./io/
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [ ${{ steps.changes.outputs.raid_list }} == 'true' ]; then
-            git add dragons-of-the-void/raid_list.json
-            git commit --allow-empty -m "Update raid_list.json"
-          fi
-          if [ ${{ steps.changes.outputs.images }} == 'true' ]; then
-            git add loot-tables/
-            git commit --allow-empty -m "Update loot tables"
+          git add .
+          if [ ${{ steps.changes.outputs.raid_list }} == 'true' -a ${{ steps.changes.outputs.images }} == 'true' ]; then
+            git commit -m "Update raid_list.json and loot tables"
+          elif [ ${{ steps.changes.outputs.raid_list }} == 'true' ]; then
+            git commit -m "Update raid_list.json"
+          elif [ ${{ steps.changes.outputs.images }} == 'true' ]; then
+            git commit -m "Update loot tables"
           fi
           git push
