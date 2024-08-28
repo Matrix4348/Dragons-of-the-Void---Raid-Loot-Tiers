@@ -37,6 +37,8 @@ jobs:
                 - "**.webp"
               raid_list:
                 - './"community-gathered data"/raid_list.json'
+              incoming_raid_list_update:
+                - "**.csv"
            working-directory: "./main"
       - name: Setup Python version
         uses: actions/setup-python@v5
@@ -52,15 +54,24 @@ jobs:
         run: python main/.github/scripts/add_new_images_in_main_repository_to_io_repository.py
       - name: Commit changes
         run: |
-          cd ./io/
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .
-          if [ ${{ steps.changes.outputs.raid_list }} == 'true' -a ${{ steps.changes.outputs.images }} == 'true' ]; then
-            git commit -m "Update raid_list.json and loot tables"
-          elif [ ${{ steps.changes.outputs.raid_list }} == 'true' ]; then
-            git commit -m "Update raid_list.json"
-          elif [ ${{ steps.changes.outputs.images }} == 'true' ]; then
-            git commit -m "Update loot tables"
+          if [ ${{ steps.changes.outputs.incoming_raid_list_update }} == 'true' ]; then
+            echo "raid_list.json is about to get updated, therefore everything will be exported when this happens, in order to avoid concurrent deployments."
+          else
+            cd ./io/
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            if [ ${{ steps.changes.outputs.raid_list }} == 'true' -a ${{ steps.changes.outputs.images }} == 'true' ]; then
+              git add dragons-of-the-void/raid_list.json
+              git add loot-tables/
+              git commit -m "Update raid_list.json and loot tables"
+            elif [ ${{ steps.changes.outputs.raid_list }} == 'true' ]; then
+              git add dragons-of-the-void/raid_list.json
+              git commit -m "Update raid_list.json"
+            elif [ ${{ steps.changes.outputs.images }} == 'true' ]; then
+              git add loot-tables/
+              git commit -m "Update loot tables"
+            else
+              git commit --allow-empty -m "Empty commit"
+            fi
+            git push
           fi
-          git push
