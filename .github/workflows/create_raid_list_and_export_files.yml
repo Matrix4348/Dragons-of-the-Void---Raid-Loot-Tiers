@@ -7,10 +7,53 @@ on:
       - "**.jpg"
       - "**.jpeg"
       - "**.webp"
-      - 'community-gathered data/raid_list.json'
+      - "community-gathered data/raid_list.json"
+      - "community-gathered data/**.csv"
   workflow_dispatch:
 
 jobs:
+  create_raid_list_json:
+    name: Create the raid list json
+    runs-on: ubuntu-latest
+    env:
+      COMMITTER_NAME_TEXT: '{"false":"${{ github.actor }}", "true":"github-actions[bot]"}'
+      COMMITTER_ID_TEXT: '{"false":"${{ github.actor_id }}", "true":"41898282"}'
+      TEXT: '{"false":"[${{ github.event.pusher.name }}] Update raid_list.json", "true":"[${{ github.triggering_actor }}] Update raid_list.json"}'
+    steps:
+      - name: Checkout repository content
+        uses: actions/checkout@v4 # Checkout the repository content to github runner.
+        with:
+          path: main
+      - name: Check which files were updated
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+           filters: |
+              tables:
+                - "**.csv"
+           working-directory: "./main"
+      - name: Setup Python version
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.8 # Install the python version needed
+      - name: Install Python dependencies
+        run: python -m pip install --upgrade pip requests      
+      - name: Run the Python script
+        if: steps.changes.outputs.tables == 'true'
+        run: python main/.github/scripts/create_raid_list.py
+      - name: Commit changes
+        if: steps.changes.outputs.tables == 'true'
+        run: |
+          cd ./main/
+          git config user.name "${{ env.COMMITTER_NAME }}"
+          git config user.email "${{ env.COMMITTER_ID }}+${{ env.COMMITTER_NAME }}@users.noreply.github.com"
+          git add ./"community-gathered data"/raid_list.json
+          git commit --allow-empty -m "${{ env.COMMIT_MESSAGE }}"
+          git push origin
+        env:
+          COMMITTER_NAME: ${{ fromJSON(env.COMMITTER_NAME_TEXT)[ github.ref_name == 'main' ] }}
+          COMMITTER_ID: ${{ fromJSON(env.COMMITTER_ID_TEXT)[ github.ref_name == 'main' ] }}
+          COMMIT_MESSAGE: ${{ fromJSON(env.TEXT)[ github.event.pusher.name == '' ] }}
   export_files_on_push:
     name: Export new and modified files, on push
     if: ${{ github.event_name == 'push' }}
@@ -38,7 +81,7 @@ jobs:
                 - "**.webp"
               raid_list:
                 - './"community-gathered data"/raid_list.json'
-              incoming_raid_list_update:
+              tables:
                 - "**.csv"
            working-directory: "./main"
       - name: Setup Python version
@@ -55,24 +98,20 @@ jobs:
         run: python main/.github/scripts/add_new_images_in_main_repository_to_io_repository.py
       - name: Commit changes
         run: |
-          if [ ${{ steps.changes.outputs.incoming_raid_list_update }} == 'true' ]; then
-            echo "raid_list.json is about to get updated, therefore everything will be exported when this happens, in order to avoid concurrent deployments."
+          cd ./io/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          if [ ${{ steps.changes.outputs.raid_list }} == 'true' -o ${{ steps.changes.outputs.tables }} == 'true' ] && [ ${{ steps.changes.outputs.images }} == 'true' ]; then
+            git commit -m "Update raid_list.json and loot tables"
+          elif [ ${{ steps.changes.outputs.raid_list }} == 'true' -o ${{ steps.changes.outputs.tables }} == 'true' ]; then
+            git commit -m "Update raid_list.json"
+          elif [ ${{ steps.changes.outputs.images }} == 'true' ]; then
+            git commit -m "Update loot tables"
           else
-            cd ./io/
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add .
-            if [ ${{ steps.changes.outputs.raid_list }} == 'true' -a ${{ steps.changes.outputs.images }} == 'true' ]; then
-              git commit -m "Update raid_list.json and loot tables"
-            elif [ ${{ steps.changes.outputs.raid_list }} == 'true' ]; then
-              git commit -m "Update raid_list.json"
-            elif [ ${{ steps.changes.outputs.images }} == 'true' ]; then
-              git commit -m "Update loot tables"
-            else
-              git commit --allow-empty -m "Empty commit"
-            fi
-            git push
+            git commit --allow-empty -m "Empty commit"
           fi
+          git push
   export_files_on_workflow_dispatch:
     name: Export new and modified files, on workflow_dispatch
     if: ${{ github.event_name == 'workflow_dispatch' }}
