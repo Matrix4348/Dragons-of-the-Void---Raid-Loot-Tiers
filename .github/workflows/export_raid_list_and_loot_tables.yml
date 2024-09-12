@@ -15,7 +15,7 @@ jobs:
     name: Export new and modified files
     runs-on: ubuntu-latest
     env:
-      TEXT: '{"false":${{ github.ref }}, "true":HEAD}'
+      DORNY_B: ${{ fromJSON('{"false":${{ github.ref }}, "true":HEAD}')[ github.event_name == 'workflow_dispatch' ] }}
     steps:
       - name: Checkout io repository content
         uses: actions/checkout@v4
@@ -29,7 +29,7 @@ jobs:
           path: main
       - name: Check which files were updated
         env:
-          DORNY_B: ${{ fromJSON(env.TEXT)[ github.event_name == 'workflow_dispatch' ] }}
+          DORNY_B: ${{ fromJSON('{"false":${{ github.ref }}, "true":HEAD}')[ github.event_name == 'workflow_dispatch' ] }}
         uses: dorny/paths-filter@v3
         id: changes
         with:
