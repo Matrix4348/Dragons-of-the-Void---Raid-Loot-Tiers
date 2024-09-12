@@ -88,20 +88,6 @@ jobs:
         uses: actions/checkout@v4 # Checkout the repository content to github runner.
         with:
           path: main
-      - name: Check which files were updated
-        uses: dorny/paths-filter@v3
-        id: changes
-        with:
-           base: HEAD
-           filters: |
-              images:
-                - "**.png"
-                - "**.jpg"
-                - "**.jpeg"
-                - "**.webp"
-              raid_list:
-                - './"community-gathered data"/raid_list.json'
-           working-directory: "./main"
       - name: Setup Python version
         uses: actions/setup-python@v5
         with:
@@ -109,10 +95,8 @@ jobs:
       - name: Install Python dependencies
         run: python -m pip install --upgrade pip requests
       - name: Put the raid list into the io repository
-        if: steps.changes.outputs.raid_list == 'true'
         run: python main/.github/scripts/copy_raid_list_from_main_repository_to_io_repository.py
       - name: Put the images into the io repository
-        if: steps.changes.outputs.images == 'true'
         run: python main/.github/scripts/add_new_images_in_main_repository_to_io_repository.py
       - name: Commit changes
         run: |
@@ -120,13 +104,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
-          if [ ${{ steps.changes.outputs.raid_list }} == 'true' -a ${{ steps.changes.outputs.images }} == 'true' ]; then
-            git commit -m "Update raid_list.json and loot tables"
-          elif [ ${{ steps.changes.outputs.raid_list }} == 'true' ]; then
-            git commit -m "Update raid_list.json"
-          elif [ ${{ steps.changes.outputs.images }} == 'true' ]; then
-            git commit -m "Update loot tables"
-          else
-            git commit --allow-empty -m "Empty commit"
-          fi
+          git commit --allow-empty -m "[Manual trigger] Update raid_list.json and loot tables"
           git push
