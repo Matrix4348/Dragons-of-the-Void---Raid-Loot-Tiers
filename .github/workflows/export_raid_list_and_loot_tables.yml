@@ -28,10 +28,12 @@ jobs:
         with:
           path: main
       - name: Check which files were updated
+        env:
+          DORNY_B: ${{ fromJSON(env.TEXT)[ github.event_name == 'workflow_dispatch' ] }}
         uses: dorny/paths-filter@v3
         id: changes
         with:
-           base: ${{ fromJSON(env.TEXT)[ github.event_name == 'workflow_dispatch' ] }}
+           base: ${{ env.DORNY_B }}
            filters: |
               images:
                 - "**.png"
