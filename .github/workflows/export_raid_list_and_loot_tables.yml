@@ -31,7 +31,7 @@ jobs:
         uses: dorny/paths-filter@v3
         id: changes
         with:
-           base: ${{ fromJSON(env.TEXT)[ github.event_name == "workflow_dispatch" ] }}
+           base: ${{ fromJSON(env.TEXT)[ github.event_name == 'workflow_dispatch' ] }}
            filters: |
               images:
                 - "**.png"
