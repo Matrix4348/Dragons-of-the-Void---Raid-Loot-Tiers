@@ -90,8 +90,11 @@ jobs:
           python-version: 3.8 # Install the python version needed
       - name: Install Python dependencies
         run: python -m pip install --upgrade pip requests
+      - name: Update the raid list if needed
+        if: steps.changes.outputs.tables == 'true'
+        run: python main/.github/scripts/create_raid_list.py
       - name: Put the raid list into the io repository
-        if: steps.changes.outputs.raid_list == 'true'
+        if: steps.changes.outputs.raid_list == 'true' || steps.changes.outputs.tables == 'true'
         run: python main/.github/scripts/copy_raid_list_from_main_repository_to_io_repository.py
       - name: Put the images into the io repository
         if: steps.changes.outputs.images == 'true'
