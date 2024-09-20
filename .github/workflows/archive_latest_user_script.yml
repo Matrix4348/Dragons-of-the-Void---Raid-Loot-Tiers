@@ -3,7 +3,7 @@ on:
     branches:
       - main
     paths:
-      - "./user script/latest.user.js"
+      - "user script/latest.user.js"
   workflow_dispatch:
 
 jobs:
