@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      4.5.1
+// @version      4.5.2
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -636,7 +636,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
         }
     }
     else{
-        t.innerHTML=`<tr> <td>Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> <td>common | rare | mythic | hidden | summoner</td></tr>`;
+        t.innerHTML=`<tr> <td>Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> <td>common | rare | mythic | summoner | hidden</td></tr>`;
         for(let k in raid_list){
             for(let mode of modes){
                 if(mode in raid_list[k]){
