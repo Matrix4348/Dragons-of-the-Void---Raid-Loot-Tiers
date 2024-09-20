@@ -9,7 +9,9 @@ def return_version(s):
         f=""
     finally:
         beginning=f.find("@version")
-        end=f.find("\\",beginning)
+        end=min(f.find("\\",beginning),f.find("\n",beginning))
+        # Note: files are not read/encoded the same way on GitHub than on my computer.
+        # On the former, new lines are displayed as \n while on my computer, they are displayed as \\par\n
         v=f[beginning:end].replace(" ","").replace("@version","")
     return v or "none"
 
