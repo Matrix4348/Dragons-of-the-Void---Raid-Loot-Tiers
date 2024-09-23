@@ -636,7 +636,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
         }
     }
     else{
-        t.innerHTML=`<tr> <td>Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> <td>common | rare | mythic | summoner | hidden</td></tr>`;
+        t.innerHTML=`<tr> <td>Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> <td>common | rare | mythic | summoner | hidden | bonus</td></tr>`;
         for(let k in raid_list){
             for(let mode of modes){
                 if(mode in raid_list[k]){
@@ -657,15 +657,9 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
                                         }
                                     }
                                     if(raid_list[k][mode]["Loot format"]=="EHL"){
-                                        let X=[];
-                                        for(let g=0; g<raid_list[k][mode].Tiers[j].length; g++){
-                                            if( ["","0","false","no"].includes(raid_list[k][mode].Drops.Bonus[j][g].toLowerCase()) ){ X[g]=""; }
-                                            else{ X[g]="["+raid_list[k][mode].Drops.Bonus[j][g]+"] "; }
-                                        }
                                         let tl=t.insertRow();
                                         var tiers0_text=raid_list[k][mode].Tiers[j][0];
                                         if(tiers0_text==raid_list[k][mode].FS[j]){ tiers0_text="<b>FS: "+tiers0_text+"</b>"; }
-                                        tiers0_text=X[0]+tiers0_text;
                                         if(firstdiff==1){
                                             tl.innerHTML=`<td rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td rowspan="`+raid_list[k][mode].Tiers[j].length+`">`+j+`</td> <td>`+tiers0_text+`</td> <td>`+raid_list[k][mode].Drops["as string"][j][0]+`</td>`;
                                             firstdiff=0;
