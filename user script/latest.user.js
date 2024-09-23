@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      4.5.2
+// @version      4.6
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -878,7 +878,7 @@ function create_in_raid_div(raid_name,mode,raid_difficulty){
         t.innerHTML=`<td>`+raid_list[raid_name][mode]["Tiers as string"][raid_difficulty]+`</td>`;
     }
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
-        t.innerHTML=`<td style="word-break:break-all">Latest loot table known by the script (be careful in case of a rerun): <br><i>`+raid_list[raid_name][mode]["Loot tables"][raid_difficulty]+`</i></td>`;
+        t.innerHTML=`<td style="word-break:break-all">Latest loot table known in the script: <br><i>`+raid_list[raid_name][mode]["Loot tables"][raid_difficulty]+`</i><br>You can check weither or known it is up-to-date by clicking the "loot" button above, then "expanded loot".</td>`;
     }
     td.appendChild(t);
     // In-raid settings creation.
