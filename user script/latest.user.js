@@ -871,7 +871,7 @@ function create_in_raid_div(raid_name,mode,raid_difficulty){
         t.innerHTML=`<td>`+raid_list[raid_name][mode]["Tiers as string"][raid_difficulty]+`</td>`;
     }
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
-        t.innerHTML=`<td style="word-break:break-all">Latest loot table known in the script: <br><i>`+raid_list[raid_name][mode]["Loot tables"][raid_difficulty]+`</i><br>You can check weither or known it is up-to-date by clicking the "loot" button above, then "expanded loot".</td>`;
+        t.innerHTML=`<td style="word-break:break-all">Latest loot table known by the script: <br><i>`+raid_list[raid_name][mode]["Loot tables"][raid_difficulty]+`</i><br>For guaranteed up-to-date one: click "Loot", then "Expanded Loot".</td>`;
     }
     td.appendChild(t);
     // In-raid settings creation.
