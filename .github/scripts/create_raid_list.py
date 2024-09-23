@@ -147,7 +147,7 @@ for m in paths:
                         default_dict[raid_name][m]["Has extra drops"][edb]=False
                     else:
                         c=default_dict[raid_name][m].pop(b)
-                        if c.lower() in ["false","no","0",""]:
+                        if c.lower() in ["false","no","0","","-"]:
                             default_dict[raid_name][m]["Has extra drops"][edb]=False
                         elif c.lower() in ["true","yes","1"]:
                             default_dict[raid_name][m]["Has extra drops"][edb]=True
@@ -241,7 +241,7 @@ for r in raid_list:
                             x=extra_drops[b]
                             if x in line:
                                 raid_list[r][M]["Drops"][x][d].append(line.pop(x))
-                                if raid_list[r][M]["Drops"][x][d][-1].lower() not in ["","0","no","false"]:
+                                if raid_list[r][M]["Drops"][x][d][-1].lower() not in ["","0","no","false","-"]:
                                     raid_list[r][M]["Has extra drops"][x]=True
                             elif raid_list[r][M]["Has extra drops"][x]:
                                 raid_list[r][M]["Drops"][x][d].append("?")
@@ -272,33 +272,27 @@ for r in raid_list:
                 # In hope that this will remain the same for every difficulties:
                 raid_list[r][M]["Extra drops"]["Loot expansion"][d]=raid_list[r][M]["Has extra drops"]["Loot expansion"]
                 # Tiers, as a single character string:
-                is_bonus=[]
-                for k in range(l):
-                    if raid_list[r][M]["Drops"]["Bonus"][d][k].lower() in ["","0","no","false"]:
-                        is_bonus.append("")
-                    else:
-                        is_bonus.append("["+raid_list[r][M]["Drops"]["Bonus"][d][k]+"] ")
                 if M=="raiding":
                     raid_list[r][M]["Tiers as string"][d]=""
                     if raid_list[r][M]["Tiers"][d][0]=="?" and raid_list[r][M]["FS"][d] not in raid_list[r][M]["Tiers"][d]:
-                        raid_list[r][M]["Tiers as string"][d]="<b> ??? | "+is_bonus[0]+raid_list[r][M]["FS"][d]+"=FS | ???</b>"
+                        raid_list[r][M]["Tiers as string"][d]="<b> ??? | "+raid_list[r][M]["FS"][d]+"=FS | ???</b>"
                     elif raid_list[r][M]["Tiers"][d][0]==raid_list[r][M]["FS"][d]:
-                        raid_list[r][M]["Tiers as string"][d]="<b>"+is_bonus[0]+raid_list[r][M]["Tiers"][d][0]+"=FS</b>"
+                        raid_list[r][M]["Tiers as string"][d]="<b>"+raid_list[r][M]["Tiers"][d][0]+"=FS</b>"
                     else:
-                        raid_list[r][M]["Tiers as string"][d]=is_bonus[0]+raid_list[r][M]["Tiers"][d][0]
+                        raid_list[r][M]["Tiers as string"][d]=raid_list[r][M]["Tiers"][d][0]
                     for k in range(1,l):
                         if raid_list[r][M]["Tiers"][d][k]==raid_list[r][M]["FS"][d]:
-                            raid_list[r][M]["Tiers as string"][d]+=" | <b>"+is_bonus[k]+raid_list[r][M]["Tiers"][d][k]+"=FS</b>"
+                            raid_list[r][M]["Tiers as string"][d]+=" | <b>"+raid_list[r][M]["Tiers"][d][k]+"=FS</b>"
                         else:
-                            raid_list[r][M]["Tiers as string"][d]+=" | "+is_bonus[k]+raid_list[r][M]["Tiers"][d][k]
+                            raid_list[r][M]["Tiers as string"][d]+=" | "+raid_list[r][M]["Tiers"][d][k]
                 elif M=="questing":
-                    raid_list[r][M]["Tiers as string"][d]=is_bonus[0]+raid_list[r][M]["Tiers"][d][0]
+                    raid_list[r][M]["Tiers as string"][d]=raid_list[r][M]["Tiers"][d][0]
                     for k in range(1,l):
-                        raid_list[r][M]["Tiers as string"][d]+=" | "+is_bonus[k]+raid_list[r][M]["Tiers"][d][k]
+                        raid_list[r][M]["Tiers as string"][d]+=" | "+raid_list[r][M]["Tiers"][d][k]
                 elif M=="healthless":
-                    raid_list[r][M]["Tiers as string"][d]=is_bonus[0]+raid_list[r][M]["Tiers"][d][0]
+                    raid_list[r][M]["Tiers as string"][d]=raid_list[r][M]["Tiers"][d][0]
                     for k in range(1,l):
-                        raid_list[r][M]["Tiers as string"][d]+=" | "+is_bonus[k]+raid_list[r][M]["Tiers"][d][k]
+                        raid_list[r][M]["Tiers as string"][d]+=" | "+raid_list[r][M]["Tiers"][d][k]
                 # Drops, as a list of grouped character strings:
                 for k in range(l):
                     D=[]
@@ -306,8 +300,7 @@ for r in raid_list:
                     D.append(raid_list[r][M]["Drops"]["Rare"][d][k])
                     D.append(raid_list[r][M]["Drops"]["Mythic"][d][k])
                     for b in bonus_drops_tier_based:
-                        if (b!="Bonus tiers?") or raid_list[r][M]["Has extra drops"][extra_drops[b]]:
-                            D.append(raid_list[r][M]["Drops"][extra_drops[b]][d][k])
+                        D.append(raid_list[r][M]["Drops"][extra_drops[b]][d][k])
                     droppy=D[0]
                     lD=len(D)
                     for j in range(1,lD):
@@ -350,7 +343,7 @@ for m in paths:
                     drop_list={v1:v2 for v1,v2 in line.items()}
                     raid_list[raid_name][m]["Extra drops"]["On-hit drops"]=drop_list.copy()
                 for d in raid_list[raid_name][m]["Extra drops"]["On-hit drops"]:
-                    if raid_list[raid_name][m]["Extra drops"]["On-hit drops"][d].lower() in ["","no","false","0","none"]:
+                    if raid_list[raid_name][m]["Extra drops"]["On-hit drops"][d].lower() in ["","no","false","0","none","-"]:
                         raid_list[raid_name][m]["Extra drops"]["On-hit drops"][d]="no"
                     else:
                         raid_list[raid_name][m]["Has extra drops"]["On-hit drops"]=True

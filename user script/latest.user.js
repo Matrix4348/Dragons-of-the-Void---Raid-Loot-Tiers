@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      4.5.2
+// @version      4.6
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -636,7 +636,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
         }
     }
     else{
-        t.innerHTML=`<tr> <td>Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> <td>common | rare | mythic | summoner | hidden</td></tr>`;
+        t.innerHTML=`<tr> <td>Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> <td>common | rare | mythic | summoner | hidden | bonus</td></tr>`;
         for(let k in raid_list){
             for(let mode of modes){
                 if(mode in raid_list[k]){
@@ -657,15 +657,9 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
                                         }
                                     }
                                     if(raid_list[k][mode]["Loot format"]=="EHL"){
-                                        let X=[];
-                                        for(let g=0; g<raid_list[k][mode].Tiers[j].length; g++){
-                                            if( ["","0","false","no"].includes(raid_list[k][mode].Drops.Bonus[j][g].toLowerCase()) ){ X[g]=""; }
-                                            else{ X[g]="["+raid_list[k][mode].Drops.Bonus[j][g]+"] "; }
-                                        }
                                         let tl=t.insertRow();
                                         var tiers0_text=raid_list[k][mode].Tiers[j][0];
                                         if(tiers0_text==raid_list[k][mode].FS[j]){ tiers0_text="<b>FS: "+tiers0_text+"</b>"; }
-                                        tiers0_text=X[0]+tiers0_text;
                                         if(firstdiff==1){
                                             tl.innerHTML=`<td rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td rowspan="`+raid_list[k][mode].Tiers[j].length+`">`+j+`</td> <td>`+tiers0_text+`</td> <td>`+raid_list[k][mode].Drops["as string"][j][0]+`</td>`;
                                             firstdiff=0;
@@ -677,7 +671,6 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
                                             let tlv=t.insertRow();
                                             var tiers_text=raid_list[k][mode].Tiers[j][v];
                                             if(tiers_text==raid_list[k][mode].FS[j]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
-                                            tiers_text=X[v]+tiers_text;
                                             tlv.innerHTML=`<td>`+tiers_text+`</td> <td>`+raid_list[k][mode].Drops["as string"][j][v]+`</td>`;
                                         }
 
@@ -878,7 +871,7 @@ function create_in_raid_div(raid_name,mode,raid_difficulty){
         t.innerHTML=`<td>`+raid_list[raid_name][mode]["Tiers as string"][raid_difficulty]+`</td>`;
     }
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
-        t.innerHTML=`<td style="word-break:break-all">Latest loot table known by the script (be careful in case of a rerun): <br><i>`+raid_list[raid_name][mode]["Loot tables"][raid_difficulty]+`</i></td>`;
+        t.innerHTML=`<td style="word-break:break-all">Latest loot table known by the script: <br><i>`+raid_list[raid_name][mode]["Loot tables"][raid_difficulty]+`</i><br>For guaranteed up-to-date one: click "Loot", then "Expanded Loot".</td>`;
     }
     td.appendChild(t);
     // In-raid settings creation.
@@ -901,7 +894,7 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
     detailed_div=d;
     // Table creation.
     if(raid_list[raid_name][mode]["Loot format"]=="EHL"){
-        var ncol=4+raid_list[raid_name][mode]["Has extra drops"].Hidden+raid_list[raid_name][mode]["Has extra drops"].Summoner;
+        var ncol=4+raid_list[raid_name][mode]["Has extra drops"].Hidden+raid_list[raid_name][mode]["Has extra drops"].Summoner+raid_list[raid_name][mode]["Has extra drops"].Bonus;
         var t=document.createElement("table");
         t.id="DotVRLT detailed table";
         t.classList.add("dotvrlt_table");
@@ -909,7 +902,7 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
         t.innerHTML=`<td colspan="`+ncol+`" style="font-size:18px;">`+raid_name+" ("+raid_difficulty.toLowerCase()+`)</td>`;
         d.appendChild(t);
         var l1=2+raid_list[raid_name][mode]["Has extra drops"].Hidden;
-        var l2=2+raid_list[raid_name][mode]["Has extra drops"].Summoner;
+        var l2=2+raid_list[raid_name][mode]["Has extra drops"].Summoner+raid_list[raid_name][mode]["Has extra drops"].Bonus;
         var r0=t.insertRow();
         if(raid_list[raid_name][mode]["Raid type"]!=""){ r0.innerHTML=`<td colspan="`+l1+`">`+raid_list[raid_name][mode]["Raid type"]+`</td> <td colspan="`+l2+`"> Size: `+raid_list[raid_name][mode]["Raid size"]+`</td>`; }
         else{ r0.innerHTML=`<td colspan="`+ncol+`"> Size: `+raid_list[raid_name][mode]["Raid size"]+`</td>`; }
@@ -928,20 +921,20 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
         var r3=t.insertRow(); r3.innerHTML=`<td>Common</td><td>Rare</td><td>Mythic</td>`;
         if(raid_list[raid_name][mode]["Has extra drops"].Hidden){ r3.innerHTML=r3.innerHTML+`<td>Hidden</td>`; }
         if(raid_list[raid_name][mode]["Has extra drops"].Summoner){ r3.innerHTML=r3.innerHTML+`<td>Summoner</td>`; }
+        if(raid_list[raid_name][mode]["Has extra drops"].Bonus){ r3.innerHTML=r3.innerHTML+`<td>Bonus</td>`; }
         var rnotes=t.insertRow();
         rnotes.innerHTML=`<td colspan="`+ncol+`"><i id="dotvrlt_notes_raid"></i></td>`;
         var Notes=raid_list[raid_name][mode].notes[raid_difficulty];
         rnotes.style.display = Notes.length == 0 ? "none" : "";
         add_notes(Notes,document.getElementById("dotvrlt_notes_raid"));
         for(let k=0; k<raid_list[raid_name][mode].Tiers[raid_difficulty].length; k++){
-            let x= ["","0","false","no"].includes(raid_list[raid_name][mode].Drops.Bonus[raid_difficulty][k].toLowerCase()) ? "" : "["+raid_list[raid_name][mode].Drops.Bonus[raid_difficulty][k]+"] ";
             let r4=t.insertRow();
             let tiers_text=raid_list[raid_name][mode].Tiers[raid_difficulty][k];
             if(tiers_text==raid_list[raid_name][mode].FS[raid_difficulty]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
-            tiers_text=x+tiers_text;
             r4.innerHTML=`<td>`+tiers_text+`</td><td>`+raid_list[raid_name][mode].Drops.Common[raid_difficulty][k]+`</td><td>`+raid_list[raid_name][mode].Drops.Rare[raid_difficulty][k]+`</td><td>`+raid_list[raid_name][mode].Drops.Mythic[raid_difficulty][k]+`</td>`;
             if(raid_list[raid_name][mode]["Has extra drops"].Hidden){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode].Drops.Hidden[raid_difficulty][k]+`</td>`; }
             if(raid_list[raid_name][mode]["Has extra drops"].Summoner){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode].Drops.Summoner[raid_difficulty][k]+`</td>`; }
+            if(raid_list[raid_name][mode]["Has extra drops"].Bonus){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode].Drops.Bonus[raid_difficulty][k]+`</td>`; }
         }
     }
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
