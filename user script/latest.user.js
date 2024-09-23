@@ -671,7 +671,6 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
                                             let tlv=t.insertRow();
                                             var tiers_text=raid_list[k][mode].Tiers[j][v];
                                             if(tiers_text==raid_list[k][mode].FS[j]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
-                                            tiers_text=X[v]+tiers_text;
                                             tlv.innerHTML=`<td>`+tiers_text+`</td> <td>`+raid_list[k][mode].Drops["as string"][j][v]+`</td>`;
                                         }
 
