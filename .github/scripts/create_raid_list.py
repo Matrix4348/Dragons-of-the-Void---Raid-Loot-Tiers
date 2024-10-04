@@ -231,9 +231,12 @@ for r in raid_list:
                 finally:
                     reader = csv.DictReader(f, delimiter=',')
                     for line in reader:
-                        raid_list[r][M]["Tiers"][d].append(line.pop('Damage'))
-                        if raid_list[r][M]["Tiers"][d][0]=="Health": # For questing, _Example_ will contain the general drop pattern
-                            raid_list[r][M]["Tiers"][d][0]=itc(raid_list[r][M]["Health"][d])
+                        dam=line.pop('Damage')
+                        if dam=="Health": # For questing, _Example_ will contain the general drop pattern
+                            dam=itc(raid_list[r][M]["Health"][d])
+                        elif dam=="FS":
+                            dam=itc(raid_list[r][M]["FS"][d])
+                        raid_list[r][M]["Tiers"][d].append(dam)
                         raid_list[r][M]["Drops"]["Common"][d].append(line.pop('Common'))
                         raid_list[r][M]["Drops"]["Rare"][d].append(line.pop('Rare'))
                         raid_list[r][M]["Drops"]["Mythic"][d].append(line.pop('Mythic'))
