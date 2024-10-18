@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      4.6
+// @version      4.7
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -160,11 +160,22 @@ function create_css(){
             --button-colour: rgb(153,187,255);
             --main-colour: rgb(153,255,170);
             --in-raid-colour: rgb(255,255,255);
-            --in-raid-table-height: 550px;
+            --in-raid-table-max-height: 550px;
+            --in-raid-table-max-width: 400px;
         }
 
         .dotvrlt_corners {
             border-radius: var(--corner-radius);
+        }
+        .dotvrlt_corners_top {
+            border-top-left-radius: var(--corner-radius);
+            border-top-right-radius: var(--corner-radius);
+        }
+        .dotvrlt_corners_bottom_left {
+            border-bottom-left-radius: var(--corner-radius);
+        }
+        .dotvrlt_corners_bottom_right {
+            border-bottom-right-radius: var(--corner-radius);
         }
         .dotvrlt_button {
             background-color: var(--button-colour);
@@ -202,9 +213,24 @@ function create_css(){
         }
         .dotvrlt_in_raid_settings_div {
             width: 100%;
-            height: 25px;
+            max-height: 25px;
             font-size: 14px;
             text-align: center;
+        }
+        .dotvrlt_fixed_row {
+            position: sticky;
+            top: 0;
+        }
+        .dotvrlt_fixed_row_2 {
+            position: sticky;
+            top: 30px;
+        }
+        .dotvrlt_fixed_row_3 {
+            position: sticky;
+            top: 55px;
+        }
+        .dotvrlt_corners div, .dotvrlt_corners table, .dotvrlt_corners tbody, .dotvrlt_corners tr, .dotvrlt_corners td {
+            background-color: inherit;
         }
 
         .studious-inspector-container {
@@ -217,7 +243,7 @@ function create_css(){
         }
         #DotVRLT\\ main\\ div {
             width: 500px;
-            height: 500px;
+            max-height: 500px;
             display: var(--options-and-main-divs-display);
             overflow: auto;
             background-color: var(--main-colour);
@@ -233,7 +259,7 @@ function create_css(){
         }
         #DotVRLT\\ main\\ table\\ div {
             width: 100%;
-            height: 450px;
+            max-height: 450px;
             overflow: auto;
         }
         #DotVRLT\\ options\\ div {
@@ -271,7 +297,7 @@ function create_css(){
         #DotVRLT\\ in-raid\\ div {
             background-color: var(--in-raid-colour);
             width: 450px;
-            height: 130px;
+            max-height: 130px;
             display: var(--in-raid-display);
             border: 1px solid black;
             overflow: auto;
@@ -280,12 +306,12 @@ function create_css(){
         }
         #DotVRLT\\ in-raid\\ table\\ div {
             width: 100%;
-            height: 80px;
+            max-height: 80px;
         }
         #DotVRLT\\ detailed\\ div {
             background-color: var(--in-raid-colour);
-            width: 400px;
-            height: var(--in-raid-table-height);
+            max-width: var(--in-raid-table-max-width);
+            max-height: var(--in-raid-table-max-height);
             display: var(--detailed-div-display);
             border: 1px solid black;
             position: absolute;
@@ -589,7 +615,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
     t.classList.add("dotvrlt_table");
     document.getElementById("DotVRLT main table div").appendChild(t);
     if(show_advanced_view==false){
-        t.innerHTML=`<tr> <td>Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> </tr>`;
+        t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column">Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> </tr>`;
         for(let k in raid_list){
             for(let mode of modes){
                 if(mode in raid_list[k]){
@@ -609,7 +635,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
                                     if(raid_list[k][mode]["Loot format"]=="EHL"){
                                         let tl=t.insertRow();
                                         if(firstdiff==1){
-                                            tl.innerHTML=`<td rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td>`+raid_list[k][mode]["Tiers as string"][j]+`</td>`;
+                                            tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td>`+raid_list[k][mode]["Tiers as string"][j]+`</td>`;
                                             firstdiff=0;
                                         }
                                         else{
@@ -619,7 +645,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
                                     else if(raid_list[k][mode]["Loot format"]=="Image"){
                                         let tllt=t.insertRow();
                                         if(firstdiff==1){
-                                            tllt.innerHTML=`<td rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td style="word-break:break-all"><i>`+raid_list[k][mode]["Loot tables"][j]+`</i></td>`;
+                                            tllt.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td style="word-break:break-all"><i>`+raid_list[k][mode]["Loot tables"][j]+`</i></td>`;
                                             firstdiff=0;
                                         }
                                         else{
@@ -636,7 +662,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
         }
     }
     else{
-        t.innerHTML=`<tr> <td>Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> <td>common | rare | mythic | summoner | hidden | bonus</td></tr>`;
+        t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column">Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> <td>common | rare | mythic | summoner | hidden | bonus</td></tr>`;
         for(let k in raid_list){
             for(let mode of modes){
                 if(mode in raid_list[k]){
@@ -661,7 +687,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
                                         var tiers0_text=raid_list[k][mode].Tiers[j][0];
                                         if(tiers0_text==raid_list[k][mode].FS[j]){ tiers0_text="<b>FS: "+tiers0_text+"</b>"; }
                                         if(firstdiff==1){
-                                            tl.innerHTML=`<td rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td rowspan="`+raid_list[k][mode].Tiers[j].length+`">`+j+`</td> <td>`+tiers0_text+`</td> <td>`+raid_list[k][mode].Drops["as string"][j][0]+`</td>`;
+                                            tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td rowspan="`+raid_list[k][mode].Tiers[j].length+`">`+j+`</td> <td>`+tiers0_text+`</td> <td>`+raid_list[k][mode].Drops["as string"][j][0]+`</td>`;
                                             firstdiff=0;
                                         }
                                         else{
@@ -678,7 +704,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
                                     else if(raid_list[k][mode]["Loot format"]=="Image"){
                                         let tllt=t.insertRow();
                                         if(firstdiff==1){
-                                            tllt.innerHTML=`<td rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td colspan="2" style="word-break:break-all"><i>`+raid_list[k][mode]["Loot tables"][j]+`</i></td>`;
+                                            tllt.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td colspan="2" style="word-break:break-all"><i>`+raid_list[k][mode]["Loot tables"][j]+`</i></td>`;
                                             firstdiff=0;
                                         }
                                         else{
@@ -694,6 +720,8 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
             }
         }
     }
+    t.getElementsByClassName("dotvrlt_first_column")[t.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
+    t.getElementsByTagName("tr")[t.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
     ita.style.display = Notes.length == 0 ? "none" : "";
     add_notes(Notes,ita);
     for(let c of (columns_to_remove || [])){ delete_column(t,c); }
@@ -868,10 +896,10 @@ function create_in_raid_div(raid_name,mode,raid_difficulty){
     t.classList.add("dotvrlt_table");
     t.border=1;
     if(raid_list[raid_name][mode]["Loot format"]=="EHL"){
-        t.innerHTML=`<td>`+raid_list[raid_name][mode]["Tiers as string"][raid_difficulty]+`</td>`;
+        t.innerHTML=`<td class="dotvrlt_corners_top">`+raid_list[raid_name][mode]["Tiers as string"][raid_difficulty]+`</td>`;
     }
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
-        t.innerHTML=`<td style="word-break:break-all">Latest loot table known by the script: <br><i>`+raid_list[raid_name][mode]["Loot tables"][raid_difficulty]+`</i><br>For guaranteed up-to-date one: click "Loot", then "Expanded Loot".</td>`;
+        t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Latest loot table known by the script: <br><i>`+raid_list[raid_name][mode]["Loot tables"][raid_difficulty]+`</i><br>For guaranteed up-to-date one: click "Loot", then "Expanded Loot".</td>`;
     }
     td.appendChild(t);
     // In-raid settings creation.
@@ -892,6 +920,7 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
     d.style.top=magics_area.getBoundingClientRect().bottom+6+window.scrollY+"px";
     document.getElementsByClassName("raid-container")[0].appendChild(d);
     detailed_div=d;
+    set_detailed_div_state();
     // Table creation.
     if(raid_list[raid_name][mode]["Loot format"]=="EHL"){
         var ncol=4+raid_list[raid_name][mode]["Has extra drops"].Hidden+raid_list[raid_name][mode]["Has extra drops"].Summoner+raid_list[raid_name][mode]["Has extra drops"].Bonus;
@@ -899,7 +928,7 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
         t.id="DotVRLT detailed table";
         t.classList.add("dotvrlt_table");
         t.border=1;
-        t.innerHTML=`<td colspan="`+ncol+`" style="font-size:18px;">`+raid_name+" ("+raid_difficulty.toLowerCase()+`)</td>`;
+        t.innerHTML=`<td class="dotvrlt_fixed_row dotvrlt_corners_top" colspan="`+ncol+`" style="font-size:18px;">`+raid_name+" ("+raid_difficulty.toLowerCase()+`)</td>`;
         d.appendChild(t);
         var l1=2+raid_list[raid_name][mode]["Has extra drops"].Hidden;
         var l2=2+raid_list[raid_name][mode]["Has extra drops"].Summoner+raid_list[raid_name][mode]["Has extra drops"].Bonus;
@@ -917,13 +946,13 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
             else if(x1){ r1b.innerHTML=`<td colspan="`+(l1+l2)+`"> On-hit drops: `+x3+`</td>`; }
             else{ r1b.innerHTML=`<td colspan="`+(l1+l2)+`"> Loot expansion: `+x4+`</td>`; }
         }
-        var r2=t.insertRow(); r2.innerHTML=`<td rowspan="2">Damage</td><td colspan="`+(ncol-1)+`">Loot drops</td>`;
-        var r3=t.insertRow(); r3.innerHTML=`<td>Common</td><td>Rare</td><td>Mythic</td>`;
+        var r2=t.insertRow(); r2.classList.add("dotvrlt_fixed_row_2"); r2.innerHTML=`<td class="dotvrlt_first_column" rowspan="2">Damage</td><td colspan="`+(ncol-1)+`">Loot drops</td>`;
+        var r3=t.insertRow(); r3.classList.add("dotvrlt_fixed_row_3"); r3.innerHTML=`<td>Common</td><td>Rare</td><td>Mythic</td>`;
         if(raid_list[raid_name][mode]["Has extra drops"].Hidden){ r3.innerHTML=r3.innerHTML+`<td>Hidden</td>`; }
         if(raid_list[raid_name][mode]["Has extra drops"].Summoner){ r3.innerHTML=r3.innerHTML+`<td>Summoner</td>`; }
         if(raid_list[raid_name][mode]["Has extra drops"].Bonus){ r3.innerHTML=r3.innerHTML+`<td>Bonus</td>`; }
         var rnotes=t.insertRow();
-        rnotes.innerHTML=`<td colspan="`+ncol+`"><i id="dotvrlt_notes_raid"></i></td>`;
+        rnotes.innerHTML=`<td class="dotvrlt_first_column" colspan="`+ncol+`"><i id="dotvrlt_notes_raid"></i></td>`;
         var Notes=raid_list[raid_name][mode].notes[raid_difficulty];
         rnotes.style.display = Notes.length == 0 ? "none" : "";
         add_notes(Notes,document.getElementById("dotvrlt_notes_raid"));
@@ -931,45 +960,50 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
             let r4=t.insertRow();
             let tiers_text=raid_list[raid_name][mode].Tiers[raid_difficulty][k];
             if(tiers_text==raid_list[raid_name][mode].FS[raid_difficulty]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
-            r4.innerHTML=`<td>`+tiers_text+`</td><td>`+raid_list[raid_name][mode].Drops.Common[raid_difficulty][k]+`</td><td>`+raid_list[raid_name][mode].Drops.Rare[raid_difficulty][k]+`</td><td>`+raid_list[raid_name][mode].Drops.Mythic[raid_difficulty][k]+`</td>`;
+            r4.innerHTML=`<td class="dotvrlt_first_column">`+tiers_text+`</td><td>`+raid_list[raid_name][mode].Drops.Common[raid_difficulty][k]+`</td><td>`+raid_list[raid_name][mode].Drops.Rare[raid_difficulty][k]+`</td><td>`+raid_list[raid_name][mode].Drops.Mythic[raid_difficulty][k]+`</td>`;
             if(raid_list[raid_name][mode]["Has extra drops"].Hidden){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode].Drops.Hidden[raid_difficulty][k]+`</td>`; }
             if(raid_list[raid_name][mode]["Has extra drops"].Summoner){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode].Drops.Summoner[raid_difficulty][k]+`</td>`; }
             if(raid_list[raid_name][mode]["Has extra drops"].Bonus){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode].Drops.Bonus[raid_difficulty][k]+`</td>`; }
         }
+        t.getElementsByClassName("dotvrlt_first_column")[t.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
+        t.getElementsByTagName("tr")[t.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
     }
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
         var i=document.createElement("img");
         i.id="DotVRLT detailed table";
-        var T=magics_area.getBoundingClientRect().bottom+6, B=document.getElementsByClassName("raid-footer")[0].getBoundingClientRect().top-15;
-        var h0=Math.min(550,B-T).toString(), w0="398"; // 398 because border=1
-        i.width=w0; i.height=h0; i.style.margin="auto"; i.style.cursor="zoom-in"; d.style.overflowY="hidden";
+        i.style.margin="auto"; i.style.cursor="zoom-in";
+        i.addEventListener("load",
+                           function(){
+            let I=document.getElementById("DotVRLT detailed table");
+            I.height=Math.min(I.naturalHeight,document.documentElement.style.getPropertyValue("--in-raid-table-max-height").replace("px","")).toString();
+            I.width=Math.min(I.naturalWidth,"400").toString(); // --in-raid-table-max-width cannot be used because it has not been set using document.documentElement.style.setProperty
+        });
         i.src=raid_list[raid_name][mode]["Loot tables"][raid_difficulty];
+        var z=0;
         i.addEventListener("click",
                            function(){
-            var h=d.getBoundingClientRect().height.toString(), w=d.getBoundingClientRect().width.toString()-2; // width-2 because border=1
-            if(i.width>w||i.height>h){i.width=w; i.height=h; i.style.cursor="zoom-in"; d.style.overflowY="hidden";}
-            else{i.setAttribute("width",""); i.setAttribute("height",""); i.style.cursor="zoom-out"; d.style.overflowY="auto";}
+            var h0=document.documentElement.style.getPropertyValue("--in-raid-table-max-height").replace("px",""),
+                w0=(document.documentElement.style.getPropertyValue("--in-raid-table-max-width")||"400").replace("px","");
+            var h = Math.min(i.naturalHeight,h0).toString(), w = Math.min(i.naturalWidth,w0).toString();
+            var H = Math.max(i.naturalHeight,h0).toString(), W = Math.max(i.naturalWidth,w0).toString();
+            if(z){i.width=w; i.height=h; i.style.cursor="zoom-in";}
+            else{i.width=W; i.height=H; i.style.cursor="zoom-out";}
+            z=1-z;
         });
         d.appendChild(i);
     }
-    //
-    set_detailed_div_state();
 }
 
 function set_detailed_div_state(){
     if(show_detailed_div&&in_raid_button_pressed){
-        document.documentElement.style.setProperty("--detailed-div-display","yes");
+        document.documentElement.style.setProperty("--detailed-div-display","flex");
         var magics_area=document.getElementsByClassName("raid-effects")[0]||document.createElement("div");
         var T=magics_area.getBoundingClientRect().bottom+6;
         detailed_div.style.top=T+window.scrollY+"px";
         var B=document.getElementsByClassName("raid-footer")[0].getBoundingClientRect().top-15;
         var H=B-T;
-        if( raid_list[document.getElementsByClassName("boss-name-container")[0].firstChild.innerHTML][current_fighting_mode()]["Loot format"]=="Image"){ H=Math.min(550,H); }
-        document.documentElement.style.setProperty("--in-raid-table-height",H+"px");
-        var t=document.getElementById("DotVRLT detailed table");
-        if( t.getBoundingClientRect().height < detailed_div.getBoundingClientRect().height ){
-            document.documentElement.style.setProperty("--in-raid-table-height",t.getBoundingClientRect().height+"px");
-        }
+        if( raid_list[document.getElementsByClassName("boss-name-container")[0].firstChild.innerHTML][current_fighting_mode()]["Loot format"]=="Image" ){ H=Math.min(550,H); }
+        document.documentElement.style.setProperty("--in-raid-table-max-height",H+"px");
     }
     else{ document.documentElement.style.setProperty("--detailed-div-display","none"); }
 }
@@ -1039,7 +1073,7 @@ function createDamageTakenTable(M){
     t.border="1";
     t.classList.add("dotvrlt_table");
     document.getElementById("DotVRLT main table div").appendChild(t);
-    t.innerHTML=`<tr> <td>Name</td> <td>Damage type</td> <td colspan="2">Damage taken</td></tr>`;
+    t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column">Name</td> <td>Damage type</td> <td colspan="2">Damage taken</td></tr>`;
     for(let k in raid_list){
         for(let mode in raid_list[k]){
             if(modes.includes(mode)){
@@ -1052,7 +1086,7 @@ function createDamageTakenTable(M){
                             let dmg=damage_taken(raid_list[k][mode].Damage[j],raid_list[k][mode].Damage.Type);
                             let tl=t.insertRow();
                             if(firstdiff==1){
-                                tl.innerHTML=`<td rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode].Damage.Type+`</td> <td>`+j+`</td> <td>`+dmg+" (base: "+raid_list[k][mode].Damage[j]+`)</td>`;
+                                tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode].Damage.Type+`</td> <td>`+j+`</td> <td>`+dmg+" (base: "+raid_list[k][mode].Damage[j]+`)</td>`;
                                 firstdiff=0;
                             }
                             else{
@@ -1066,6 +1100,8 @@ function createDamageTakenTable(M){
         }
     }
     update_counters(counters);
+    t.getElementsByClassName("dotvrlt_first_column")[t.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
+    t.getElementsByTagName("tr")[t.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
 }
 
 function assign_current_difficulty(d){ current_difficulty=d; }
