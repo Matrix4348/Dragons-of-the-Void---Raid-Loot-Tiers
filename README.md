@@ -103,5 +103,5 @@ The "user script" folder contains:
 
 **Important:**
 * Changelogs on Greasyfork are created based on commits' messages here, so if you make script updates, only (and always) write user script-related changes in the commit messages or the pull request message.
-* Be careful with lines starting with expressions such as `/* MARKER X */`: they are changed bewteen development.user.js and latest.user.js and I would prefer that you leave them as is (mostly for readability reasons)
+* Be careful with lines starting with expressions such as `/* MARKER X */`: they are changed between development.user.js and latest.user.js and I would prefer that you leave them as is (mostly for readability reasons)
 * Remember to increment the version number when making a new version...
