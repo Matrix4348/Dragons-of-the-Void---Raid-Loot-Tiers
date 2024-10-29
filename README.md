@@ -95,7 +95,7 @@ Also, note that in csv files, GitHub does not like double quotation marks for an
 
 ## II) Contributing to the user script code
 
-The "user script folder" contains:
+The "user script" folder contains:
 * an "All versions" folder with... all versions of the script and which is automatically updated with each new release
 * "latest.user.js", the latest version of the script that should **not** be touched directly and that is exported to Greasyfork
 * "development.user.js", the file that you must update to change the script (everything is then automated)
