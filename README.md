@@ -51,7 +51,7 @@ About a few columns:
 ### 3) "Base damage taken" folder
 
 These files contain damage type and damage values for each raid on each difficulty. <br>
-If a raid does not exist on every difficulties while there is a column for another difficulty, then leave the cells for the missing difficulties empty.
+If a raid does not exist on all difficulties while there is a column for another difficulty, then leave the cells for the missing difficulties empty.
 
 ### 4) "Loot tiers and drop data" folder
 
@@ -80,7 +80,7 @@ No need to bother with these files if you do not know any tier.<br>
 ### 5) "On-hit drops" folder
 
 These files contain keen eye levels required for each raid on each difficulty. Input them like studious inspector does ("KE3, KE7", for example) if something drops, leave empty or add 0 if nothing drops. Only add raids that have at least one on-hit drop in one difficulty.<br>
-If a raid does not exist on every difficulties while there is a column for another difficulty, then leave the cells for the missing difficulties empty.
+If a raid does not exist on all difficulties while there is a column for another difficulty, then leave the cells for the missing difficulties empty.
 
 ### 6) Notes.csv
 
@@ -95,8 +95,13 @@ Also, note that in csv files, GitHub does not like double quotation marks for an
 
 ## II) Contributing to the user script code
 
-The script is located in the "user script" folder, alongside archives of the previous version. Whenever development.user.js gets updated, both the "All versions" folder and the Greasyfork copy are automatically updated, so you do not have to worry about those. latest.user.js is only the latest version, if you have changes to make you must update development.user.js!
+The "user script folder" contains:
+* an "All versions" folder with... all versions of the script and which is automatically updated with each new release
+* "latest.user.js", the latest version of the script that should **not** be touched directly and that is exported to Greasyfork
+* "development.user.js", the file that you must update to change the script (everything is then automated)
+* "greasyfork_extended_description.md", the description on the Greasyfork script page (any modification here is instantly sent there)
 
-**Important:** Changelogs on Greasyfork are created based on commits' messages here, so if you make script updates, only (and always) write user script-related changes in the commit messages or the pull request message.<br>
-
-There is not much else to say, despite maybe to remember to increment the version number when making a new version...
+**Important:**
+* Changelogs on Greasyfork are created based on commits' messages here, so if you make script updates, only (and always) write user script-related changes in the commit messages or the pull request message.
+* Be careful with lines starting with expressions such as `/* MARKER X */`: they are changed bewteen development.user.js and latest.user.js and I would prefer that you leave them as is (mostly for readability reasons)
+* Remember to increment the version number when making a new version...
