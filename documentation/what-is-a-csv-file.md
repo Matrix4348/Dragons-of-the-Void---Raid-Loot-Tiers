@@ -1,3 +1,7 @@
+[<< Table of content](../CONTRIBUTING.md)<br>
+< Previous? <div align="right"> Next? > </div>
+<div align="center"> < Previous? --- Next? > </div>
+
 # What is a csv file?
 
 "csv" stands for "comma-separated values". A csv file is just lines of characters (anything) separated by commas and can be read as a table. GitHub may display then as tables in preview mode, so look at the "code" tab instead if you need the syntax of the file.<br>
