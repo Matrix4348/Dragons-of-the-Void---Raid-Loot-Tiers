@@ -6,7 +6,7 @@ If you find a bug or want to make a suggestion, you can [open an issue](https://
 
 ## Updating game-related data
 
-...
+All data collected by the players is located in the ["community-gathered data" folder](documentation/community-gathered-data.md). 
 
 ## Updating the code of the user script
 
