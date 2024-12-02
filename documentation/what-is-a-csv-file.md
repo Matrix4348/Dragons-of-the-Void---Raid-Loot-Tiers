@@ -1,6 +1,28 @@
-[<< Table of content](../CONTRIBUTING.md)<br>
-< Previous? <div align="right"> Next? > </div>
-<div align="center"> < Previous? --- Next? > </div>
+<header>
+  
+  [<< Contributing](../CONTRIBUTING.md)<br>
+  
+[< Updating a file](updating-a-file.md)
+
+<div align="right">
+  
+  [The community-gathered data folder >](community-gathered-data.md)
+  
+</div>
+
+<div align="center">
+  
+  [< Updating a file](updating-a-file.md) --- [The community-gathered data folder >](community-gathered-data.md)
+  
+</div>
+</header>
+<hr>
+
+  ||||
+|-|-------------------------------------|-|
+|[< Updating a file](updating-a-file.md)|                    -                 |[The community-gathered data folder >](community-gathered-data.md)|
+
+```Note to self: `divs` break Markdown if there are not enough blank lines...```
 
 # What is a csv file?
 
