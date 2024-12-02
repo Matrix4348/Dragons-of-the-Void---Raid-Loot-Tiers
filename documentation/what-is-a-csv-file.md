@@ -22,7 +22,7 @@
 |-|-------------------------------------|-|
 |[< Updating a file](updating-a-file.md)|                    -                 |[The community-gathered data folder >](community-gathered-data.md)|
 
-```Note to self: `divs` break Markdown if there are not enough blank lines...```
+<!--Note to self: `divs` break Markdown if there are not enough blank lines...-->
 
 # What is a csv file?
 
