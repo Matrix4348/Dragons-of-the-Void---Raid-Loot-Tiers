@@ -19,6 +19,12 @@ All of these files are written using [Markdown](https://docs.github.com/github/w
 
 <!-- ## Improving the repository automation? Or something like that?-->
 
+<div align="center">
+  
+  [< Back to README.md](/README.md) --- [Go to table of content? "Other" section? >]()
+  
+</div>
+
 Table of content?
 1) How GitHub works
    * [How to change a file on someone's repository?](./documentation/updating-a-file.md)
