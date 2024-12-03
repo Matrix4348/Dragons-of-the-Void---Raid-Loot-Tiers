@@ -1,8 +1,8 @@
 # Contributing
 
-## Opening an issue
+## Reporting a bug or making a suggestion
 
-If you find a bug or want to make a suggestion, you can [open an issue](https://github.com/Matrix4348/Dragons-of-the-Void---Raid-Loot-Tiers/issues).
+If you find a bug or want to make a suggestion, you can [open an issue](https://github.com/Matrix4348/Dragons-of-the-Void---Raid-Loot-Tiers/issues). If you simply have a question or feel like an issue is not appropriate, you can also [start a discussion](https://github.com/Matrix4348/Dragons-of-the-Void---Raid-Loot-Tiers/discussions).
 
 ## Updating game-related data
 
@@ -17,6 +17,7 @@ All data collected by the players is located in the ["community-gathered data" f
 The documentation comprises [README.md](README.md), [CONTRIBUTING.md](CONTRIBUTING.md) and the ["documentation" folder](documentation). If you find any error, technical inaccuracy, grammatical error or if you think that you can improve it, feel free to suggest your changes.<br>
 All of these files are written using [Markdown](https://docs.github.com/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
 
+<!-- ## Improving the repository automation? Or something like that?-->
 
 Table of content?
 1) How GitHub works
