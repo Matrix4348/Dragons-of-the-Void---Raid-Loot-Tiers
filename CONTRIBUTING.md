@@ -18,10 +18,10 @@ The documentation comprises [README.md](README.md), [CONTRIBUTING.md](CONTRIBUTI
 All of these files are written using [Markdown](https://docs.github.com/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
 
 <!-- ## Improving the repository automation? Or something like that?-->
-
+<hr>
 <div align="center">
   
-  [< Back to README.md](/README.md) --- [Go to table of content? "Other" section? >]()
+  [< Back to README.md](/README.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [Go to table of content? "Other" section? >]()
   
 </div>
 
