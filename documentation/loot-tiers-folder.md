@@ -4,7 +4,7 @@ This folder contains subfolders named after various categories of raids, each on
 
 There are two cases that you will encounter: raids whose tiers players must figure out and raids with loot tables available as images.
 
-# Image loot tables
+## Image loot tables
 
 If a raid has an image loot table, then you will find two types of files:
 * the loot tables (any format among png, jpg, jpeg and webp - maybe even gif - would do, but I prefer png)
