@@ -10,9 +10,12 @@ If a raid has an image loot table, then you will find two types of files:
 * the loot tables (any format among png, jpg, jpeg and webp - maybe even gif - would do, but I prefer png)
 * a file named "Loot table.csv"
 
-<!-- continue here with image name format and csv description -->
-the images (.png, .jpg, .jpeg, .webp but I prefer .png) alongside the file "Loot table.csv", which contains two columns: "file name" and "date of first use". The second column is obvious (usual format: "January 31st, 2024") and in the first column, type the name of the image that was uploaded to the folder (only upload **new** loot tables). Preferred format for the loot table name: Raid_Name_Number with numbers starting at 1 (0 for beta only).
-<br>For example: if the John Rabbit world raid is released on April 1st, 2025, then upload John_Rabbit_1.png to `community-gathered data/Loot tiers and drop data/World raids/John Rabbit/` and fill a new line in `community-gathered data/Loot tiers and drop data/World raids/John Rabbit/Loot tables.csv` the following way: 
+For convenience reasons and in order to navigate easily between them (especially if they get updated over time), loot tables should be named as such: Raid_Name_Number, with "Number" starting at 1 and incrementing by one every time the loot table gets modified ("0" is reserved for beta).<br>
+
+`Loot table.csv` contains two columns: "file name" and "date of first use". The second column is obvious (usual format: "January 31st, 2024") and in the first column, type the name of the image that was uploaded to the folder (case sensitive, and do not forget the file extension).<br>
+
+<!-- FORMAT THAT EXAMPLE -->
+For example: if the John Rabbit world raid is released on April 1st, 2025, then upload John_Rabbit_1.png to `community-gathered data/Loot tiers and drop data/World raids/John Rabbit/` and fill a new line in `community-gathered data/Loot tiers and drop data/World raids/John Rabbit/Loot tables.csv` the following way: 
 ```
 File Name,Date of first use
 John_Rabbit_1.png,"April 1st, 2025"
