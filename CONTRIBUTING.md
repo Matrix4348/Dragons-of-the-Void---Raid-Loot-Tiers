@@ -15,7 +15,7 @@ All data collected by the players is located in the ["community-gathered data" f
 ## Updating the documentation
 
 The documentation comprises [README.md](README.md), [CONTRIBUTING.md](CONTRIBUTING.md) and the ["documentation" folder](documentation). If you find any error, technical inaccuracy, grammatical error or if you think that you can improve it, feel free to suggest your changes.<br>
-All of these files are written using [Markdown](https://docs.github.com/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+All of these files support [Markdown](https://docs.github.com/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) and most of HTML.
 
 <!-- ## Improving the repository automation? Or something like that?-->
 <hr>
