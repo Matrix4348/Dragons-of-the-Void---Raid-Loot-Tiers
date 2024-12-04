@@ -12,15 +12,19 @@
 
 <div align="center">
   
-  [< Updating a file](updating-a-file.md) --- [The community-gathered data folder >](community-gathered-data.md)
+  [< Updating a file](updating-a-file.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [The community-gathered data folder >](community-gathered-data.md)
   
 </div>
 </header>
 <hr>
 
-  ||||
+<div align="center">
+  
+|[<< Contributing](../CONTRIBUTING.md)|||
 |-|-------------------------------------|-|
-|[< Updating a file](updating-a-file.md)|                    -                 |[The community-gathered data folder >](community-gathered-data.md)|
+|[< Updating a file](updating-a-file.md)|          ---        |<div align="right">[The community-gathered data folder >](community-gathered-data.md)</div>|
+
+</div>
 
 <!--Note to self: `divs` break Markdown if there are not enough blank lines...-->
 
