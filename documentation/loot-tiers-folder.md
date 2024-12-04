@@ -24,7 +24,7 @@ John_Rabbit_2.png,"April 1st, 2025"
 
 ## Raid tiers we have to determine
 
-For raids without given loot tables, you will find, in `community-gathered data/Loot tiers and drop data/World raids/Raid Name/`, files named after each difficulty the raid is available in: Easy.csv, Hard.csv, Legendary.csv.<br>
+For raids without given loot tables, you will find, in `community-gathered data/Loot tiers and drop data/Raid Type/Raid Name/`, files named after each difficulty the raid is available in: Easy.csv, Hard.csv, Legendary.csv.<br>
 
 <!-- continue from here -->
 You should input a question mark in drop rarity cells (common, rare...) if you ignore the answer.<br>
