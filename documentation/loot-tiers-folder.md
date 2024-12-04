@@ -14,14 +14,19 @@ For convenience reasons and in order to navigate easily between them (especially
 
 `Loot table.csv` contains two columns: "file name" and "date of first use". The second column is obvious (usual format: "January 31st, 2024") and in the first column, type the name of the image that was uploaded to the folder (case sensitive, and do not forget the file extension).<br>
 
-<!-- FORMAT THAT EXAMPLE -->
-For example: if the John Rabbit world raid is released on April 1st, 2025, then upload John_Rabbit_1.png to `community-gathered data/Loot tiers and drop data/World raids/John Rabbit/` and fill a new line in `community-gathered data/Loot tiers and drop data/World raids/John Rabbit/Loot tables.csv` the following way: 
+#### <ins>For example:</ins> 
+If the John Rabbit world raid was released on April 1st, 2024 and if it was summoned again on April 1st, 2025 with a new loot table, then we would have John_Rabbit_1.png and John_Rabbit_2.png in `community-gathered data/Loot tiers and drop data/World raids/John Rabbit/`, alongside `community-gathered data/Loot tiers and drop data/World raids/John Rabbit/Loot tables.csv`, which would look the following way: 
 ```
 File Name,Date of first use
-John_Rabbit_1.png,"April 1st, 2025"
+John_Rabbit_1.png,"April 1st, 2024"
+John_Rabbit_2.png,"April 1st, 2025"
 ```
 
-* Else, you will find files named after each difficulty the raid is available in: Easy.csv, Hard.csv, Legendary.csv.<br>
+## Raid tiers we have to determine
+
+For raids without given loot tables, you will find, in `community-gathered data/Loot tiers and drop data/World raids/Raid Name/`, files named after each difficulty the raid is available in: Easy.csv, Hard.csv, Legendary.csv.<br>
+
+<!-- continue from here -->
 You should input a question mark in drop rarity cells (common, rare...) if you ignore the answer.<br>
 In the extra drops ones (remove these columns if not needed), input the skill level(s) like studious inspector does (for example, "DV3, DV7") if known, 0 or leave empty if nothing drops, and input a question mark if you do not know. If you do not know which tiers benefit from the skills, you can add the skills to the maximum tier only.<br>
 If a raid is affected by a bonus tiers skill (discerning vision, astute observation, precise inspection), then add a line at the end with skill reference in the "damage" column (for example, "DV1") and in the following columns, add 0 if no bonus or +y if the skill adds y more drops from that column.<br>
