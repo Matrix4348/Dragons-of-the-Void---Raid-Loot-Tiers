@@ -2,6 +2,12 @@
 
 This folder contains subfolders named after various categories of raids, each one containing folders named after raids.<br>
 
+> [!Note]
+> If the folder does not exist for a given raid, then you will find templates for each file in the `_Example_` subfolder of the associated raid type folder; some columns being optional
+
+> [!Tip]
+> To create a folder on GitHub, you must create a file by adding both names in the file name. For example, if you want to create new_folder containing new_file in existing_folder, then when you name your file, type "new_folder/new_file" instead of just "new_file"
+
 There are two cases that you will encounter: raids whose tiers players must figure out and raids with loot tables available as images.
 
 ## Image loot tables
@@ -26,13 +32,9 @@ John_Rabbit_2.png,"April 1st, 2025"
 
 For raids without given loot tables, you will find, in `community-gathered data/Loot tiers and drop data/Raid Type/Raid Name/`, files named after each difficulty the raid is available in: Easy.csv, Hard.csv, Legendary.csv.<br>
 
-<!-- continue from here -->
-You should input a question mark in drop rarity cells (common, rare...) if you ignore the answer.<br>
-In the extra drops ones (remove these columns if not needed), input the skill level(s) like studious inspector does (for example, "DV3, DV7") if known, 0 or leave empty if nothing drops, and input a question mark if you do not know. If you do not know which tiers benefit from the skills, you can add the skills to the maximum tier only.<br>
-If a raid is affected by a bonus tiers skill (discerning vision, astute observation, precise inspection), then add a line at the end with skill reference in the "damage" column (for example, "DV1") and in the following columns, add 0 if no bonus or +y if the skill adds y more drops from that column.<br>
-No need to bother with these files if you do not know any tier.<br>
-**Quest bosses and minibosses are special**: generally they follow the patterns found in the associated `_Example_` folders so only create files for the exceptions.
+You should input a question mark in drop rarity cells if you ignore the answer.<br>
 
-**If the folder does not exist**, then:
-* you will find templates for each file in the `_Example_` folder; some columns being optionnal
-* to create a folder on GitHub, you must create a file by adding both names in the file name: if you want to create new_folder containing new_file in existing_folder, then when you name your file type "new_folder/new_file" instead of just "new_file"
+Only the "damage", "common", "rare" and "mythic" columns are always mandatory. Others must only be present when they are relevant.<br>
+
+In the extra drops ones, input the skill level(s) shortened like studious inspector does (for example, "DV3, DV7") if known, 0 or leave empty if nothing drops, and input a question mark if you do not know. If you do not know which tiers are affected by the skills, you can add the skills to the highest tier only.<br>
+If a raid is affected by a bonus tiers skill (discerning vision, astute observation, precise inspection), then add a line at the end with skill reference in the "damage" column (for example, "DV1") and in the following columns, add 0 if no bonus or +y if the skill adds y more drops from that column.<br>
