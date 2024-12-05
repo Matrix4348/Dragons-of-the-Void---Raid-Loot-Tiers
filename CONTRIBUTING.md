@@ -10,7 +10,7 @@ All data collected by the players is located in the ["community-gathered data" f
 
 ## Updating the code of the user script
 
-...
+All data related to the user script code is located in the ["user script" folder](documentation/updating-user-script.md).
 
 ## Updating the documentation
 
