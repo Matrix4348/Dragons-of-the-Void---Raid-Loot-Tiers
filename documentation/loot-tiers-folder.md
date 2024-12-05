@@ -3,10 +3,10 @@
 This folder contains subfolders named after various categories of raids, each one containing folders named after raids.<br>
 
 > [!Note]
-> If the folder does not exist for a given raid, then you will find templates for each file in the `_Example_` subfolder of the associated raid type folder; some columns being optional
+> If the folder does not exist for a given raid, then you will find templates for each file in the `_Example_` subfolder of the associated raid type folder; some columns being optional.
 
 > [!Tip]
-> To create a folder on GitHub, you must create a file by adding both names in the file name. For example, if you want to create new_folder containing new_file in existing_folder, then when you name your file, type "new_folder/new_file" instead of just "new_file"
+> To create a folder on GitHub, you must create a file by adding both names in the file name. For example, if you want to create new_folder containing new_file in existing_folder, then when you name your file, type "new_folder/new_file" instead of just "new_file".
 
 There are two cases that you will encounter: raids whose tiers players must figure out and raids with loot tables available as images.
 
