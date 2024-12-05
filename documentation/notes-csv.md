@@ -11,7 +11,7 @@ In the second column, type the text to display. Add the name of the raid (or, in
 > The words "and" and "or" can be used, alongside parenthesis, for conditions involving several criteria.
 
 > [!Warning]
-> Also, note that in csv files, GitHub does not like double quotation marks for anything other than surrounding a whole cell. You will therefore have to use single ones for the conditions in the first column.
+> In csv files, GitHub does not like double quotation marks for anything other than surrounding a whole cell. You will therefore have to use single ones for character strings in the conditions of the first column.
 
 Example: ```type == 'Guild raid' and difficulty == 'Hard',Hard guild raids always drop an additional void token.```<br>
 This note applies to guild raids on hard difficulty.
