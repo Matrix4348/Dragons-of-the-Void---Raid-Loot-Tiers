@@ -1,6 +1,6 @@
 <div align="left">
   
-  [<< Contributing](/CONTRIBUTING.md])
+  [<< Contributing](/CONTRIBUTING.md)
   
 </div>
 
