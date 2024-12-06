@@ -1,4 +1,8 @@
+<div align="center">
+
 # How to change a file on someone's repository?
+
+</div>
 
 ## Updating a file
 ### If you do not have write-access to the repository, then to modify files you will need to:

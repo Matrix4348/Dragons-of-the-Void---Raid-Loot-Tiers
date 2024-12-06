@@ -1,4 +1,8 @@
-# The "On-hit drops" folder
+<div align="center">
+
+# On-hit drops
+
+</div>
 
 The files in this folder contain keen eye levels required for each raid on each difficulty. Only add raids that have at least one on-hit drop in one difficulty.<br>
 

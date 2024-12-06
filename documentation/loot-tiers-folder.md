@@ -1,4 +1,24 @@
-# "Loot tiers and drop data" folder
+<div align="left">
+  
+  [<< Contributing](/CONTRIBUTING.md])
+  
+</div>
+
+<div align="center">
+  
+  [< Updating a file](updating-a-file.md)
+  $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
+  [Updating the user script >](updating-user-script.md)
+  
+</div>
+
+<hr>
+
+<div align="center">
+
+# Loot tiers and drop data
+
+</div>
 
 This folder contains subfolders named after various categories of raids, each one containing folders named after raids.<br>
 
@@ -38,3 +58,12 @@ Only the "damage", "common", "rare" and "mythic" columns are always mandatory. O
 
 In the extra drops ones, input the skill level(s) shortened like studious inspector does (for example, "DV3, DV7") if known, 0 or leave empty if nothing drops, and input a question mark if you do not know. If you do not know which tiers are affected by the skills, you can add the skills to the highest tier only.<br>
 If a raid is affected by a bonus tiers skill (discerning vision, astute observation, precise inspection), then add a line at the end with skill reference in the "damage" column (for example, "DV1") and in the following columns, add 0 if no bonus or +y if the skill adds y more drops from that column. Here is what such line would look like; `DV1,+0,+0,+y`.<br>
+
+<hr>
+
+<div align="center">
+  
+  [< Basic data](basic-data-folder.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
+  [Base damage taken >](base-damage-taken-folder.md)
+  
+</div>

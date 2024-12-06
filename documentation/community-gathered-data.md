@@ -1,28 +1,33 @@
 <div align="left">
   
-  [<< Contributing](/CONTRIBUTING.md) 
+  [<< Contributing](/CONTRIBUTING.md])
   
 </div>
 
 <div align="center">
   
-  [< Back?](/CONTRIBUTING.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
-  [Next? >](raid-list-json.md)
+  [< Updating a file](updating-a-file.md)
+  $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
+  [Updating the user script >](updating-user-script.md)
   
 </div>
 
 <hr>
 
+<div align="center">
+
 # Community-gathered data
+
+</div>
 
 All the data collected by the players and displayed by the user script is located in this folder.
 
 List of content:
 * [raid_list.json](raid-list-json.md)
-* [Basic data folder](basic-data-folder.md)
-* [Base damage taken folder](base-damage-taken-folder.md)
-* [Loot tiers and drop data folder](loot-tiers-folder.md)
-* [On-hit drops folder](on-hit-drops-folder.md)
+* [Basic data](basic-data-folder.md)
+* [Base damage taken](base-damage-taken-folder.md)
+* [Loot tiers and drop data](loot-tiers-folder.md)
+* [On-hit drops](on-hit-drops-folder.md)
 * [Notes.csv](notes-csv.md)
 
 > [!WARNING]
@@ -30,15 +35,9 @@ List of content:
 
 <hr>
 
-<div align="left">
-  
-  [<< Contributing](/CONTRIBUTING.md) 
-  
-</div>
-
 <div align="center">
   
-  [< Back?](/CONTRIBUTING.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
-  [Next? >](raid-list-json.md)
+  [< What is a csv file?](what-is-a-csv-file.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
+  [raid_list.json >](raid-list-json.md)
   
 </div>

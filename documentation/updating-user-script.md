@@ -1,4 +1,8 @@
+<div align="center">
+
 # Contributing to the user script code
+
+</div>
 
 The "user script" folder contains:
 * an "All versions" folder with... all versions of the script and which is automatically updated with each new release

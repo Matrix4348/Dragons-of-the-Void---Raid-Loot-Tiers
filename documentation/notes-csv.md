@@ -1,4 +1,8 @@
+<div align="center">
+
 # Notes.csv
+
+</div>
 
 Notes.csv contains messages to display above loot tables and giving additional information, for example if there is a guaranteed drop.
 

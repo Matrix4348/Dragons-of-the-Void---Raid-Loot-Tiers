@@ -1,4 +1,8 @@
+<div align="center">
+
 # Contributing
+
+</div>
 
 ## Reporting a bug or making a suggestion
 
