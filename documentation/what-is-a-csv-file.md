@@ -1,32 +1,16 @@
-<header>
+<div align="left">
   
-  [<< Contributing](../CONTRIBUTING.md)<br>
+  [<< Contributing](/CONTRIBUTING.md)
   
-[< Updating a file](updating-a-file.md)
+</div>
 
 <div align="right">
   
-  [The community-gathered data folder >](community-gathered-data.md)
+  [Updating the game-related data >](community-gathered-data.md)
   
 </div>
 
-<div align="center">
-  
-  [< Updating a file](updating-a-file.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [The community-gathered data folder >](community-gathered-data.md)
-  
-</div>
-</header>
 <hr>
-
-<div align="center">
-  
-|[<< Contributing](../CONTRIBUTING.md)|||
-|-|-------------------------------------|-|
-|[< Updating a file](updating-a-file.md)|          ---        |<div align="right">[The community-gathered data folder >](community-gathered-data.md)</div>|
-
-</div>
-
-<!--Note to self: `divs` break Markdown if there are not enough blank lines...-->
 
 <div align="center">
 
@@ -56,3 +40,12 @@ A,12,"I love cats, dogs and birds",
 |-|-|-|-|
 |A|12|I love cats, dogs and birds||
 |B|1,300,752||1/2|
+
+<hr>
+
+<div align="center">
+  
+  [< Updating a file](updating-a-file.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
+  [Community-gathered data >](community-gathered-data.md)
+  
+</div>

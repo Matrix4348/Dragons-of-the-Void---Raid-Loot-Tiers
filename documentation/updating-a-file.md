@@ -1,3 +1,17 @@
+<div align="left">
+  
+  [<< Contributing](/CONTRIBUTING.md)
+  
+</div>
+
+<div align="right">
+  
+  [Updating the game-related data >](community-gathered-data.md)
+  
+</div>
+
+<hr>
+
 <div align="center">
 
 # How to change a file on someone's repository?
@@ -25,3 +39,11 @@ You cannot change several files at once from github.com, but you can do so from 
 ## Commit messages
 The default commit message suggested by GitHub is often enough, but in some cases you might want to type a more detailed head and body for this message. On the contrary, if you merge a pull request, you may want to clear the automatically-generated body.
 As a general rule, do as you believe is the best choice.
+
+<hr>
+
+<div align="right">
+  
+  [What is a csv file? >](what-is-a-csv-file.md) 
+  
+</div>
