@@ -1,3 +1,19 @@
+<div align="left">
+  
+  [<< Contributing](/CONTRIBUTING.md)
+  
+</div>
+
+<div align="center">
+  
+  [< Community-gathered data](community-gathered-data.md)
+  $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
+  [Updating the user script >](updating-user-script.md)
+  
+</div>
+
+<hr>
+
 <div align="center">
 
 # Notes.csv
@@ -19,3 +35,12 @@ In the second column, type the text to display. Add the name of the raid (or, in
 
 Example: ```type == 'Guild raid' and difficulty == 'Hard',Hard guild raids always drop an additional void token.```<br>
 This note applies to guild raids on hard difficulty.
+
+<hr>
+
+<div align="center">
+  
+  [< On-hit drops](on-hit-drops-folder.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
+  [Updating the user script >](updating-user-script.md)
+  
+</div>

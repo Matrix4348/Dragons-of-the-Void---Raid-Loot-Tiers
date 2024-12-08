@@ -1,3 +1,19 @@
+<div align="left">
+  
+  [<< Contributing](/CONTRIBUTING.md)
+  
+</div>
+
+<div align="center">
+  
+  [< Community-gathered data](community-gathered-data.md)
+  $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
+  [Table of content >](table-of-content.md)
+  
+</div>
+
+<hr>
+
 <div align="center">
 
 # Contributing to the user script code
@@ -18,3 +34,13 @@ The "user script" folder contains:
 
 > [!Tip]
 > Remember to increment the version number when making a new version...
+
+<hr>
+
+<div align="center">
+  
+  [< Notes.csv](notes-csv.md)
+  $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
+  [Table of content >](table-of-content.md)
+  
+</div>

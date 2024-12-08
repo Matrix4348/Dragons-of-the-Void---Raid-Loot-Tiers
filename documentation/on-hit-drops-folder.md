@@ -1,3 +1,19 @@
+<div align="left">
+  
+  [<< Contributing](/CONTRIBUTING.md)
+  
+</div>
+
+<div align="center">
+  
+  [< Community-gathered data](community-gathered-data.md)
+  $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
+  [Updating the user script >](updating-user-script.md)
+  
+</div>
+
+<hr>
+
 <div align="center">
 
 # On-hit drops
@@ -11,3 +27,12 @@ If nothing drops, leave empty.<br>
 If you ignore the answer to this question, input a question mark.<br>
 
 If a raid does not exist on all difficulties, then leave the cells for the missing difficulties empty if they exist.
+
+<hr>
+
+<div align="center">
+  
+  [< Loot tiers and drop data](loot-tiers-folder.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
+  [Notes.csv >](notes-csv.md)
+  
+</div>
