@@ -106,11 +106,11 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
           if [ ${{ steps.changes.outputs.raid_list }} == 'true' -o ${{ steps.changes.outputs.tables }} == 'true' ] && [ ${{ steps.changes.outputs.images }} == 'true' ]; then
-            git commit -m "Update raid_list.json and loot tables"
+            git commit --allow-empty -m "Update raid_list.json and loot tables"
           elif [ ${{ steps.changes.outputs.raid_list }} == 'true' -o ${{ steps.changes.outputs.tables }} == 'true' ]; then
-            git commit -m "Update raid_list.json"
+            git commit --allow-empty -m "Update raid_list.json"
           elif [ ${{ steps.changes.outputs.images }} == 'true' ]; then
-            git commit -m "Update loot tables"
+            git commit --allow-empty -m "Update loot tables"
           else
             git commit --allow-empty -m "Empty commit"
           fi
