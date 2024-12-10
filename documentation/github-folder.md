@@ -1,3 +1,10 @@
+
+
+
+
+
+<hr>
+
 <div align="center">
 
 # The .github folder
@@ -8,6 +15,14 @@ The .github folder has everything (file-wise) that manages the repository, espec
 
 ## GitHub actions
 
-GitHub actions are lines of code that run on specific events, like when a file is modified. You will find them in `.github/workflows`. They often run scripts, which you will find in `.github/scripts`. I write mines in Python but they can be written in many programming languages.
+GitHub actions are lines of code that run on specific events, like when a file is modified. You will find them in `.github/workflows`. Learn more about workflows [here](https://docs.github.com/en/actions/writing-workflows/about-workflows).  
+They often run scripts, which you will find in `.github/scripts`. I write mines in Python but they can be written in many programming languages.
 
-.gitignore?
+If you are new to GitHub actions but need to update or create one, you should carefully read the GitHub documentation about them.   
+
+
+## `.gitignore`
+
+`.gitignore` is a list of paths that should be ignored by the automation processes.
+
+Right now, only csv files and images in `community-gathered data` could relevantly be added to `.gitignore`. If for some reason you want to prevent such files to be added to the raid_list.json, then feel free to tell GitHub to ignore them.
