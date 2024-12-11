@@ -4,10 +4,20 @@
   
 </div>
 
-<div align="center">
+<div align="right">
+  
+  [Table of content >>](table-of-content.md)
+  
+</div>
+
+<div align="left">
   
   [< Community-gathered data](community-gathered-data.md)
-  $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
+  
+</div>
+
+<div align="right">
+
   [Updating the user script >](updating-user-script.md)
   
 </div>
@@ -32,7 +42,6 @@ About a few columns:
 
 <div align="center">
   
-  [< raid_list.json](raid-list-json.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
-  [Base damage taken >](base-damage-taken-folder.md)
+  [< raid_list.json](raid-list-json.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [Base damage taken >](base-damage-taken-folder.md)
   
 </div>

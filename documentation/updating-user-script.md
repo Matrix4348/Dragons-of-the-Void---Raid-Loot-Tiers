@@ -4,11 +4,21 @@
   
 </div>
 
-<div align="center">
+<div align="right">
+  
+  [Table of content >>](table-of-content.md)
+  
+</div>
+
+<div align="left">
   
   [< Community-gathered data](community-gathered-data.md)
-  $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
-  [Table of content >](table-of-content.md)
+  
+</div>
+
+<div align="right">
+
+  [The .github folder >](github-folder.md)
   
 </div>
 
@@ -39,8 +49,6 @@ The "user script" folder contains:
 
 <div align="center">
   
-  [< Notes.csv](notes-csv.md)
-  $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
-  [Table of content >](table-of-content.md)
+  [< Notes.csv](notes-csv.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [The .github folder >](github-folder.md)
   
 </div>

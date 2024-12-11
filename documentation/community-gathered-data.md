@@ -4,10 +4,20 @@
   
 </div>
 
-<div align="center">
+<div align="right">
+  
+  [Table of content >>](table-of-content.md)
+  
+</div>
+
+<div align="left">
   
   [< Updating a file](updating-a-file.md)
-  $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
+  
+</div>
+
+<div align="right">
+
   [Updating the user script >](updating-user-script.md)
   
 </div>
@@ -37,7 +47,6 @@ List of content:
 
 <div align="center">
   
-  [< What is a csv file?](what-is-a-csv-file.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
-  [raid_list.json >](raid-list-json.md)
+  [< What is a csv file?](what-is-a-csv-file.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [raid_list.json >](raid-list-json.md)
   
 </div>

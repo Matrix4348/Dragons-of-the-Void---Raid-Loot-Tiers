@@ -4,10 +4,20 @@
   
 </div>
 
-<div align="center">
+<div align="right">
+  
+  [Table of content >>](table-of-content.md)
+  
+</div>
+
+<div align="left">
   
   [< Community-gathered data](community-gathered-data.md)
-  $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
+  
+</div>
+
+<div align="right">
+
   [Updating the user script >](updating-user-script.md)
   
 </div>
@@ -63,7 +73,6 @@ If a raid is affected by a bonus tiers skill (discerning vision, astute observat
 
 <div align="center">
   
-  [< Base damage taken](base-damage-taken-folder.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
-  [On-hit drops >](on-hit-drops-folder.md)
+  [< Base damage taken](base-damage-taken-folder.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [On-hit drops >](on-hit-drops-folder.md)
   
 </div>

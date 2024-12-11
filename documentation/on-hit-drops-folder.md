@@ -4,10 +4,20 @@
   
 </div>
 
-<div align="center">
+<div align="right">
+  
+  [Table of content >>](table-of-content.md)
+  
+</div>
+
+<div align="left">
   
   [< Community-gathered data](community-gathered-data.md)
-  $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
+  
+</div>
+
+<div align="right">
+
   [Updating the user script >](updating-user-script.md)
   
 </div>
@@ -32,7 +42,6 @@ If a raid does not exist on all difficulties, then leave the cells for the missi
 
 <div align="center">
   
-  [< Loot tiers and drop data](loot-tiers-folder.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
-  [Notes.csv >](notes-csv.md)
+  [< Loot tiers and drop data](loot-tiers-folder.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [Notes.csv >](notes-csv.md)
   
 </div>

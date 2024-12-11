@@ -6,6 +6,12 @@
 
 <div align="right">
   
+  [Table of content >>](table-of-content.md)
+  
+</div>
+
+<div align="right">
+  
   [Updating the game-related data >](community-gathered-data.md)
   
 </div>
@@ -42,8 +48,8 @@ As a general rule, do as you believe is the best choice.
 
 <hr>
 
-<div align="right">
+<div align="center">
   
-  [What is a csv file? >](what-is-a-csv-file.md) 
+   $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [What is a csv file? >](what-is-a-csv-file.md) 
   
 </div>

@@ -6,6 +6,12 @@
 
 <div align="right">
   
+  [Table of content >>](table-of-content.md)
+  
+</div>
+
+<div align="right">
+  
   [Updating the game-related data >](community-gathered-data.md)
   
 </div>
@@ -45,7 +51,6 @@ A,12,"I love cats, dogs and birds",
 
 <div align="center">
   
-  [< Updating a file](updating-a-file.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$
-  [Community-gathered data >](community-gathered-data.md)
+  [< Updating a file](updating-a-file.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [Community-gathered data >](community-gathered-data.md)
   
 </div>
