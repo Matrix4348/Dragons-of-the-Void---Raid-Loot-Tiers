@@ -28,6 +28,6 @@ Files related to the repository automation are located in the [.github folder](d
 <hr>
 <div align="center">
   
-  [< Back to README.md](/README.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [Go to table of content? >](documentation/table-of-content.md)
+  [< Back to README.md](/README.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [Go to table of content >](documentation/table-of-content.md)
   
 </div>
