@@ -33,6 +33,10 @@
 These files contain damage type and damage values for each raid on each difficulty. <br>
 If a raid does not exist on all difficulties while there is a column for another difficulty, then leave the cells for the missing difficulties empty.
 
+> [!Note]
+> Someday™️, the script will not only display base damage taken, but also calculate actual damage taken.
+> This dream will become true once #14 has been resolved.
+
 <hr>
 
 <div align="center">
