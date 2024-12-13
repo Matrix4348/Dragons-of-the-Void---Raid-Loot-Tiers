@@ -35,7 +35,7 @@ If a raid does not exist on all difficulties while there is a column for another
 
 > [!Note]
 > Someday™️, the script will not only display base damage taken, but also calculate actual damage taken.
-> This dream will become true once #14 has been resolved.
+> This dream will become true once <a href="https://github.com/Matrix4348/Dragons-of-the-Void---Raid-Loot-Tiers/issues/14">#14</a> has been resolved.
 
 <hr>
 
