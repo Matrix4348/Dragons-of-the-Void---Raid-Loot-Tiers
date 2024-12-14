@@ -8,6 +8,11 @@
 
 If you find a bug or want to make a suggestion, you can [open an issue](https://github.com/Matrix4348/Dragons-of-the-Void---Raid-Loot-Tiers/issues). If you simply have a question or feel like an issue is not appropriate, you can also [start a discussion](https://github.com/Matrix4348/Dragons-of-the-Void---Raid-Loot-Tiers/discussions).
 
+#
+
+> [!WARNING]
+> Before reading further, you should learn [how to edit a file on GitHub](documentation/updating-a-file.md).
+
 ## Updating game-related data
 
 All data collected by the players is located in the ["community-gathered data" folder](documentation/community-gathered-data.md). 
