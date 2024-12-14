@@ -41,7 +41,7 @@ It contains the following files and folder:
 * [Notes.csv](notes-csv.md)
 
 > [!WARNING]
-> Before going further, you should learn [how to edit a file on GitHub](updating-a-file.md) and [what is a csv file](what-is-a-csv-file.md).
+> Most of the files that you will encounter are csv files. You can learn more about them [here](what-is-a-csv-file.md).
 
 <hr>
 
