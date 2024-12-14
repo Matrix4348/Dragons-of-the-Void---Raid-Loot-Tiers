@@ -35,6 +35,9 @@ Notes.csv contains messages to display above loot tables and giving additional i
 In the first column, input a condition in Python that raids must verify for a message to appear.<br>
 You can use the following variable names (everything is case sensitive and nothing is mandatory): name (name of the raid), type (what is being displayed as raid type by the user script, like '' (an empty character string) for regular raids, 'Guild raid', 'World raid'...), size ('Large'...), loot_format ('Image' if the loot table is available as an image, like world raids, else 'EHL'), difficulty and mode ("questing" for quests, "healthless" for raids without a health bar and "raiding" for the rest).
 
+[To elaborate] Mode is important when a uest boss exists
+
+
 In the second column, type the text to display. Add the name of the raid (or, in case of a group of raids, the name of said "group"), because the notes are also displayed on the full list of raids so people must know what they refer to.
 
 > [!Note]
