@@ -4,3 +4,4 @@ type == 'Guild raid' and difficulty == 'Legendary',Legendary guild raids always 
 name == 'Secutor',Secutor always drops 1 Thiadoran Fig. Must reach Minimum tier.
 name == 'Bone Dragon' and difficulty == 'Easy' and mode == 'raiding', Easy Bone Dragon always drops 1 stat point. Must reach Minimum tier.
 name == 'Bone Dragon' and difficulty == 'Hard' and mode == 'raiding', Hard Bone Dragon always drops 2 stat points. Must reach Minimum tier.
+name == 'Bone Dragon' and difficulty == 'Legendary' and mode == 'raiding', Legendary Bone Dragon always drops 4 stat points. Must reach Minimum tier.
