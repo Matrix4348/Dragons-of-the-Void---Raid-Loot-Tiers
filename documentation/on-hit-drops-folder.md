@@ -38,6 +38,8 @@ If you ignore the answer to this question, input a question mark.<br>
 
 If a raid does not exist on all difficulties, then leave the cells for the missing difficulties empty if they exist.
 
+On-hit drops work differently for world and event raids: not all levels unlock loot; instead, loot is unlocked at one level, and other ones increase drop rate and drop amount. Either case, the related on-hit drops csv should contain all the relevant keen eyes levels.
+
 <hr>
 
 <div align="center">
