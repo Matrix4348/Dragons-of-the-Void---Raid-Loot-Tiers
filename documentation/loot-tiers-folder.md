@@ -66,8 +66,22 @@ You should input a question mark in drop rarity cells if you ignore the answer.<
 
 Only the "damage", "common", "rare" and "mythic" columns are always mandatory. Others must only be present when they are relevant.<br>
 
-In the extra drops ones, input the skill level(s) shortened like studious inspector does (for example, "DV3, DV7") if known, 0 or leave empty if nothing drops, and input a question mark if you do not know. If you do not know which tiers are affected by the skills, you can add the skills to the highest tier only.<br>
-If a raid is affected by a bonus tiers skill (discerning vision, astute observation, precise inspection), then add a line at the end with skill reference in the "damage" column (for example, "DV1") and in the following columns, add 0 if no bonus or +y if the skill adds y more drops from that column. Here is what such line would look like; `DV1,+0,+0,+y`.<br>
+In the extra drops ones, input:
+* the skill level(s) shortened like studious inspector does (for example, "DV3, DV7") if known
+* 0 or leave empty if nothing drops
+* input a question mark if you do not know
+
+> [!Tip]
+> If you do not know which tiers are affected by the skills, you can add the skills to the highest tier only.
+
+<br>
+  
+If a raid is affected by a bonus tiers skill (discerning vision, astute observation, precise inspection), then add a line at the end with:
+* in both the "Damage" and "Bonus" columns: skill reference (for example, "DV1")
+* in the "Common", "Rare" and "Mythic" columns: add +y where y is how many drops the skill adds for that rarity
+* in the "Hidden" and "summoner" columns (when present): add -, assuming that those loots will never be affected
+  
+Here is what such line would look like; `DV1,+0,+0,+y,DV1`.<br>
 
 <hr>
 
