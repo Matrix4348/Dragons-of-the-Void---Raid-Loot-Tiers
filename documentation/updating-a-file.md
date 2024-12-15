@@ -28,7 +28,7 @@
 ### If you do not have write-access to the repository, then to modify files you will need to:
 1) create a fork (click the "Fork" button in the top right corner of the repository home page)
 2) edit the files
-3) create a pull request (you can do so from the "Pull request" page, but you can read [this article]("https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) if you need help)
+3) create a pull request (you can do so from the "Pull request" page, but you can read [this article](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) if you need help)
 
 Once approved, the pull request will be merged and your changes will be applied.<br>
 
