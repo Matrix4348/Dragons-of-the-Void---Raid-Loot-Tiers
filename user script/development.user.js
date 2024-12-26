@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      5.0
+// @version      5.1
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -129,6 +129,13 @@ function create_css(){
             width: 100%;
             height: 25px;
             text-align: center;
+        }
+        .dotvrlt_notes_container {
+            max-height: 100px;
+            overflow-y: auto;
+            margin: 0px 2px 4px 2px;
+            border: black 1px solid;
+            padding: 3px;
         }
         .dotvrlt_in_raid_settings_div {
             width: 100%;
@@ -525,9 +532,13 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
     typeof(ColumnsToRemove)=="string" ? columns_to_remove=[ColumnsToRemove] : columns_to_remove=ColumnsToRemove;
     var counters={Easy:0,Hard:0,Legendary:0};
     document.getElementById("DotVRLT main title div").innerHTML=name;
+    var nc=document.createElement("div");
+    nc.id="DotVRLT notes container";
+    nc.classList.add("dotvrlt_notes_container");
+    document.getElementById("DotVRLT main table div").appendChild(nc);
     var ita=document.createElement("i");
     ita.style.fontSize="14px";
-    document.getElementById("DotVRLT main table div").appendChild(ita);
+    document.getElementById("DotVRLT notes container").appendChild(ita);
     var Notes=[];
     var t=document.createElement("table");
     t.border="1";
@@ -641,7 +652,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
     }
     t.getElementsByClassName("dotvrlt_first_column")[t.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
     t.getElementsByTagName("tr")[t.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
-    ita.style.display = Notes.length == 0 ? "none" : "";
+    nc.style.display = Notes.length == 0 ? "none" : "";
     add_notes(Notes,ita);
     for(let c of (columns_to_remove || [])){ delete_column(t,c); }
     update_counters(counters);
