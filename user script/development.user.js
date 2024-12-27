@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      5.1
+// @version      5.1.1
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -925,16 +925,14 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
 }
 
 function set_detailed_div_state(){
-    if(show_detailed_div&&in_raid_button_pressed){
-        document.documentElement.style.setProperty("--detailed-div-display","flex");
-        var magics_area=document.getElementsByClassName("raid-effects")[0]||document.createElement("div");
-        var T=magics_area.getBoundingClientRect().bottom+6;
-        detailed_div.style.top=T+window.scrollY+"px";
-        var B=document.getElementsByClassName("raid-footer")[0].getBoundingClientRect().top-15;
-        var H=B-T;
-        if( raid_list[document.getElementsByClassName("boss-name-container")[0].firstChild.innerHTML][current_fighting_mode()]["Loot format"]=="Image" ){ H=Math.min(550,H); }
-        document.documentElement.style.setProperty("--in-raid-table-max-height",H+"px");
-    }
+    var magics_area=document.getElementsByClassName("raid-effects")[0]||document.createElement("div");
+    var T=magics_area.getBoundingClientRect().bottom+6;
+    detailed_div.style.top=T+window.scrollY+"px";
+    var B=document.getElementsByClassName("raid-footer")[0].getBoundingClientRect().top-15;
+    var H=B-T;
+    if( raid_list[document.getElementsByClassName("boss-name-container")[0].firstChild.innerHTML][current_fighting_mode()]["Loot format"]=="Image" ){ H=Math.min(550,H); }
+    document.documentElement.style.setProperty("--in-raid-table-max-height",H+"px");
+    if(show_detailed_div&&in_raid_button_pressed){ document.documentElement.style.setProperty("--detailed-div-display","flex"); }
     else{ document.documentElement.style.setProperty("--detailed-div-display","none"); }
 }
 
