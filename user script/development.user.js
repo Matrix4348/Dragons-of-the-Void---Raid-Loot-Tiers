@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      5.0
+// @version      6.0
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -15,67 +15,6 @@
 
 // Global variables.
 
-class raid {
-    constructor(mode,a,b,c,dmg,d,e,f,g,h,i,j,k,l,m,n,o) {
-        this[mode]={};
-        this[mode]["Raid size"]=a; // "Small", "Medium", "Large", "Immense" or "World"
-        this[mode]["Raid type"]=b; // "", "Guild raid" or "World raid"
-        this[mode]["Loot format"]=c; // "EHL" or "Image"
-        if (b=="World raid"){ this[mode].Damage={Type:dmg[0]||"?",Value:dmg[1]||"?"}; }
-        else{ this[mode].Damage={Type:dmg[0]||"?",Easy:dmg[1]||"?",Hard:dmg[2]||"?",Legendary:dmg[3]||"?"}; }
-        this[mode].FS={Easy:d[0]||"0",Hard:d[1]||"0",Legendary:d[2]||"0"};
-        this[mode].Tiers={};
-        this[mode].Tiers.Easy=e;
-        this[mode].Tiers.Hard=f;
-        this[mode].Tiers.Legendary=g;
-        this[mode]["Tiers as string"]={};
-        if(e[0]==this[mode].FS.Easy){this[mode]["Tiers as string"].Easy="<b>"+e[0]+"=FS</b>";} else{this[mode]["Tiers as string"].Easy=e[0];} // easy loot tiers, put as a character string
-        for(let k=1; k<e.length; k++){ if(e[k]==this[mode].FS.Easy){this[mode]["Tiers as string"].Easy=this[mode]["Tiers as string"].Easy+" | <b>"+e[k]+"=FS</b>";} else{this[mode]["Tiers as string"].Easy=this[mode]["Tiers as string"].Easy+" | "+e[k];} }
-        if(f[0]==this[mode].FS.Hard){this[mode]["Tiers as string"].Hard="<b>"+f[0]+"=FS</b>";} else{this[mode]["Tiers as string"].Hard=f[0];} // hard loot tiers, put as a character string
-        for(let k=1; k<f.length; k++){ if(f[k]==this[mode].FS.Hard){this[mode]["Tiers as string"].Hard=this[mode]["Tiers as string"].Hard+" | <b>"+f[k]+"=FS</b>";} else{this[mode]["Tiers as string"].Hard=this[mode]["Tiers as string"].Hard+" | "+f[k];} }
-        if(g[0]==this[mode].FS.Legendary){this[mode]["Tiers as string"].Legendary="<b>"+g[0]+"=FS</b>";} else{this[mode]["Tiers as string"].Legendary=g[0];} // legendary loot tiers, put as a character string
-        for(let k=1; k<g.length; k++){ if(g[k]==this[mode].FS.Legendary){this[mode]["Tiers as string"].Legendary=this[mode]["Tiers as string"].Legendary+" | <b>"+g[k]+"=FS</b>";} else{this[mode]["Tiers as string"].Legendary=this[mode]["Tiers as string"].Legendary+" | "+g[k];} }
-        this[mode]["Loot tables"]={Legendary:h}; // link to the loot table if it exists
-        this[mode]["Has extra drops"]={};
-        this[mode]["Has extra drops"].Hidden=i||false;
-        this[mode]["Has extra drops"].Summoner=j||false;
-        this[mode]["Has extra drops"].Bonus=false;
-        this[mode]["Has extra drops"]["On-hit drops"]=false;
-        this[mode]["Has extra drops"]["Loot expansion"]=false;
-        k=k||[[],[],[]]; l=l||[[],[],[]]; m=m||[[],[],[]]; n=n||[[],[],[]]; o=o||[[],[],[]]; // the drop data
-        for(let v1 of [0,1,2]){
-            for(let v2=0;v2<this[mode].Tiers[["Easy","Hard","Legendary"][v1]].length;v2++){
-                if(typeof(k[v1][v2])=="undefined"){ k[v1][v2]="?"; }
-                if(typeof(l[v1][v2])=="undefined"){ l[v1][v2]="?"; }
-                if(typeof(m[v1][v2])=="undefined"){ m[v1][v2]="?"; }
-                if(typeof(i)=="undefined"){ n[v1][v2]="maybe"; } else if(this[mode]["Has extra drops"].Hidden){ if(typeof(n[v1][v2])=="undefined"){ n[v1][v2]="?"; } } else{ if(typeof(n[v1][v2])=="undefined"){ n[v1][v2]=0; } }
-                if(typeof(j)=="undefined"){ o[v1][v2]="maybe"; } else if(this[mode]["Has extra drops"].Summoner){ if(typeof(o[v1][v2])=="undefined"){ o[v1][v2]="?"; } } else{ if(typeof(o[v1][v2])=="undefined"){ o[v1][v2]=0; } }
-            }
-        }
-        this[mode].Drops={};
-        this[mode].Drops.Common={Easy:k[0],Hard:k[1],Legendary:k[2]};
-        this[mode].Drops.Rare={Easy:l[0],Hard:l[1],Legendary:l[2]};
-        this[mode].Drops.Mythic={Easy:m[0],Hard:m[1],Legendary:m[2]};
-        this[mode].Drops.Hidden={Easy:n[0],Hard:n[1],Legendary:n[2]};
-        this[mode].Drops.Summoner={Easy:o[0],Hard:o[1],Legendary:o[2]};
-        this[mode].Drops["as string"]={Easy:[], Hard:[], Legendary:[]}; // lists of detailed drop data as character strings
-        for(let k=0; k<this[mode].Tiers.Easy.length; k++){
-            this[mode].Drops["as string"].Easy[k]=this[mode].Drops.Common.Easy[k]+" | "+this[mode].Drops.Rare.Easy[k]+" | "+this[mode].Drops.Mythic.Easy[k]+" | "+this[mode].Drops.Hidden.Easy[k]+" | "+this[mode].Drops.Summoner.Easy[k];
-        }
-        for(let k=0; k<this[mode].Tiers.Hard.length; k++){
-            this[mode].Drops["as string"].Hard[k]=this[mode].Drops.Common.Hard[k]+" | "+this[mode].Drops.Rare.Hard[k]+" | "+this[mode].Drops.Mythic.Hard[k]+" | "+this[mode].Drops.Hidden.Hard[k]+" | "+this[mode].Drops.Summoner.Hard[k];
-        }
-        for(let k=0; k<this[mode].Tiers.Legendary.length; k++){
-            this[mode].Drops["as string"].Legendary[k]=this[mode].Drops.Common.Legendary[k]+" | "+this[mode].Drops.Rare.Legendary[k]+" | "+this[mode].Drops.Mythic.Legendary[k]+" | "+this[mode].Drops.Hidden.Legendary[k]+" | "+this[mode].Drops.Summoner.Legendary[k];
-        }
-        this[mode]["Available difficulties"]=this[mode]["Loot format"]=="EHL"?["Easy","Hard","Legendary"]:["Legendary"];
-        this[mode]["Extra drops"]={};
-        this[mode]["Extra drops"]["On-hit drops"]={Easy:this[mode]["Has extra drops"]["On-hit drops"],Hard:this[mode]["Has extra drops"]["On-hit drops"],Legendary:this[mode]["Has extra drops"]["On-hit drops"]};
-        this[mode]["Extra drops"]["Loot expansion"]={Easy:this[mode]["Has extra drops"]["Loot expansion"],Hard:this[mode]["Has extra drops"]["Loot expansion"],Legendary:this[mode]["Has extra drops"]["Loot expansion"]};
-        this[mode].notes={Easy:[],Hard:[],Legendary:[]};
-    }
-}
-
 var raid_list;
 var options_div, main_div, in_raid_div, detailed_div;
 var button_pressed=false, in_raid_button_pressed=false;
@@ -84,8 +23,8 @@ var automatically_show_in_raid_div_default=1, show_detailed_div_default=true, sh
 var current_tab_default="About";
 var difficulties_to_display, automatically_show_in_raid_div, current_tab, show_detailed_div, show_advanced_view;
 var custom_colours={"Easy":"rgb(0,255,0)","Hard":"rgb(255,165,0)","Legendary":"rgb(238,130,238)","Main":"rgb(153,255,170)","Buttons":"rgb(153,187,255)"};
-var player_stats={};
 var colourless_mode_default=0, colourless_mode, rounded_corners_default=1, rounded_corners, current_difficulty;
+var player_stats={};
 
 // Workaround to an unexpected compatibility issue with some GM_* functions in Greasemonkey 4.
 
@@ -124,28 +63,8 @@ async function fetch_online_raid_data(){
         raid_list=sanitized_object(JSON.parse(r));
     }
     catch(e){
-        // The data known before version 3.0 was released will be used.
-        raid_list={
-            //"raid name":new raid("mode","Size","Raid type","EHL or Image",["damage taken"],[FS],["easy tiers"],["hard tiers"],["legendary tiers"],"loot table.png",has_hidden_loot,has_summoner_loot,[[],[],[]],[[],[],[]],[[],[],[]],[[],[],[]],[[],[],[]]),
-            "Basiliscus":new raid("raiding","Medium","Guild raid","EHL",["Poison",24,70,260],["320,000","960,000","2,880,000"],["12,000","40,000","75,000","120,000","180,000","320,000","425,000","530,000","640,000"],["35,000","120,000","320,000","480,000","720,000","960,000","1,360,000","1,760,000","2,160,000"],["???","2,880,000","???"],"",true,false,[[1,1,2,2,2,3,3,3,4],[1,1,2,2,2,3,3,3,4],[]],[[0,1,1,2,2,2,3,3,3],[0,1,1,2,2,2,3,3,3],[]],[[0,0,0,0,1,1,1,2,2],[0,0,0,0,1,1,1,2,2],[]],[[],[],[]],[[],[],[]]),
-            //"Basiliscus (temporary beta world raid)":new raid("healthless","World","World raid","Image",["Poison",12],[],[],[],["https://matrix4348.github.io/loot-tables/Basiliscus_0.png"],"https://matrix4348.github.io/loot-tables/Basiliscus_0.png"),
-            "Corrupted Golem":new raid("raiding","Medium","","EHL",["Physical",30,50,210],["240,000","720,000","2,160,000"],["2,000","10,000","20,000","40,000","80,000","120,000","180,000","240,000","300,000","360,000","480,000","600,000"],["10,000","30,000","60,000","120,000","180,000","250,000","350,000","450,000","600,000","720,000","1,100,000","1,500,000","2,200,000"],["???","2,160,000","???","6,000,000?"],"",false,true,[[1,2,2,2,3,4,4,4,4,5,5,5],[1,2,2,3,3,4,5,5,5,6,6,6,6],[]],[[0,0,1,2,2,2,2,2,3,3,4,4],[0,0,1,1,2,2,2,2,3,3,3,4,4],[]],[[0,0,0,0,0,0,1,2,2,2,2,3],[0,0,0,0,0,0,0,1,1,1,2,2,3],[]],[[],[],[]],[[],[],[]]),
-            "Elven Rangers":new raid("raiding","Small","","EHL",["Physical",12,35,190],["100,000","300,000","900,000"],["1","4,000","10,000","20,000","40,000","60,000","80,000","100,000","120,000","150,000","180,000","240,000"],["1,000","10,000","20,000","40,000","80,000","100,000","150,000","200,000","250,000","300,000","400,000","550,000","750,000"],["5,000","20,000","75,000","150,000","300,000","450,000","600,000","900,000","1,000,000","1,200,000","1,500,000","1,800,000","2,000,000"],"",false,false,[[1,2,2,2,3,4,4,4,4,5,5,5],[1,2,2,3,3,4,5,5,5,6,6,6,6],[1,2,2,3,3,4,4,5,5,5,5,6,6]],[[0,0,1,2,2,2,2,2,3,3,4,4],[0,0,1,1,2,2,2,2,3,3,3,4,4],[0,0,1,1,2,2,2,2,3,4,4,4,5]],[[0,0,0,0,0,0,1,2,2,2,2,3],[0,0,0,0,0,0,0,1,1,1,2,2,3],[0,0,0,0,0,0,1,1,1,1,2,2,3]],[[],[],[]],[[],[],[]]),
-            "Fungal Fiend":new raid("raiding","Small","Guild raid","EHL",["Nature",6,30,140],["20,000","60,000","180,000"],["500","1,000","5,000","10,000","20,000","25,000","30,000","40,000","50,000"],["2,000","5,000","10,000","20,000","30,000","60,000","75,000","90,000","120,000","150,000"],["10,000","30,000","60,000","90,000","130,000","180,000","240,000","300,000","360,000","450,000"],"",false,false,[[1,2,3,3,3,3,4,4,4],[1,2,2,2,3,3,4,4,4,5],[1,2,2,2,3,3,4,4,4,5]],[[0,0,0,1,1,2,2,2,3],[0,0,1,2,2,2,2,3,3,3],[0,0,1,2,2,2,2,3,3,3]],[[0,0,0,0,1,1,1,2,2],[0,0,0,0,0,1,1,1,2,2],[0,0,0,0,0,1,1,1,2,2]],[[],[],[]],[[],[],[]]),
-            "Galeohog":new raid("raiding","Large","","EHL",["Poison",25,44,220],["220,000","660,000","1,980,000"],["1","10,000","20,000","40,000","80,000","110,000","150,000","175,000","220,000","330,000","440,000","750,000","1,200,000","1,760,000"],["2,500","20,000","60,000","120,000","240,000","330,000","480,000","660,000","1,200,000","2,400,000","3,300,000","4,400,000","5,280,000"],["90,000","170,000","435,000","780,000","1,100,000","1,620,000","1,980,000","3,150,000","4,250,000","6,520,000","10,100,000","12,200,000","15,840,000"],"",true,false,[[1,2,2,2,3,3,3,4,4,5,5,6,7,7],[1,2,2,2,3,3,3,4,4,5,5,6,6],[]],[[0,0,1,2,2,2,3,3,3,4,4,5,5,5],[0,0,1,2,2,2,2,2,3,3,3,3,4],[]],[[0,0,0,0,0,1,1,1,2,2,3,3,3,4],[0,0,0,0,0,1,2,2,2,2,3,3,3],[]],[[],[],[]],[[],[],[]]),
-            "Greater Ent":new raid("raiding","Medium","","EHL",["Nature",16,38,200],["160,000","480,000","1,440,000"],["500","4,000","8,000","20,000","40,000","80,000","120,000","160,000","200,000","240,000","300,000","370,000"],["2,000","15,000","30,000","60,000","120,000","180,000","240,000","300,000","400,000","480,000","640,000","960,000","1,200,000"],["???","1,440,000","???","3,600,000?"],"",false,false,[[1,2,2,2,3,4,4,4,4,5,5,5],[1,2,2,3,3,4,5,5,5,6,6,6,6],[]],[[0,0,1,2,2,2,2,2,3,3,4,4],[0,0,1,1,2,2,2,2,3,3,3,4,4],[]],[[0,0,0,0,0,0,1,2,2,2,2,3],[0,0,0,0,0,0,0,1,1,1,2,2,3],[]],[[],[],[]],[[],[],[]]),
-            "Jagar the Red":new raid("raiding","Immense","","EHL",["Fire",35,60,260],["320,000","960,000","2,880,000"],["15,000","30,000","50,000","80,000","120,000","160,000","200,000","260,000","320,000","480,000","640,000","1,280,000","1,920,000","2,560,000","3,200,000"],["80,000","137,000","226,000","252,000","468,000","?","?","?","768,000","960,000","1,680,000","2,360,000","4,135,000","6,190,000","7,910,000","9,600,000"],["???","2,880,000","4,400,000","5,800,000","11,600,000","17,400,000","23,400,000","28,800,000"],"",false,false,[[1,2,2,2,3,4,4,5,5,5,6,6,6,6,6],[],[]],[[0,0,1,2,2,2,2,2,3,3,3,3,4,5,5],[],[]],[[0,0,0,0,0,0,1,1,1,2,2,3,3,3,4],[],[]],[[],[],[]],[[],[],[]]),
-            "Judah Jingse":new raid("healthless","World","World raid","Image",["Nature",14],[],[],[],["https://matrix4348.github.io/loot-tables/Judah_Jingse_1.png"],"https://matrix4348.github.io/loot-tables/Judah_Jingse_1.png"),
-            "Lesser Tree Ent":new raid("raiding","Small","","EHL",["Nature",6,40,120],["20,000","60,000","180,000"],["1","1,000","2,000","5,000","10,000","20,000","30,000","50,000"],["200?","5,000","10,000","20,000","30,000","60,000","87,000","90,000","120,000"],["1,000","10,000","30,000","60,000","90,000","120,000","180,000","200,000","240,000","300,000"],"",false,false,[[2,2,3,4,4,4,4,5],[1,2,3,3,3,3,4,4,5],[2,2,3,4,4,4,4,5,6,6]],[[0,1,2,2,2,2,3,3],[0,1,1,2,2,3,3,4,4],[0,1,2,2,2,3,4,4,4,4]],[[0,0,0,0,1,2,2,3],[0,0,0,0,1,2,2,2,3],[0,0,0,0,1,2,2,2,2,3]],[[],[],[]],[[],[],[]]),
-            "Naga Karamati":new raid("raiding","Large","","EHL",["Lightning",26,50,230],["240,000","720,000","2,160,000"],["2,000","10,000","20,000","40,000","80,000","120,000","175,000","240,000","320,000","450,000","580,000","840,000","1,350,000","1,920,000"],["15,000","50,000","120,000","180,000","240,000","400,000","600,000","720,000","1,120,000","1,600,000","2,400,000","3,200,000","4,400,000","5,760,000"],["???","2,160,000","???","17,280,000?"],"",false,false,[[1,2,2,2,3,4,4,4,4,5,5,5,6,7],[1,2,2,3,3,4,5,5,5,6,6,6,6,7],[]],[[0,0,1,2,2,2,2,2,3,3,4,4,4,4],[0,0,1,1,2,2,2,2,3,3,3,4,4,5],[]],[[0,0,0,0,0,0,1,2,2,2,2,3,3,4],[0,0,0,0,0,0,0,1,1,1,2,2,3,3],[]],[[],[],[]],[[],[],[]]),
-            "Naga Risaldar":new raid("raiding","Large","","EHL",["Poison",15,38,220],["150,000","450,000","1,350,000"],["1","5,000","15,000","30,000","75,000","100,000","120,000","150,000","180,000","200,000","300,000","400,000","600,000","800,000","1,200,000"],["1,000","10,000","50,000","100,000","225,000","350,000","450,000","600,000","900,000","1,200,000","2,000,000","2,750,000","3,600,000"],["???","1,350,000","???","10,800,000?"],"",false,false,[[1,2,2,2,3,3,3,3,4,5,5,5,6,7,7],[1,2,2,2,3,3,3,3,4,5,5,5,6],[]],[[0,0,1,2,2,2,3,3,3,3,4,4,5,5,5],[0,0,1,2,2,2,3,3,3,3,4,4,4],[]],[[0,0,0,0,0,1,1,2,2,2,2,3,3,3,4],[0,0,0,0,0,1,1,2,2,2,2,3,3],[]],[[],[],[]],[[],[],[]]),
-            "Nitroglycergnat":new raid("raiding","Medium","Guild raid","EHL",["Nature",16,45,240],["75,000","225,000","675,000"],["500","2,000","5,000","15,000","30,000","50,000","75,000","100,000","125,000","150,000"],["4,000","20,000","45,000","75,000","115,000","150,000","225,000","270,000","330,000","450,000"],["???","675,000","???"],"",false,false,[[1,2,3,4,6,8,11,13,14,15],[2,5,10,15,16,22,33,38,43,46],[]],[[1,2,3,4,6,8,11,13,14,15],[2,5,10,15,16,22,33,38,43,46],[]],[[0,0,0,0,0,1,2,2,2,3],[0,0,0,0,1,1,2,2,2,3],[]],[[],[],[]],[[],[],[]]),
-            "Rogue Slime":new raid("raiding","Small","Guild raid","EHL",["Acid",15,40,160],["150,000","450,000","1,350,000"],["5,000","15,000","50,000","80,000","120,000","150,000","180,000","210,000","250,000","300,000"],["10,000","40,000","80,000","150,000","250,000","350,000","450,000","600,000","800,000","1,000,000"],["???","1,350,000","???"],"",false,false,[[1,2,7,10,15,18,21,24,26,28],[2,5,9,17,27,40,49,60,72,77],[]],[[1,2,7,10,15,18,21,24,26,28],[2,5,9,17,27,40,49,60,72,77],[]],[[0,0,0,1,1,2,2,2,3,4],[0,0,0,0,1,1,2,2,3,4],[]],[[],[],[]],[[],[],[]]),
-            "Sand Wyrm":new raid("raiding","Small","","EHL",["Physical",20,40,200],["250,000","750,000","2,250,000"],["1,000","10,000","25,000","50,000","100,000","150,000","200,000","250,000","300,000","380,000","450,000","525,000"],["15,000","35,000","75,000","150,000","225,000","300,000","400,000","500,000","625,000","750,000","1,000,000","1,500,000","2,000,000"],["100,000","250,000","500,000","800,000","1,100,000","1,500,000","1,750,000","2,250,000","2,750,000","3,250,000","4,000,000","4,750,000","5,500,000"],"",true,false,[[1,2,2,2,3,4,4,4,4,5,5,5],[1,2,2,3,3,4,5,5,5,6,6,6,6],[1,2,2,3,3,4,4,4,5,5,5,6,6]],[[0,0,1,1,1,2,2,2,3,3,4,4],[0,0,1,1,2,2,2,2,3,3,3,4,4],[0,0,1,1,2,2,2,3,3,4,4,4,5]],[[0,0,0,0,0,0,1,2,2,2,2,3],[0,0,0,0,0,0,0,1,1,1,2,2,3,3],[0,0,0,0,0,0,1,1,1,1,2,3,3]],[[],[],[]],[[],[],[]]),
-            "Skliros":new raid("healthless","World","World raid","Image",["Dark",8],[],[],[],["https://matrix4348.github.io/loot-tables/Skliros_0.png","https://matrix4348.github.io/loot-tables/Skliros_1.png"],"https://matrix4348.github.io/Loot%20tables/Skliros_1.png"),
-            "Superior Watcher":new raid("raiding","Medium","","EHL",["Magic",8,32,180],["80,000","240,000","720,000"],["1","2,000","5,000","10,000","20,000","40,000","60,000","80,000","110,000","140,000","160,000","200,000"],["200?","5,000","10,000","20,000","40,000","80,000","120,000","160,000","200,000","240,000","300,000","400,000","480,000"],["5,000","20,000","60,000","120,000","240,000","360,000","480,000","720,000","840,000","960,000","1,080,000","1,200,000","1,440,000"],"",false,false,[[1,2,2,2,3,4,4,4,4,5,5,5],[1,2,2,3,3,4,5,5,5,6,6,6,6],[1,2,2,3,3,4,4,5,5,5,5,6,6]],[[0,0,1,2,2,2,2,2,3,3,4,4],[0,0,1,1,2,2,2,2,3,3,3,4,4],[0,0,1,1,2,2,2,2,3,4,4,4,5]],[[0,0,0,0,0,0,1,2,2,2,2,3],[0,0,0,0,0,0,0,1,1,1,2,2,3],[0,0,0,0,0,0,1,1,1,1,2,3,3]],[[],[],[]],[[],[],[]]),
-            "Tunnanu":new raid("raiding","Large","Guild raid","EHL",["Physical",12,22,56],["230,000","690,000","2,070,000"],["2,500","10,000","25,000","75,000","120,000","230,000","390,000","575,000","770,000","950,000","1,150,000"],["???","690,000","???"],["???","2,070,000","???"],"",false,false,[[1,1,2,2,2,3,4,4,4,4,5],[],[]],[[0,1,1,2,2,2,2,3,3,4,5],[],[]],[[0,0,0,0,1,1,1,1,2,2,2],[],[]],[[],[],[]],[[],[],[]]),
-        };
+        // Fallback to the data known as of last update. DO NOT TOUCH THE LINE BELOW!
+        /* MARKER 1 */ raid_list={}; /* MARKER 1 */
     }
 }
 
@@ -161,11 +80,22 @@ function create_css(){
             --button-colour: rgb(153,187,255);
             --main-colour: rgb(153,255,170);
             --in-raid-colour: rgb(255,255,255);
-            --in-raid-table-height: 550px;
+            --in-raid-table-max-height: 550px;
+            --in-raid-table-max-width: 400px;
         }
 
         .dotvrlt_corners {
             border-radius: var(--corner-radius);
+        }
+        .dotvrlt_corners_top {
+            border-top-left-radius: var(--corner-radius);
+            border-top-right-radius: var(--corner-radius);
+        }
+        .dotvrlt_corners_bottom_left {
+            border-bottom-left-radius: var(--corner-radius);
+        }
+        .dotvrlt_corners_bottom_right {
+            border-bottom-right-radius: var(--corner-radius);
         }
         .dotvrlt_button {
             background-color: var(--button-colour);
@@ -201,11 +131,33 @@ function create_css(){
             height: 25px;
             text-align: center;
         }
+        .dotvrlt_notes_container {
+            max-height: 100px;
+            overflow-y: auto;
+            margin: 0px 2px 4px 2px;
+            border: black 1px solid;
+            padding: 3px;
+        }
         .dotvrlt_in_raid_settings_div {
             width: 100%;
-            height: 25px;
+            max-height: 25px;
             font-size: 14px;
             text-align: center;
+        }
+        .dotvrlt_fixed_row {
+            position: sticky;
+            top: 0;
+        }
+        .dotvrlt_fixed_row_2 {
+            position: sticky;
+            top: 30px;
+        }
+        .dotvrlt_fixed_row_3 {
+            position: sticky;
+            top: 55px;
+        }
+        .dotvrlt_corners div, .dotvrlt_corners table, .dotvrlt_corners tbody, .dotvrlt_corners tr, .dotvrlt_corners td {
+            background-color: inherit;
         }
 
         .studious-inspector-container {
@@ -218,7 +170,7 @@ function create_css(){
         }
         #DotVRLT\\ main\\ div {
             width: 500px;
-            height: 500px;
+            max-height: 500px;
             display: var(--options-and-main-divs-display);
             overflow: auto;
             background-color: var(--main-colour);
@@ -234,7 +186,7 @@ function create_css(){
         }
         #DotVRLT\\ main\\ table\\ div {
             width: 100%;
-            height: 450px;
+            max-height: 450px;
             overflow: auto;
         }
         #DotVRLT\\ options\\ div {
@@ -272,7 +224,7 @@ function create_css(){
         #DotVRLT\\ in-raid\\ div {
             background-color: var(--in-raid-colour);
             width: 450px;
-            height: 130px;
+            max-height: 130px;
             display: var(--in-raid-display);
             border: 1px solid black;
             overflow: auto;
@@ -281,12 +233,12 @@ function create_css(){
         }
         #DotVRLT\\ in-raid\\ table\\ div {
             width: 100%;
-            height: 80px;
+            max-height: 80px;
         }
         #DotVRLT\\ detailed\\ div {
             background-color: var(--in-raid-colour);
-            width: 400px;
-            height: var(--in-raid-table-height);
+            max-width: var(--in-raid-table-max-width);
+            max-height: var(--in-raid-table-max-height);
             display: var(--detailed-div-display);
             border: 1px solid black;
             position: absolute;
@@ -404,6 +356,8 @@ async function initialize_saved_variables(){ // Note: Just in case, global varia
     automatically_show_in_raid_div=await GM_getValue("automatically_show_in_raid_div_stored",automatically_show_in_raid_div_default);
     show_detailed_div=await GM_getValue("show_detailed_div_stored",show_detailed_div_default);
     show_advanced_view=await GM_getValue("show_advanced_view_stored",show_advanced_view_default);
+    colourless_mode=await GM_getValue("colourless_mode_stored",colourless_mode_default);
+    rounded_corners=await GM_getValue("rounded_corners_stored",rounded_corners_default);
     player_stats.defense=await GM_getValue("defense_stored",0);
     player_stats.Physical=0;
     player_stats.Magic=await GM_getValue("Magic_stored",0);
@@ -416,8 +370,6 @@ async function initialize_saved_variables(){ // Note: Just in case, global varia
     player_stats.Lightning=await GM_getValue("Lightning_stored",0);
     player_stats.Holy=await GM_getValue("Holy_stored",0);
     player_stats.Dark=await GM_getValue("Dark_stored",0);
-    colourless_mode=await GM_getValue("colourless_mode_stored",colourless_mode_default);
-    rounded_corners=await GM_getValue("rounded_corners_stored",rounded_corners_default);
 }
 
 function pressButton(){
@@ -593,16 +545,20 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
     typeof(ColumnsToRemove)=="string" ? columns_to_remove=[ColumnsToRemove] : columns_to_remove=ColumnsToRemove;
     var counters={Easy:0,Hard:0,Legendary:0};
     document.getElementById("DotVRLT main title div").innerHTML=name;
+    var nc=document.createElement("div");
+    nc.id="DotVRLT notes container";
+    nc.classList.add("dotvrlt_notes_container");
+    document.getElementById("DotVRLT main table div").appendChild(nc);
     var ita=document.createElement("i");
     ita.style.fontSize="14px";
-    document.getElementById("DotVRLT main table div").appendChild(ita);
+    document.getElementById("DotVRLT notes container").appendChild(ita);
     var Notes=[];
     var t=document.createElement("table");
     t.border="1";
     t.classList.add("dotvrlt_table");
     document.getElementById("DotVRLT main table div").appendChild(t);
     if(show_advanced_view==false){
-        t.innerHTML=`<tr> <td>Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> </tr>`;
+        t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column">Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> </tr>`;
         for(let k in raid_list){
             for(let mode of modes){
                 if(mode in raid_list[k]){
@@ -622,7 +578,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
                                     if(raid_list[k][mode]["Loot format"]=="EHL"){
                                         let tl=t.insertRow();
                                         if(firstdiff==1){
-                                            tl.innerHTML=`<td rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td>`+raid_list[k][mode]["Tiers as string"][j]+`</td>`;
+                                            tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td>`+raid_list[k][mode]["Tiers as string"][j]+`</td>`;
                                             firstdiff=0;
                                         }
                                         else{
@@ -632,7 +588,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
                                     else if(raid_list[k][mode]["Loot format"]=="Image"){
                                         let tllt=t.insertRow();
                                         if(firstdiff==1){
-                                            tllt.innerHTML=`<td rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td style="word-break:break-all"><i>`+raid_list[k][mode]["Loot tables"][j]+`</i></td>`;
+                                            tllt.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td style="word-break:break-all"><i>`+raid_list[k][mode]["Loot tables"][j]+`</i></td>`;
                                             firstdiff=0;
                                         }
                                         else{
@@ -649,7 +605,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
         }
     }
     else{
-        t.innerHTML=`<tr> <td>Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> <td>common | rare | mythic | hidden | summoner</td></tr>`;
+        t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column">Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> <td>common | rare | mythic | summoner | hidden | bonus</td></tr>`;
         for(let k in raid_list){
             for(let mode of modes){
                 if(mode in raid_list[k]){
@@ -670,17 +626,11 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
                                         }
                                     }
                                     if(raid_list[k][mode]["Loot format"]=="EHL"){
-                                        let X=[];
-                                        for(let g=0; g<raid_list[k][mode].Tiers[j].length; g++){
-                                            if( ["","0","false","no"].includes(raid_list[k][mode].Drops.Bonus[j][g].toLowerCase()) ){ X[g]=""; }
-                                            else{ X[g]="["+raid_list[k][mode].Drops.Bonus[j][g]+"] "; }
-                                        }
                                         let tl=t.insertRow();
                                         var tiers0_text=raid_list[k][mode].Tiers[j][0];
                                         if(tiers0_text==raid_list[k][mode].FS[j]){ tiers0_text="<b>FS: "+tiers0_text+"</b>"; }
-                                        tiers0_text=X[0]+tiers0_text;
                                         if(firstdiff==1){
-                                            tl.innerHTML=`<td rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td rowspan="`+raid_list[k][mode].Tiers[j].length+`">`+j+`</td> <td>`+tiers0_text+`</td> <td>`+raid_list[k][mode].Drops["as string"][j][0]+`</td>`;
+                                            tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td rowspan="`+raid_list[k][mode].Tiers[j].length+`">`+j+`</td> <td>`+tiers0_text+`</td> <td>`+raid_list[k][mode].Drops["as string"][j][0]+`</td>`;
                                             firstdiff=0;
                                         }
                                         else{
@@ -690,7 +640,6 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
                                             let tlv=t.insertRow();
                                             var tiers_text=raid_list[k][mode].Tiers[j][v];
                                             if(tiers_text==raid_list[k][mode].FS[j]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
-                                            tiers_text=X[v]+tiers_text;
                                             tlv.innerHTML=`<td>`+tiers_text+`</td> <td>`+raid_list[k][mode].Drops["as string"][j][v]+`</td>`;
                                         }
 
@@ -698,7 +647,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
                                     else if(raid_list[k][mode]["Loot format"]=="Image"){
                                         let tllt=t.insertRow();
                                         if(firstdiff==1){
-                                            tllt.innerHTML=`<td rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td colspan="2" style="word-break:break-all"><i>`+raid_list[k][mode]["Loot tables"][j]+`</i></td>`;
+                                            tllt.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td colspan="2" style="word-break:break-all"><i>`+raid_list[k][mode]["Loot tables"][j]+`</i></td>`;
                                             firstdiff=0;
                                         }
                                         else{
@@ -714,7 +663,9 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
             }
         }
     }
-    ita.style.display = Notes.length == 0 ? "none" : "";
+    t.getElementsByClassName("dotvrlt_first_column")[t.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
+    t.getElementsByTagName("tr")[t.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
+    nc.style.display = Notes.length == 0 ? "none" : "";
     add_notes(Notes,ita);
     for(let c of (columns_to_remove || [])){ delete_column(t,c); }
     update_counters(counters);
@@ -890,10 +841,10 @@ function create_in_raid_div(raid_name,mode,raid_difficulty){
     t.classList.add("dotvrlt_table");
     t.border=1;
     if(raid_list[raid_name][mode]["Loot format"]=="EHL"){
-        t.innerHTML=`<td>`+raid_list[raid_name][mode]["Tiers as string"][raid_difficulty]+`</td>`;
+        t.innerHTML=`<td class="dotvrlt_corners_top">`+raid_list[raid_name][mode]["Tiers as string"][raid_difficulty]+`</td>`;
     }
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
-        t.innerHTML=`<td style="word-break:break-all">Latest loot table known by the script (be careful in case of a rerun): <br><i>`+raid_list[raid_name][mode]["Loot tables"][raid_difficulty]+`</i></td>`;
+        t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Latest loot table known by the script: <br><i>`+raid_list[raid_name][mode]["Loot tables"][raid_difficulty]+`</i><br>For guaranteed up-to-date one: click "Loot", then "Expanded Loot".</td>`;
     }
     td.appendChild(t);
     // In-raid settings creation.
@@ -914,17 +865,18 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
     d.style.top=magics_area.getBoundingClientRect().bottom+6+window.scrollY+"px";
     document.getElementsByClassName("raid-container")[0].appendChild(d);
     detailed_div=d;
+    set_detailed_div_state();
     // Table creation.
     if(raid_list[raid_name][mode]["Loot format"]=="EHL"){
-        var ncol=4+raid_list[raid_name][mode]["Has extra drops"].Hidden+raid_list[raid_name][mode]["Has extra drops"].Summoner;
+        var ncol=4+raid_list[raid_name][mode]["Has extra drops"].Hidden+raid_list[raid_name][mode]["Has extra drops"].Summoner+raid_list[raid_name][mode]["Has extra drops"].Bonus;
         var t=document.createElement("table");
         t.id="DotVRLT detailed table";
         t.classList.add("dotvrlt_table");
         t.border=1;
-        t.innerHTML=`<td colspan="`+ncol+`" style="font-size:18px;">`+raid_name+" ("+raid_difficulty.toLowerCase()+`)</td>`;
+        t.innerHTML=`<td class="dotvrlt_fixed_row dotvrlt_corners_top" colspan="`+ncol+`" style="font-size:18px;">`+raid_name+" ("+raid_difficulty.toLowerCase()+`)</td>`;
         d.appendChild(t);
         var l1=2+raid_list[raid_name][mode]["Has extra drops"].Hidden;
-        var l2=2+raid_list[raid_name][mode]["Has extra drops"].Summoner;
+        var l2=2+raid_list[raid_name][mode]["Has extra drops"].Summoner+raid_list[raid_name][mode]["Has extra drops"].Bonus;
         var r0=t.insertRow();
         if(raid_list[raid_name][mode]["Raid type"]!=""){ r0.innerHTML=`<td colspan="`+l1+`">`+raid_list[raid_name][mode]["Raid type"]+`</td> <td colspan="`+l2+`"> Size: `+raid_list[raid_name][mode]["Raid size"]+`</td>`; }
         else{ r0.innerHTML=`<td colspan="`+ncol+`"> Size: `+raid_list[raid_name][mode]["Raid size"]+`</td>`; }
@@ -939,59 +891,64 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
             else if(x1){ r1b.innerHTML=`<td colspan="`+(l1+l2)+`"> On-hit drops: `+x3+`</td>`; }
             else{ r1b.innerHTML=`<td colspan="`+(l1+l2)+`"> Loot expansion: `+x4+`</td>`; }
         }
-        var r2=t.insertRow(); r2.innerHTML=`<td rowspan="2">Damage</td><td colspan="`+(ncol-1)+`">Loot drops</td>`;
-        var r3=t.insertRow(); r3.innerHTML=`<td>Common</td><td>Rare</td><td>Mythic</td>`;
+        var r2=t.insertRow(); r2.classList.add("dotvrlt_fixed_row_2"); r2.innerHTML=`<td class="dotvrlt_first_column" rowspan="2">Damage</td><td colspan="`+(ncol-1)+`">Loot drops</td>`;
+        var r3=t.insertRow(); r3.classList.add("dotvrlt_fixed_row_3"); r3.innerHTML=`<td>Common</td><td>Rare</td><td>Mythic</td>`;
         if(raid_list[raid_name][mode]["Has extra drops"].Hidden){ r3.innerHTML=r3.innerHTML+`<td>Hidden</td>`; }
         if(raid_list[raid_name][mode]["Has extra drops"].Summoner){ r3.innerHTML=r3.innerHTML+`<td>Summoner</td>`; }
+        if(raid_list[raid_name][mode]["Has extra drops"].Bonus){ r3.innerHTML=r3.innerHTML+`<td>Bonus</td>`; }
         var rnotes=t.insertRow();
-        rnotes.innerHTML=`<td colspan="`+ncol+`"><i id="dotvrlt_notes_raid"></i></td>`;
+        rnotes.innerHTML=`<td class="dotvrlt_first_column" colspan="`+ncol+`"><i id="dotvrlt_notes_raid"></i></td>`;
         var Notes=raid_list[raid_name][mode].notes[raid_difficulty];
         rnotes.style.display = Notes.length == 0 ? "none" : "";
         add_notes(Notes,document.getElementById("dotvrlt_notes_raid"));
         for(let k=0; k<raid_list[raid_name][mode].Tiers[raid_difficulty].length; k++){
-            let x= ["","0","false","no"].includes(raid_list[raid_name][mode].Drops.Bonus[raid_difficulty][k].toLowerCase()) ? "" : "["+raid_list[raid_name][mode].Drops.Bonus[raid_difficulty][k]+"] ";
             let r4=t.insertRow();
             let tiers_text=raid_list[raid_name][mode].Tiers[raid_difficulty][k];
             if(tiers_text==raid_list[raid_name][mode].FS[raid_difficulty]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
-            tiers_text=x+tiers_text;
-            r4.innerHTML=`<td>`+tiers_text+`</td><td>`+raid_list[raid_name][mode].Drops.Common[raid_difficulty][k]+`</td><td>`+raid_list[raid_name][mode].Drops.Rare[raid_difficulty][k]+`</td><td>`+raid_list[raid_name][mode].Drops.Mythic[raid_difficulty][k]+`</td>`;
+            r4.innerHTML=`<td class="dotvrlt_first_column">`+tiers_text+`</td><td>`+raid_list[raid_name][mode].Drops.Common[raid_difficulty][k]+`</td><td>`+raid_list[raid_name][mode].Drops.Rare[raid_difficulty][k]+`</td><td>`+raid_list[raid_name][mode].Drops.Mythic[raid_difficulty][k]+`</td>`;
             if(raid_list[raid_name][mode]["Has extra drops"].Hidden){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode].Drops.Hidden[raid_difficulty][k]+`</td>`; }
             if(raid_list[raid_name][mode]["Has extra drops"].Summoner){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode].Drops.Summoner[raid_difficulty][k]+`</td>`; }
+            if(raid_list[raid_name][mode]["Has extra drops"].Bonus){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode].Drops.Bonus[raid_difficulty][k]+`</td>`; }
         }
+        t.getElementsByClassName("dotvrlt_first_column")[t.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
+        t.getElementsByTagName("tr")[t.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
     }
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
         var i=document.createElement("img");
         i.id="DotVRLT detailed table";
-        var T=magics_area.getBoundingClientRect().bottom+6, B=document.getElementsByClassName("raid-footer")[0].getBoundingClientRect().top-15;
-        var h0=Math.min(550,B-T).toString(), w0="398"; // 398 because border=1
-        i.width=w0; i.height=h0; i.style.margin="auto"; i.style.cursor="zoom-in"; d.style.overflowY="hidden";
+        i.style.margin="auto"; i.style.cursor="zoom-in";
+        i.addEventListener("load",
+                           function(){
+            let I=document.getElementById("DotVRLT detailed table");
+            I.height=Math.min(I.naturalHeight,document.documentElement.style.getPropertyValue("--in-raid-table-max-height").replace("px","")).toString();
+            I.width=Math.min(I.naturalWidth,"400").toString(); // --in-raid-table-max-width cannot be used because it has not been set using document.documentElement.style.setProperty
+        });
         i.src=raid_list[raid_name][mode]["Loot tables"][raid_difficulty];
+        var z=0;
         i.addEventListener("click",
                            function(){
-            var h=d.getBoundingClientRect().height.toString(), w=d.getBoundingClientRect().width.toString()-2; // width-2 because border=1
-            if(i.width>w||i.height>h){i.width=w; i.height=h; i.style.cursor="zoom-in"; d.style.overflowY="hidden";}
-            else{i.setAttribute("width",""); i.setAttribute("height",""); i.style.cursor="zoom-out"; d.style.overflowY="auto";}
+            var h0=document.documentElement.style.getPropertyValue("--in-raid-table-max-height").replace("px",""),
+                w0=(document.documentElement.style.getPropertyValue("--in-raid-table-max-width")||"400").replace("px","");
+            var h = Math.min(i.naturalHeight,h0).toString(), w = Math.min(i.naturalWidth,w0).toString();
+            var H = Math.max(i.naturalHeight,h0).toString(), W = Math.max(i.naturalWidth,w0).toString();
+            if(z){i.width=w; i.height=h; i.style.cursor="zoom-in";}
+            else{i.width=W; i.height=H; i.style.cursor="zoom-out";}
+            z=1-z;
         });
         d.appendChild(i);
     }
-    //
-    set_detailed_div_state();
 }
 
 function set_detailed_div_state(){
     if(show_detailed_div&&in_raid_button_pressed){
-        document.documentElement.style.setProperty("--detailed-div-display","yes");
+        document.documentElement.style.setProperty("--detailed-div-display","flex");
         var magics_area=document.getElementsByClassName("raid-effects")[0]||document.createElement("div");
         var T=magics_area.getBoundingClientRect().bottom+6;
         detailed_div.style.top=T+window.scrollY+"px";
         var B=document.getElementsByClassName("raid-footer")[0].getBoundingClientRect().top-15;
         var H=B-T;
-        if( raid_list[document.getElementsByClassName("boss-name-container")[0].firstChild.innerHTML][current_fighting_mode()]["Loot format"]=="Image"){ H=Math.min(550,H); }
-        document.documentElement.style.setProperty("--in-raid-table-height",H+"px");
-        var t=document.getElementById("DotVRLT detailed table");
-        if( t.getBoundingClientRect().height < detailed_div.getBoundingClientRect().height ){
-            document.documentElement.style.setProperty("--in-raid-table-height",t.getBoundingClientRect().height+"px");
-        }
+        if( raid_list[document.getElementsByClassName("boss-name-container")[0].firstChild.innerHTML][current_fighting_mode()]["Loot format"]=="Image" ){ H=Math.min(550,H); }
+        document.documentElement.style.setProperty("--in-raid-table-max-height",H+"px");
     }
     else{ document.documentElement.style.setProperty("--detailed-div-display","none"); }
 }
@@ -1051,36 +1008,37 @@ function THE_WATCHER(){
 }
 
 function damage_taken(base,element){
-    // damage taken = (base raid damage)*(1-(damage reduction)/100)*(1-resistance/100) "rounded up"
-    // function damage_taken(b,def,r){ var dr=0.075*Math.log(1+def); return Math.ceil(b*(1-dr)*(1-r/100)); } // /!\ !!!sEEMs CORRECT!!! /!\
+    // damage taken = (base raid damage)*(1-(damage reduction)/100)*(1-resistance/100), ceiled
+    // function damage_taken(b,def,r){ var dr=0.075*Math.log(1+def); return Math.ceil(b*(1-dr)*(1-r/100)); }
+    // /!\ Wrong values, but "shape" of the formula should be accurate. /!\
+    // The formulas should match the following results:
     // function damage_list(){return{"rogue slime":damage_taken(10,2011,0),"naga risaldar":damage_taken(15,2011,0),"greater ent":damage_taken(16,2011,0),"galeohog":damage_taken(25,2011,0),"legendary lesser tree ent":damage_taken(120,2011,0)}}
     // var player_stats={};player_stats.defense=2011;player_stats.Physical=0;player_stats.Magic=1.5;player_stats.Psychic=1.5;player_stats.Ice=0.25;player_stats.Fire=10.25;player_stats.Poison=0;player_stats.Acid=0;player_stats.Nature=0;player_stats.Lightning=0;player_stats.Holy=0;player_stats.Dark=0;
     // function damage_list(){return{"rogue slime":damage_taken(10,"Physical"),"naga risaldar":damage_taken(15,"Poison"),"greater ent":damage_taken(16,"Nature"),"galeohog":damage_taken(25,"Poison"),"legendary lesser tree ent":damage_taken(120,"Nature"),"legendary sand wyrm":damage_taken(200,"Physical"),"hard superior watcher":damage_taken(32,"Magic"),"legendary superior watcher":damage_taken(180,"Magic"),"Jagar the Red":damage_taken(35,"Fire"),"Legendary Jagar the Red":damage_taken(260,"Fire")}}
     /*
-    player_stats.defense=1;  console.log("1 : "+damage_taken(260,"Fire")+" (normalement: 260)");
-    player_stats.defense=5;  console.log("5 : "+damage_taken(260,"Fire")+" (normalement: 218)");
-    player_stats.defense=25; console.log("25 : "+damage_taken(260,"Fire")+" (normalement: 182)");
-    player_stats.defense=37; console.log("37 : "+damage_taken(260,"Fire")+" (normalement: 175)");
-    player_stats.defense=50; console.log("50 : "+damage_taken(260,"Fire")+" (normalement: 169)");
-    player_stats.defense=98; console.log("98 : "+damage_taken(260,"Fire")+" (normalement: 157)");
-    player_stats.defense=244; console.log("244 : "+damage_taken(260,"Fire")+" (normalement: 142)");
+    player_stats.defense=1;  console.log("1 : "+damage_taken(260,"Fire")+" (should be: 260)");
+    player_stats.defense=5;  console.log("5 : "+damage_taken(260,"Fire")+" (should be: 218)");
+    player_stats.defense=25; console.log("25 : "+damage_taken(260,"Fire")+" (should be: 182)");
+    player_stats.defense=37; console.log("37 : "+damage_taken(260,"Fire")+" (should be: 175)");
+    player_stats.defense=50; console.log("50 : "+damage_taken(260,"Fire")+" (should be: 169)");
+    player_stats.defense=98; console.log("98 : "+damage_taken(260,"Fire")+" (should be: 157)");
+    player_stats.defense=244; console.log("244 : "+damage_taken(260,"Fire")+" (should be: 142)");
     */
     // superior watcher hard: 12 (1809 def, 2011 def, 2477 def) but with the healing magic. 14, normally?
-    // Ou? function damage_taken(b,def,r){ var dr=2.25*Math.log(1+(Math.E-1)*def/(10000+def)); return Math.ceil(b*(1-dr)*(1-r/100)); } // A PEU PREs
-    // OU ALORs Math.log(1+(Math.E-1)*d/(2475+d)) uniuement pour dr ?
-    // OU: var dr=Math.log(1+d)/(5.73+Math.log(1+d)); ? dr=1.3*Math.log(1+d)/(7.45+1.3*Math.log(1+d)); ?
-    // INUTILE DE E COMPLIUER A CE POINT : MATH.LOG(100000000000) E$T TR$ BA$...
-    // 0.1*Math.log(1+0.5*d)+0.04; ? Un truc comme 0.8*Math.log(1+0.07*Math.log(1+d))-0.01;
-    // MIEUX : 0.2*Math.log(1+1*d**0.5)-0.066;
+    // Or?: function damage_taken(b,def,r){ var dr=2.25*Math.log(1+(Math.E-1)*def/(10000+def)); return Math.ceil(b*(1-dr)*(1-r/100)); } // Wrong values
+    // Or Math.log(1+(Math.E-1)*d/(2475+d)) only for dr ?
+    // Or: var dr=Math.log(1+d)/(5.73+Math.log(1+d)); ? dr=1.3*Math.log(1+d)/(7.45+1.3*Math.log(1+d)); ?
+    // NOTE: MATH.LOG(100000000000) I$ VERY LOW...
+    // 0.1*Math.log(1+0.5*d)+0.04; ? something like 0.8*Math.log(1+0.07*Math.log(1+d))-0.01;
+    // Better : 0.2*Math.log(1+1*d**0.5)-0.066;
 
-    // Base (pour un coup à 20... à 20... zut, devrais-je le préciser?): 20*"dmgVal". Peut-on en faire uelue chose?
     if ( base=="?" || element=="?" ){ return "?"; }
     else{
         var b=base*1, d=player_stats.defense*1;
         var dr=Math.log(1+(Math.E-1)*d/(2475+d));
         //var A,B,C; A=0.06; B=2.4; C=0.5;
         //var dr=A*Math.log(B*d+C)-A*Math.log(C);
-        // Ou (la défense de base vaut 1): dr=A*Math.log(B*d)-A*Math.log(B)=A*Math.log(d) ???!!!
+        // Or (base defense is 1): dr=A*Math.log(B*d)-A*Math.log(B)=A*Math.log(d) ???!!!
         var r=player_stats[element]; // If resistance is worth x%, then r=x. For now?
         return Math.ceil(b*(1-dr)*(1-r/100));
     }
@@ -1095,7 +1053,7 @@ function createDamageTakenTable(M){
     t.border="1";
     t.classList.add("dotvrlt_table");
     document.getElementById("DotVRLT main table div").appendChild(t);
-    t.innerHTML=`<tr> <td>Name</td> <td>Damage type</td> <td colspan="2">Damage taken</td></tr>`;
+    t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column">Name</td> <td>Damage type</td> <td colspan="2">Damage taken</td></tr>`;
     for(let k in raid_list){
         for(let mode in raid_list[k]){
             if(modes.includes(mode)){
@@ -1108,7 +1066,7 @@ function createDamageTakenTable(M){
                             let dmg=damage_taken(raid_list[k][mode].Damage[j],raid_list[k][mode].Damage.Type);
                             let tl=t.insertRow();
                             if(firstdiff==1){
-                                tl.innerHTML=`<td rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode].Damage.Type+`</td> <td>`+j+`</td> <td>`+dmg+" (base: "+raid_list[k][mode].Damage[j]+`)</td>`;
+                                tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode].Damage.Type+`</td> <td>`+j+`</td> <td>`+dmg+" (base: "+raid_list[k][mode].Damage[j]+`)</td>`;
                                 firstdiff=0;
                             }
                             else{
@@ -1122,6 +1080,8 @@ function createDamageTakenTable(M){
         }
     }
     update_counters(counters);
+    t.getElementsByClassName("dotvrlt_first_column")[t.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
+    t.getElementsByTagName("tr")[t.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
 }
 
 function create_input_span(div,t,stat,t_end){
