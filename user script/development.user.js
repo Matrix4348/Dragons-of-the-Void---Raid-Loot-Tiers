@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      5.2
+// @version      6.0
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -1005,7 +1005,42 @@ function THE_WATCHER(){
     observer.observe(targetNode, config);
 }
 
-function damage_taken(base,element){ return "?"; }
+function damage_taken(base,element){
+    // damage taken = (base raid damage)*(1-(damage reduction)/100)*(1-resistance/100), ceiled
+    // function damage_taken(b,def,r){ var dr=0.075*Math.log(1+def); return Math.ceil(b*(1-dr)*(1-r/100)); }
+    // /!\ Wrong values, but "shape" of the formula should be accurate. /!\
+    // The formulas should match the following results:
+    // function damage_list(){return{"rogue slime":damage_taken(10,2011,0),"naga risaldar":damage_taken(15,2011,0),"greater ent":damage_taken(16,2011,0),"galeohog":damage_taken(25,2011,0),"legendary lesser tree ent":damage_taken(120,2011,0)}}
+    // var player_stats={};player_stats.defense=2011;player_stats.Physical=0;player_stats.Magic=1.5;player_stats.Psychic=1.5;player_stats.Ice=0.25;player_stats.Fire=10.25;player_stats.Poison=0;player_stats.Acid=0;player_stats.Nature=0;player_stats.Lightning=0;player_stats.Holy=0;player_stats.Dark=0;
+    // function damage_list(){return{"rogue slime":damage_taken(10,"Physical"),"naga risaldar":damage_taken(15,"Poison"),"greater ent":damage_taken(16,"Nature"),"galeohog":damage_taken(25,"Poison"),"legendary lesser tree ent":damage_taken(120,"Nature"),"legendary sand wyrm":damage_taken(200,"Physical"),"hard superior watcher":damage_taken(32,"Magic"),"legendary superior watcher":damage_taken(180,"Magic"),"Jagar the Red":damage_taken(35,"Fire"),"Legendary Jagar the Red":damage_taken(260,"Fire")}}
+    /*
+    player_stats.defense=1;  console.log("1 : "+damage_taken(260,"Fire")+" (should be: 260)");
+    player_stats.defense=5;  console.log("5 : "+damage_taken(260,"Fire")+" (should be: 218)");
+    player_stats.defense=25; console.log("25 : "+damage_taken(260,"Fire")+" (should be: 182)");
+    player_stats.defense=37; console.log("37 : "+damage_taken(260,"Fire")+" (should be: 175)");
+    player_stats.defense=50; console.log("50 : "+damage_taken(260,"Fire")+" (should be: 169)");
+    player_stats.defense=98; console.log("98 : "+damage_taken(260,"Fire")+" (should be: 157)");
+    player_stats.defense=244; console.log("244 : "+damage_taken(260,"Fire")+" (should be: 142)");
+    */
+    // superior watcher hard: 12 (1809 def, 2011 def, 2477 def) but with the healing magic. 14, normally?
+    // Or?: function damage_taken(b,def,r){ var dr=2.25*Math.log(1+(Math.E-1)*def/(10000+def)); return Math.ceil(b*(1-dr)*(1-r/100)); } // Wrong values
+    // Or Math.log(1+(Math.E-1)*d/(2475+d)) only for dr ?
+    // Or: var dr=Math.log(1+d)/(5.73+Math.log(1+d)); ? dr=1.3*Math.log(1+d)/(7.45+1.3*Math.log(1+d)); ?
+    // NOTE: MATH.LOG(100000000000) I$ VERY LOW...
+    // 0.1*Math.log(1+0.5*d)+0.04; ? something like 0.8*Math.log(1+0.07*Math.log(1+d))-0.01;
+    // Better : 0.2*Math.log(1+1*d**0.5)-0.066;
+
+    if ( base=="?" || element=="?" ){ return "?"; }
+    else{
+        var b=base*1, d=player_stats.defense*1;
+        var dr=Math.log(1+(Math.E-1)*d/(2475+d));
+        //var A,B,C; A=0.06; B=2.4; C=0.5;
+        //var dr=A*Math.log(B*d+C)-A*Math.log(C);
+        // Or (base defense is 1): dr=A*Math.log(B*d)-A*Math.log(B)=A*Math.log(d) ???!!!
+        var r=player_stats[element]; // If resistance is worth x%, then r=x. For now?
+        return Math.ceil(b*(1-dr)*(1-r/100));
+    }
+}
 
 function createDamageTakenTable(M){
     var modes = typeof(M)=="string" ? modes=[M] : modes=M;
