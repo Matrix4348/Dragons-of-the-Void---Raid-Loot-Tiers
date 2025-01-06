@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      5.1.1
+// @version      5.2
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -24,6 +24,7 @@ var current_tab_default="About";
 var difficulties_to_display, automatically_show_in_raid_div, current_tab, show_detailed_div, show_advanced_view;
 var custom_colours={"Easy":"rgb(0,255,0)","Hard":"rgb(255,165,0)","Legendary":"rgb(238,130,238)","Main":"rgb(153,255,170)","Buttons":"rgb(153,187,255)"};
 var colourless_mode_default=0, colourless_mode, rounded_corners_default=1, rounded_corners, current_difficulty;
+var player_stats={};
 
 // Workaround to an unexpected compatibility issue with some GM_* functions in Greasemonkey 4.
 
@@ -62,7 +63,7 @@ async function fetch_online_raid_data(){
         raid_list=sanitized_object(JSON.parse(r));
     }
     catch(e){
-        // Fallback to the data known as of last update. DO NOT TOUCH THE LINE BELOW!
+        // Fall back to the data known as of last update. DO NOT TOUCH THE LINE BELOW!
         /* MARKER 1 */ raid_list={}; /* MARKER 1 */
     }
 }
@@ -357,6 +358,18 @@ async function initialize_saved_variables(){ // Note: Just in case, global varia
     show_advanced_view=await GM_getValue("show_advanced_view_stored",show_advanced_view_default);
     colourless_mode=await GM_getValue("colourless_mode_stored",colourless_mode_default);
     rounded_corners=await GM_getValue("rounded_corners_stored",rounded_corners_default);
+    player_stats.defense=await GM_getValue("defense_stored",0);
+    player_stats.Physical=0;
+    player_stats.Magic=await GM_getValue("Magic_stored",0);
+    player_stats.Psychic=await GM_getValue("Psychic_stored",0);
+    player_stats.Ice=await GM_getValue("Ice_stored",0);
+    player_stats.Fire=await GM_getValue("Fire_stored",0);
+    player_stats.Poison=await GM_getValue("Poison_stored",0);
+    player_stats.Acid=await GM_getValue("Acid_stored",0);
+    player_stats.Nature=await GM_getValue("Nature_stored",0);
+    player_stats.Lightning=await GM_getValue("Lightning_stored",0);
+    player_stats.Holy=await GM_getValue("Holy_stored",0);
+    player_stats.Dark=await GM_getValue("Dark_stored",0);
 }
 
 function pressButton(){
@@ -710,6 +723,7 @@ async function createTab(name){
     else if(name=="All"){ createTable("All raids",["raiding","healthless"],"All","All"); }
     else if(name=="Damage taken (raids)"){ createDamageTakenTable(["raiding","healthless"]); }
     else if(name=="Damage taken (quests)"){ createDamageTakenTable("questing"); }
+    else if(name=="Your stats"){ createStatsTab(); }
     current_tab=name;
     await GM_setValue("current_tab_stored",current_tab);
 }
@@ -745,6 +759,7 @@ function create_tab_buttons_div(){
     // Other buttons
     createTabButton(t3,"Damage taken (raids)");
     createTabButton(t3,"Damage taken (quests)");
+    //createTabButton(t3,"Your stats"); /* ACTIVATE WHEN DAMAGE TAKEN FORMULA IS DISCOVERED */
     createTabButton(t3,"About");
 }
 
@@ -1030,6 +1045,43 @@ function createDamageTakenTable(M){
     update_counters(counters);
     t.getElementsByClassName("dotvrlt_first_column")[t.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
     t.getElementsByTagName("tr")[t.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
+}
+
+function create_input_span(div,t,stat,t_end){
+    if(!t_end){ t_end=""; }
+    var d=document.createElement("div"); d.style.width="100%"; d.style.height="25px"; d.style.marginLeft="5%";
+    var s=document.createElement("span"); s.innerHTML=t; d.appendChild(s);
+    var i=document.createElement("input");
+    i.type="text"; i.style.width="max-content"; i.style.textAlign="right"; i.value=player_stats[stat];
+    i.oninput=async function(){ player_stats[stat]=i.value; await GM_setValue(stat+"_stored",i.value); }
+    d.appendChild(i);
+    var a=document.createElement("span"); a.innerHTML=t_end; d.appendChild(a);
+    div.appendChild(d);
+}
+
+function createStatsTab(){
+    document.getElementById("DotVRLT main title div").innerHTML="Your defense and elemental resistances";
+    var d=document.getElementById("DotVRLT main table div"); d.style.fontSize="14px";
+    create_input_span(d,"Defense: ","defense");
+    create_input_span(d,"Magic resistance: ","Magic","%");
+    create_input_span(d,"Psychic resistance: ","Psychic","%");
+    create_input_span(d,"Ice resistance: ","Ice","%");
+    create_input_span(d,"Fire resistance: ","Fire","%");
+    create_input_span(d,"Poison resistance: ","Poison","%");
+    create_input_span(d,"Acid resistance: ","Acid","%");
+    create_input_span(d,"Nature resistance: ","Nature","%");
+    create_input_span(d,"Lightning resistance: ","Lightning","%");
+    create_input_span(d,"Holy resistance: ","Holy","%");
+    create_input_span(d,"Dark resistance: ","Dark","%");
+    var info=document.createElement("div");
+    info.style.marginLeft="2%"; info.style.marginRight="2%"; info.style.marginTop="2%";
+    info.innerHTML=`
+    Input your defense and elemental resistances and you will be able to know how hard raids should hit you, either in the "Damage taken" tab or in the in-raid detailed table.
+    <br>
+    <b>Note: </b>only the above stats will be taken into account, so additional sources (magics, damage-neglecting generals or weapons...) may reduce it even further, while raid abilities
+    may increase it, instead.
+    `;
+    d.appendChild(info);
 }
 
 function assign_current_difficulty(d){ current_difficulty=d; }
