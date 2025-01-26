@@ -16,7 +16,7 @@ All the relevant files are in the csv format and located in the "community-gathe
 * "Loot tiers and drop data" folder
 * "On-hit drops" folder
 
-It is absolutely not necessary to update everything at once. Usually, the loot tiers will come a lot later than the rest. Once the files have been modified, raid_list.json will automatically be updated and be made available to the users of my script within a minute or two.
+It is absolutely not necessary to update everything at once. Usually, the loot tiers will come a lot later than the rest. Once the files have been modified, raid-list.json will automatically be updated and be made available to the users of my script within a minute or two.
 
 ### 1) What are csv files?
 

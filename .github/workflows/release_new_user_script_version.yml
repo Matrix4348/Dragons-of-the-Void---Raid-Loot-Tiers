@@ -8,7 +8,7 @@ on:
   
 jobs:
   inject_raid_list_json:
-    name: Inject raid_list.json into the user script before releasing the new version
+    name: Inject raid-list.json into the user script before releasing the new version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository content
