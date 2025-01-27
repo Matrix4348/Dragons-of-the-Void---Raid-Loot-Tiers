@@ -198,6 +198,7 @@ for r in raid_list:
         raid_list[r][M]["Extra drops"]={}
         raid_list[r][M]["Extra drops"]["On-hit drops"]={a:"no" for a in all_d}
         raid_list[r][M]["Extra drops"]["Loot expansion"]={a:"no" for a in all_d}
+        raid_list[r][M]["Average stat points"]={}
         if raid_list[r][M]["Loot format"]=="EHL":
             raid_list[r][M]["Drops"]["Common"]={a:[] for a in all_d}
             raid_list[r][M]["Drops"]["Rare"]={a:[] for a in all_d}
@@ -224,6 +225,7 @@ for r in raid_list:
             # Tiers, drops:
             for d in all_d:
                 raid_list[r][M]["Tiers"][d]=[]
+                raid_list[r][M]["Average stat points"][d]=[]
                 try:
                     f=open(loot_path+paths_to_files[raid_list[r][M]["Raid type"]]+"/"+r+"/"+d+".csv", 'r')
                 except:
@@ -250,6 +252,7 @@ for r in raid_list:
                                 raid_list[r][M]["Drops"][x][d].append("?")
                             else:
                                 raid_list[r][M]["Drops"][x][d].append("0")
+                        raid_list[r][M]["Average stat points"][d].append(line.pop("Average stat points"))
                     f.close()
                 l=len(raid_list[r][M]["Tiers"][d]) # This will be used several times below.
                 if l==0:
@@ -272,7 +275,7 @@ for r in raid_list:
                                 raid_list[r][M]["Drops"][x][d].append("?")
                             else:
                                 raid_list[r][M]["Drops"][x][d].append("0")
-                # In hope that this will remain the same for every difficulties:
+                # In hope that this will remain the same for every difficulty:
                 raid_list[r][M]["Extra drops"]["Loot expansion"][d]=raid_list[r][M]["Has extra drops"]["Loot expansion"]
                 # Tiers, as a single character string:
                 if M=="raiding":
@@ -300,6 +303,8 @@ for r in raid_list:
                 thing_to_remove="Health on "+d.lower()
                 if thing_to_remove in raid_list[r][M]:
                     raid_list[r][M].pop("Health on "+d.lower()) # Health data was moved to raid_list[r][M]["Health"][d].
+                if raid_list[r][M]["Average stat points"]=={}:
+                    raid_list[r][M].pop("Average stat points") # We keep that only if at least some of it has been calculated.
         elif raid_list[r][M]["Loot format"]=="Image":
             try:
                 f=open(loot_path+paths_to_files[raid_list[r][M]["Raid type"]]+"/"+r+"/Loot tables.csv", 'r')
