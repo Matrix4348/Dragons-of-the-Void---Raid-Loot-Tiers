@@ -12,7 +12,7 @@
 // @grant        GM.getValue
 // @grant        GM.setValue
 // ==/UserScript==
-
+ 
 // Global variables.
 
 var raid_list;
