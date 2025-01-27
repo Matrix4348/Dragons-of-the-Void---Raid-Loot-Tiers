@@ -252,7 +252,8 @@ for r in raid_list:
                                 raid_list[r][M]["Drops"][x][d].append("?")
                             else:
                                 raid_list[r][M]["Drops"][x][d].append("0")
-                        raid_list[r][M]["Average stat points"][d].append(line.pop("Average stat points"))
+                        if "Average stat points" in line:
+                            raid_list[r][M]["Average stat points"][d].append(line.pop("Average stat points"))
                     f.close()
                 l=len(raid_list[r][M]["Tiers"][d]) # This will be used several times below.
                 if l==0:
