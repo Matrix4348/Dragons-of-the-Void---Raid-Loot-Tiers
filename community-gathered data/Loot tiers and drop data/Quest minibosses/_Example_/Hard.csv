@@ -1,2 +1,3 @@
 Damage,Common,Rare,Mythic,Summoner,Hidden,Bonus
-Health,1-2,0,0,0,0,No
+Health,2,0,0,-,-,AO?
+AO?,+1,0,0,-,-,AO?
