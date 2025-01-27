@@ -33,7 +33,7 @@
 All the data collected by the players and displayed by the user script is located in this folder.
 
 It contains the following files and folder:
-* [raid_list.json](raid-list-json.md)
+* [raid-list.json](raid-list-json.md)
 * [Basic data](basic-data-folder.md)
 * [Base damage taken](base-damage-taken-folder.md)
 * [Loot tiers and drop data](loot-tiers-folder.md)
@@ -47,6 +47,6 @@ It contains the following files and folder:
 
 <div align="center">
   
-  [< What is a csv file?](what-is-a-csv-file.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [raid_list.json >](raid-list-json.md)
+  [< What is a csv file?](what-is-a-csv-file.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [raid-list.json >](raid-list-json.md)
   
 </div>

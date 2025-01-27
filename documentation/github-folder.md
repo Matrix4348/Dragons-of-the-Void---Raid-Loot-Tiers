@@ -38,7 +38,7 @@ If you are new to GitHub actions but need to update or create one, you should ca
 
 `.gitignore` is a list of paths that should be ignored by the automation processes.
 
-Right now, only csv files and images in `community-gathered data` could relevantly be added to `.gitignore`. If for some reason you want to prevent such files to be added to `raid_list.json`, then feel free to tell GitHub to ignore them.
+Right now, only csv files and images in `community-gathered data` could relevantly be added to `.gitignore`. If for some reason you want to prevent such files to be added to `raid-list.json`, then feel free to tell GitHub to ignore them.
 
 <hr>
 

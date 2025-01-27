@@ -14,7 +14,7 @@
 
 [Community gathered data](community-gathered-data-folder.md)
 
-* [raid_list.json](raid-list-json.md)
+* [raid-list.json](raid-list-json.md)
 
 * [Basic data](basic-data-folder.md)
 

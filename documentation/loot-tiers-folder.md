@@ -83,6 +83,8 @@ If a raid is affected by a bonus tiers skill (discerning vision, astute observat
   
 Here is what such line would look like; `DV1,+0,+0,+y,DV1`.<br>
 
+The "average stat points" columns contains the average number of stat points that each tier gives. That one should definitely only be added when it can be filled.
+
 <hr>
 
 <div align="center">

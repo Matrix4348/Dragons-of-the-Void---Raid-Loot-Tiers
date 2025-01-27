@@ -7,7 +7,7 @@ on:
       - "**.jpg"
       - "**.jpeg"
       - "**.webp"
-      - "community-gathered data/raid_list.json"
+      - "community-gathered data/raid-list.json"
       - "community-gathered data/**.csv"
   workflow_dispatch:
 
@@ -18,7 +18,7 @@ jobs:
     env:
       COMMITTER_NAME_TEXT: '{"false":"${{ github.actor }}", "true":"github-actions[bot]"}'
       COMMITTER_ID_TEXT: '{"false":"${{ github.actor_id }}", "true":"41898282"}'
-      TEXT: '{"false":"[${{ github.event.pusher.name }}] Update raid_list.json", "true":"[${{ github.triggering_actor }}] Update raid_list.json"}'
+      TEXT: '{"false":"[${{ github.event.pusher.name }}] Update raid-list.json", "true":"[${{ github.triggering_actor }}] Update raid-list.json"}'
     steps:
       - name: Checkout repository content
         uses: actions/checkout@v4 # Checkout the repository content to github runner.
@@ -47,7 +47,7 @@ jobs:
           cd ./main/
           git config user.name "${{ env.COMMITTER_NAME }}"
           git config user.email "${{ env.COMMITTER_ID }}+${{ env.COMMITTER_NAME }}@users.noreply.github.com"
-          git add ./"community-gathered data"/raid_list.json
+          git add ./"community-gathered data"/raid-list.json
           git commit --allow-empty -m "${{ env.COMMIT_MESSAGE }}"
           git push origin
         env:
@@ -80,7 +80,7 @@ jobs:
                 - "**.jpeg"
                 - "**.webp"
               raid_list:
-                - './"community-gathered data"/raid_list.json'
+                - './"community-gathered data"/raid-list.json'
               tables:
                 - "**.csv"
            working-directory: "./main"
@@ -106,9 +106,9 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
           if [ ${{ steps.changes.outputs.raid_list }} == 'true' -o ${{ steps.changes.outputs.tables }} == 'true' ] && [ ${{ steps.changes.outputs.images }} == 'true' ]; then
-            git commit --allow-empty -m "Update raid_list.json and loot tables"
+            git commit --allow-empty -m "Update raid-list.json and loot tables"
           elif [ ${{ steps.changes.outputs.raid_list }} == 'true' -o ${{ steps.changes.outputs.tables }} == 'true' ]; then
-            git commit --allow-empty -m "Update raid_list.json"
+            git commit --allow-empty -m "Update raid-list.json"
           elif [ ${{ steps.changes.outputs.images }} == 'true' ]; then
             git commit --allow-empty -m "Update loot tables"
           else
@@ -146,5 +146,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit --allow-empty -m "[Manual trigger] Update raid_list.json and loot tables"
+          git commit --allow-empty -m "[Manual trigger] Update raid-list.json and loot tables"
           git push
