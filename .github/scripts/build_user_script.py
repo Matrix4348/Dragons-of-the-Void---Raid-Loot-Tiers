@@ -1,6 +1,6 @@
-draft = "./user script/development.user.js"
-latest = "./user script/latest.user.js"
-raid_list_file = "./community-gathered data/raid-list.json"
+draft = "./main/user script/development.user.js"
+latest = "./main/user script/latest.user.js"
+raid_list_file = "./main/community-gathered data/raid-list.json"
 
 try:
     with open(raid_list_file,"r") as reader:
