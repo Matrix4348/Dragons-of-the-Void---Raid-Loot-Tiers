@@ -293,19 +293,6 @@ for r in raid_list:
                     raid_list[r][M]["Tiers as string"][d]=raid_list[r][M]["Tiers"][d][0]
                     for k in range(1,l):
                         raid_list[r][M]["Tiers as string"][d]+=" | "+raid_list[r][M]["Tiers"][d][k]
-                # Drops, as a list of grouped character strings:
-                for k in range(l):
-                    D=[]
-                    D.append(raid_list[r][M]["Drops"]["Common"][d][k])
-                    D.append(raid_list[r][M]["Drops"]["Rare"][d][k])
-                    D.append(raid_list[r][M]["Drops"]["Mythic"][d][k])
-                    for b in bonus_drops_tier_based:
-                        D.append(raid_list[r][M]["Drops"][extra_drops[b]][d][k])
-                    droppy=D[0]
-                    lD=len(D)
-                    for j in range(1,lD):
-                        droppy+=" | "+D[j]
-                    raid_list[r][M]["Drops"]["as string"][d].append(droppy)
             for d in all_d:
                 thing_to_remove="Health on "+d.lower()
                 if thing_to_remove in raid_list[r][M]:
@@ -316,16 +303,15 @@ for r in raid_list:
             except:
                 f=open(loot_path+paths_to_files[raid_list[r][M]["Raid type"]]+"/"+"_Example_/Loot tables.csv", 'r')
             finally:
-                for d in all_d:
-                    headers=csv.DictReader(f,delimiter=",").fieldnames
-                    t=""
-                    try:
-                        last_line=list(csv.reader(f,delimiter=","))[-1]
-                        t+="https://matrix4348.github.io/loot-tables/"
-                    except:
-                        last_line=["<i>No loot table URL found.</i>","Today"]
-                    finally:
-                        raid_list[r][M]["Loot tables"][d]=t+last_line[headers.index("File name")]
+                for d in all_d: # This will have to be reworked if a case with several difficulties arise
+                    raid_list[r][M]["Loot tables"][d]=[]
+                    reader = csv.DictReader(f, delimiter=',')
+                    for line in reader:
+                        URL="https://matrix4348.github.io/loot-tables/"+line.pop("File name")
+                        date=line.pop("Date of first use")
+                        raid_list[r][M]["Loot tables"][d].append({"URL":URL,"date_of_release":date})
+                    if len(raid_list[r][M]["Loot tables"][d])==0:
+                        raid_list[r][M]["Loot tables"][d].append({"URL":"<i>No loot table URL found.</i>","date_of_release":"Today"})
                 f.close()
 
 
