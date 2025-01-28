@@ -251,7 +251,7 @@ for r in raid_list:
                             elif raid_list[r][M]["Has extra drops"][x]:
                                 raid_list[r][M]["Drops"][x][d].append("?")
                             else:
-                                raid_list[r][M]["Drops"][x][d].append("0")
+                                raid_list[r][M]["Drops"][x][d].append("-")
                         if "Average stat points" in line:
                             raid_list[r][M]["Average stat points"][d].append(line.pop("Average stat points"))
                     f.close()
@@ -275,7 +275,7 @@ for r in raid_list:
                             if raid_list[r][M]["Has extra drops"][x]:
                                 raid_list[r][M]["Drops"][x][d].append("?")
                             else:
-                                raid_list[r][M]["Drops"][x][d].append("0")
+                                raid_list[r][M]["Drops"][x][d].append("-")
                 # In hope that this will remain the same for every difficulty:
                 raid_list[r][M]["Extra drops"]["Loot expansion"][d]=raid_list[r][M]["Has extra drops"]["Loot expansion"]
                 # Tiers, as a single character string:
