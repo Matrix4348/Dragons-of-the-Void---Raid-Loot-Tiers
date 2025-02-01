@@ -199,6 +199,7 @@ for r in raid_list:
         raid_list[r][M]["Extra drops"]["On-hit drops"]={a:"no" for a in all_d}
         raid_list[r][M]["Extra drops"]["Loot expansion"]={a:"no" for a in all_d}
         raid_list[r][M]["Average stat points"]={a:[] for a in all_d}
+        raid_list[r][M]["Average stat points per 100,000 damage"]={a:[] for a in all_d}
         if raid_list[r][M]["Loot format"]=="EHL":
             raid_list[r][M]["Drops"]["Common"]={a:[] for a in all_d}
             raid_list[r][M]["Drops"]["Rare"]={a:[] for a in all_d}
@@ -225,7 +226,6 @@ for r in raid_list:
             # Tiers, drops:
             for d in all_d:
                 raid_list[r][M]["Tiers"][d]=[]
-                raid_list[r][M]["Average stat points"][d]=[]
                 try:
                     f=open(loot_path+paths_to_files[raid_list[r][M]["Raid type"]]+"/"+r+"/"+d+".csv", 'r')
                 except:
@@ -254,6 +254,12 @@ for r in raid_list:
                                 raid_list[r][M]["Drops"][x][d].append("-")
                         if "Average stat points" in line:
                             raid_list[r][M]["Average stat points"][d].append(line.pop("Average stat points"))
+                            try:
+                                avg=itc(round(raid_list[r][M]["Average stat points"][d][-1]/cti(dam)*100000,2))
+                            except:
+                                avg=""
+                            finally:
+                                raid_list[r][M]["Average stat points per 100,000 damage"][d].append(avg)
                     f.close()
                 l=len(raid_list[r][M]["Tiers"][d]) # This will be used several times below.
                 if l==0:
