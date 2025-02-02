@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      6.0.1
+// @version      6.1
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -110,6 +110,7 @@ function create_css(){
             height: 25px;
             margin-left: 2px;
             margin-right: 3px;
+            margin-bottom: 5px;
             font-size: 14px;
             width: auto;
         }
@@ -122,7 +123,7 @@ function create_css(){
         .dotvrlt_row_of_buttons_2 {
             font-size: 15px;
             width: 100%;
-            height: 25px;
+            height: 55px;
             text-align: left;
         }
         .dotvrlt_row_of_buttons_3 {
@@ -160,6 +161,9 @@ function create_css(){
             position: sticky;
             top: 25px;
         }
+        .dotvrlt_sortable_header {
+            cursor: pointer;
+        }
         .dotvrlt_corners div, .dotvrlt_corners table, .dotvrlt_corners tbody, .dotvrlt_corners tr, .dotvrlt_corners td {
             background-color: inherit;
         }
@@ -195,7 +199,7 @@ function create_css(){
         }
         #DotVRLT\\ options\\ div {
             width: 550px;
-            height: 190px;
+            height: 220px;
             display: var(--options-and-main-divs-display);
             overflow: auto;
             background-color: var(--main-colour);
@@ -217,7 +221,7 @@ function create_css(){
         }
         #DotVRLT\\ tab\\ buttons\\ div {
             width: 100%;
-            height: 90px;
+            height: 120px;
             text-align: center;
         }
         #DotVRLT\\ in-raid\\ button {
@@ -730,6 +734,7 @@ async function createTab(name){
     else if(name=="Damage taken (raids)"){ createDamageTakenTable(["raiding","healthless"]); }
     else if(name=="Damage taken (quests)"){ createDamageTakenTable("questing"); }
     else if(name=="Your stats"){ createStatsTab(); }
+    else if(name=="Stat points gain comparison"){ createAverageStatsPointsTab(); }
     current_tab=name;
     await GM_setValue("current_tab_stored",current_tab);
 }
@@ -766,6 +771,7 @@ function create_tab_buttons_div(){
     createTabButton(t3,"Damage taken (raids)");
     createTabButton(t3,"Damage taken (quests)");
     //createTabButton(t3,"Your stats"); /* ACTIVATE WHEN DAMAGE TAKEN FORMULA IS DISCOVERED */
+    createTabButton(t3,"Stat points gain comparison");
     createTabButton(t3,"About");
 }
 
@@ -874,24 +880,24 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
     set_detailed_div_state();
     // Table creation.
     if(raid_list[raid_name][mode]["Loot format"]=="EHL"){
-        var ncol=5+raid_list[raid_name][mode]["Has extra drops"].Hidden+raid_list[raid_name][mode]["Has extra drops"].Summoner+raid_list[raid_name][mode]["Has extra drops"].Bonus;
+        var ncol=5+raid_list[raid_name][mode]["Has extra drops"].Hidden[raid_difficulty]+raid_list[raid_name][mode]["Has extra drops"].Summoner[raid_difficulty]+raid_list[raid_name][mode]["Has extra drops"].Bonus[raid_difficulty];
         var t=document.createElement("table");
         t.id="DotVRLT detailed table";
         t.classList.add("dotvrlt_table");
         t.border=1;
         t.innerHTML=`<td class="dotvrlt_fixed_row dotvrlt_corners_top" colspan="`+ncol+`" style="font-size:18px;">`+raid_name+" ("+raid_difficulty.toLowerCase()+`)</td>`;
         d.appendChild(t);
-        var l1=2+raid_list[raid_name][mode]["Has extra drops"].Hidden+(raid_list[raid_name][mode]?.["Average stat points"]?.[raid_difficulty]!=undefined);
-        var l2=2+raid_list[raid_name][mode]["Has extra drops"].Summoner+raid_list[raid_name][mode]["Has extra drops"].Bonus;
+        var l1=2+raid_list[raid_name][mode]["Has extra drops"].Hidden[raid_difficulty]+(raid_list[raid_name][mode]?.["Average stat points"]?.[raid_difficulty]!=undefined);
+        var l2=2+raid_list[raid_name][mode]["Has extra drops"].Summoner[raid_difficulty]+raid_list[raid_name][mode]["Has extra drops"].Bonus[raid_difficulty];
         var r0=t.insertRow();
         if(raid_list[raid_name][mode]["Raid type"]!=""){ r0.innerHTML=`<td colspan="`+l1+`">`+raid_list[raid_name][mode]["Raid type"]+`</td> <td colspan="`+l2+`"> Size: `+raid_list[raid_name][mode]["Raid size"]+`</td>`; }
         else{ r0.innerHTML=`<td colspan="`+ncol+`"> Size: `+raid_list[raid_name][mode]["Raid size"]+`</td>`; }
         var r1=t.insertRow();
         var dmg=damage_taken(raid_list[raid_name][mode].Damage[raid_difficulty],raid_list[raid_name][mode].Damage.Type);
         r1.innerHTML=`<td colspan="`+ncol+`"> Damage taken: `+dmg+` (base: `+raid_list[raid_name][mode].Damage[raid_difficulty]+`, type: `+raid_list[raid_name][mode].Damage.Type.toLowerCase()+`)</td>`;
-        if ( raid_list[raid_name][mode]["Has extra drops"]["On-hit drops"] || raid_list[raid_name][mode]["Has extra drops"]["Loot expansion"] ){
+        if ( raid_list[raid_name][mode]["Has extra drops"]["On-hit drops"][raid_difficulty] || raid_list[raid_name][mode]["Has extra drops"]["Loot expansion"][raid_difficulty] ){
             var r1b=t.insertRow();
-            var x1=raid_list[raid_name][mode]["Has extra drops"]["On-hit drops"], x2=raid_list[raid_name][mode]["Has extra drops"]["Loot expansion"];
+            var x1=raid_list[raid_name][mode]["Has extra drops"]["On-hit drops"][raid_difficulty], x2=raid_list[raid_name][mode]["Has extra drops"]["Loot expansion"][raid_difficulty];
             var x3 = raid_list[raid_name][mode]["Extra drops"]["On-hit drops"][raid_difficulty], x4 = raid_list[raid_name][mode]["Extra drops"]["Loot expansion"][raid_difficulty] ? "yes" : "no";
             if(x1*x2){ r1b.innerHTML=`<td colspan="`+l1+`"> On-hit drops: `+x3+`</td> <td colspan="`+l2+`"> Loot expansion: `+x4+`</td>`; }
             else if(x1){ r1b.innerHTML=`<td colspan="`+(l1+l2)+`"> On-hit drops: `+x3+`</td>`; }
@@ -899,9 +905,9 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
         }
         var r2=t.insertRow(); r2.classList.add("dotvrlt_fixed_row_2"); r2.innerHTML=`<td class="dotvrlt_first_column" rowspan="2">Damage</td><td colspan="`+(ncol-1)+`">Loot drops</td>`;
         var r3=t.insertRow(); r3.classList.add("dotvrlt_fixed_row_3"); r3.innerHTML=`<td>Common</td><td>Rare</td><td>Mythic</td>`;
-        if(raid_list[raid_name][mode]["Has extra drops"].Hidden){ r3.innerHTML=r3.innerHTML+`<td>Hidden</td>`; }
-        if(raid_list[raid_name][mode]["Has extra drops"].Summoner){ r3.innerHTML=r3.innerHTML+`<td>Summoner</td>`; }
-        if(raid_list[raid_name][mode]["Has extra drops"].Bonus){ r3.innerHTML=r3.innerHTML+`<td>Bonus</td>`; }
+        if(raid_list[raid_name][mode]["Has extra drops"].Hidden[raid_difficulty]){ r3.innerHTML=r3.innerHTML+`<td>Hidden</td>`; }
+        if(raid_list[raid_name][mode]["Has extra drops"].Summoner[raid_difficulty]){ r3.innerHTML=r3.innerHTML+`<td>Summoner</td>`; }
+        if(raid_list[raid_name][mode]["Has extra drops"].Bonus[raid_difficulty]){ r3.innerHTML=r3.innerHTML+`<td>Bonus</td>`; }
         if(raid_list[raid_name][mode]["Average stat points"][raid_difficulty].length){ r3.innerHTML=r3.innerHTML+`<td>Average stat points</td>`; }
         var rnotes=t.insertRow();
         rnotes.innerHTML=`<td class="dotvrlt_first_column" colspan="`+ncol+`"><i id="dotvrlt_notes_raid"></i></td>`;
@@ -913,9 +919,9 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
             let tiers_text=raid_list[raid_name][mode].Tiers[raid_difficulty][k];
             if(tiers_text==raid_list[raid_name][mode].FS[raid_difficulty]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
             r4.innerHTML=`<td class="dotvrlt_first_column">`+tiers_text+`</td><td>`+raid_list[raid_name][mode].Drops.Common[raid_difficulty][k]+`</td><td>`+raid_list[raid_name][mode].Drops.Rare[raid_difficulty][k]+`</td><td>`+raid_list[raid_name][mode].Drops.Mythic[raid_difficulty][k]+`</td>`;
-            if(raid_list[raid_name][mode]["Has extra drops"].Hidden){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode].Drops.Hidden[raid_difficulty][k]+`</td>`; }
-            if(raid_list[raid_name][mode]["Has extra drops"].Summoner){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode].Drops.Summoner[raid_difficulty][k]+`</td>`; }
-            if(raid_list[raid_name][mode]["Has extra drops"].Bonus){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode].Drops.Bonus[raid_difficulty][k]+`</td>`; }
+            if(raid_list[raid_name][mode]["Has extra drops"].Hidden[raid_difficulty]){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode].Drops.Hidden[raid_difficulty][k]+`</td>`; }
+            if(raid_list[raid_name][mode]["Has extra drops"].Summoner[raid_difficulty]){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode].Drops.Summoner[raid_difficulty][k]+`</td>`; }
+            if(raid_list[raid_name][mode]["Has extra drops"].Bonus[raid_difficulty]){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode].Drops.Bonus[raid_difficulty][k]+`</td>`; }
             if(raid_list[raid_name][mode]["Average stat points"][raid_difficulty].length>k){ r4.innerHTML=r4.innerHTML+`<td>`+raid_list[raid_name][mode]["Average stat points"][raid_difficulty][k]+`</td>`; }
         }
         t.getElementsByClassName("dotvrlt_first_column")[t.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
@@ -1137,6 +1143,60 @@ function update_counters(counters){
     }
 }
 
+function createAverageStatsPointsTab(){
+    document.getElementById("DotVRLT main title div").innerHTML="Average stat points per 100,000 damage";
+    var counters={Easy:0, Hard:0, Legendary:0};
+    var t=document.createElement("table");
+    t.border="1";
+    t.classList.add("dotvrlt_table");
+    document.getElementById("DotVRLT main table div").appendChild(t);
+    t.innerHTML=`<tr class="dotvrlt_fixed_row">
+                     <td class="dotvrlt_first_column dotvrlt_sortable_header">Name</td>
+                     <td class="dotvrlt_sortable_header">Type</td>
+                     <td class="dotvrlt_sortable_header">Size</td>
+                     <td class="dotvrlt_sortable_header">Difficulty</td>
+                     <td>Loot tiers</td>
+                     <td class="dotvrlt_sortable_header">Average stat points</td>
+                 </tr>`;
+    /* Make various headers clickable for ascending and descending sorting: */
+    const headers=t.getElementsByClassName("dotvrlt_fixed_row")[0];
+    for(let h of [0,1,2,3,5]){
+        //headers.getElementsByTagName("TD")[h].addEventListener("click",function(){ sortTable(t,h); }); // Disabled until sortTable no longer make the page crash...
+    }
+    /* ----- */
+    for(let k in raid_list){
+        for(let mode in raid_list[k]){
+            let D=raid_list[k][mode]["Available difficulties"];
+            for(let j of D){
+                if(difficulties_to_display[j]==1){
+                    if(raid_list[k][mode]["Average stat points"][j]!=[]){
+                        let tl=t.insertRow();
+                        let len=( raid_list[k][mode].Tiers[j] || [] ).length; // Reminder: for raids with an image loot table, raid_list[k][mode].Tiers is, by default, an empty object.
+                        for(let v=0; v<len; v++){
+                            if(![undefined,""].includes(raid_list[k][mode]["Average stat points per 100,000 damage"][j]?.[v])){
+                                let tl=t.insertRow();
+                                var tiers_text=raid_list[k][mode].Tiers[j][v];
+                                if(tiers_text==raid_list[k][mode].FS[j]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
+                                tl.innerHTML=`<td class="dotvrlt_first_column">`+k+`</td>
+                                <td>`+raid_list[k][mode]["Raid type"]+`</td>
+                                <td>`+raid_list[k][mode]["Raid size"]+`</td>
+                                <td>`+j+`</td>
+                                <td>`+tiers_text+`</td>
+                                <td>`+raid_list[k][mode]["Average stat points per 100,000 damage"][j][v]+`</td>`;
+                            }
+                        }
+                        if(tl.innerHTML==""){ t.tBodies[0].removeChild(tl); };
+                    }
+                }
+                counters[j]=counters[j]+1;
+            }
+        }
+    }
+    update_counters(counters);
+    t.getElementsByClassName("dotvrlt_first_column")[t.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
+    t.getElementsByTagName("tr")[t.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
+}
+
 function sanitized_string(t){
     var bounding_profanity = [ ["<script>","</script>"] ];
     var obscenity = ["<script>","</script>"];
@@ -1175,6 +1235,73 @@ function sanitized_object(o){
 
 function get_last(a){ // Returns last element of an array
     return a[a.length-1]
+}
+
+function sortTable(table,n) { // Taken from https://www.w3schools.com/howto/howto_js_sort_table.asp
+
+
+    //TERRIBLE PERFORMANCE
+    // solution?
+    var parent = table.parentNode;
+    var placeholder = document.createElement('table');
+    parent.replaceChild(placeholder, table);
+
+    var rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    switching = true;
+    // Set the sorting direction to descending:
+    dir = "desc";
+    // Make a loop that will continue until no switching has been done:
+    while (switching) {
+        // Start by saying: no switching is done:
+        switching = false;
+        rows = table.rows;
+        // Loop through all table rows (except the first, which contains table headers):
+        for (i = 1; i < (rows.length - 1); i++) {
+            // Start by saying there should be no switching:
+            shouldSwitch = false;
+            // Get the two elements you want to compare, one from current row and one from the next:
+            x = rows[i].getElementsByTagName("TD")[n];
+            y = rows[i + 1].getElementsByTagName("TD")[n];
+            // Check if we are comparing numbers or strings:
+            var xt = x.innerHTML.toLowerCase(), yt = y.innerHTML.toLowerCase();
+            var are_numbers = !( isNaN(Number(parseFloat(xt.replaceAll(",","")))) || isNaN(Number(parseFloat(yt.replaceAll(",","")))) );
+            if(are_numbers){ xt = Number(parseFloat(xt.replaceAll(",",""))); yt = Number(parseFloat(yt.replaceAll(",",""))); }
+            // Check if the two rows should switch place, based on the direction, asc or desc:
+            if (dir == "asc") {
+                if (xt > yt) {
+                    // If so, mark as a switch and break the loop:
+                    shouldSwitch = true;
+                    break;
+                }
+            } else if (dir == "desc") {
+                if (xt < yt) {
+                    // If so, mark as a switch and break the loop:
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+        }
+        if (shouldSwitch) {
+            // If a switch has been marked, make the switch and mark that a switch has been done:
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+            // Each time a switch is done, increase this count by 1:
+            switchcount ++;
+        } else {
+            // If no switching has been done AND the direction is "asc", set the direction to "desc" and run the while loop again.
+            if (switchcount == 0 && dir == "asc") {
+                dir = "desc";
+                switching = true;
+            }
+        }
+    }
+    // Remove rounded corners styling to the previous last row and apply it to the new one:
+    table.getElementsByClassName("dotvrlt_corners_bottom_left")[0].classList.remove("dotvrlt_corners_bottom_left");
+    table.getElementsByClassName("dotvrlt_corners_bottom_right")[0].classList.remove("dotvrlt_corners_bottom_right");
+    table.getElementsByClassName("dotvrlt_first_column")[table.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
+    table.getElementsByTagName("tr")[table.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
+
+    parent.replaceChild(table, placeholder); // solution to performance issues?
 }
 
 async function DotVRLT(){
