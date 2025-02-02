@@ -2,12 +2,18 @@ import csv
 import json
 from collections import defaultdict
 
-def cti(n): # Takes a character string containing a number with comma separators and returns the associated number as an integer.
-    if isinstance(n,int):
+def cti(n): # Takes a character string containing a number with comma separators and returns the associated number as an integer or a floating number.
+    if isinstance(n,int) or isinstance(n,float):
         return n
     else:
         try:
-            return int(n.replace(",","")) # For example, cti("1,000,000") returns 1000000.
+            n2=n.replace(",","")
+            if n2.count(".")==0:
+                return int(n2) # For example, cti("1,000,000") returns 1000000
+            elif n2.count(".")==1:
+                return float(n2) # For example, cti("1,000,000.0") returns 1000000.0
+            else:
+                return n
         except:
             return n # In case the initial value was a "?", a word or anything of this kind.
 
@@ -15,7 +21,7 @@ def itc(n): # Takes a number and writes it with comma separators.
     if isinstance(n,str):
         return n
     else:
-        return "{:,}".format(int(n))
+        return "{:,}".format(n)
 
 def return_difficuties(d): # Returns each difficulty which first letter is in d.
     diff=[]
@@ -144,11 +150,12 @@ for m in paths:
                 for b in extra_drops:
                     edb=extra_drops[b]
                     default_dict[raid_name][m]["Has extra drops"][edb]={}
-                    for d in default_dict[raid_name][m]["Available difficulties"]:
-                        if b not in default_dict[raid_name][m]:
+                    if b not in default_dict[raid_name][m]:
+                        for d in default_dict[raid_name][m]["Available difficulties"]:
                             default_dict[raid_name][m]["Has extra drops"][edb][d]=False
-                        else:
-                            c=default_dict[raid_name][m].pop(b)
+                    else:
+                        c=default_dict[raid_name][m].pop(b)
+                        for d in default_dict[raid_name][m]["Available difficulties"]:
                             if c.lower() in ["false","no","0","","-"]:
                                 default_dict[raid_name][m]["Has extra drops"][edb][d]=False
                             elif c.lower() in ["true","yes","1"]:
