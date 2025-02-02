@@ -143,16 +143,18 @@ for m in paths:
                 default_dict[raid_name][m]["Has extra drops"]={}
                 for b in extra_drops:
                     edb=extra_drops[b]
-                    if b not in default_dict[raid_name][m]:
-                        default_dict[raid_name][m]["Has extra drops"][edb]=False
-                    else:
-                        c=default_dict[raid_name][m].pop(b)
-                        if c.lower() in ["false","no","0","","-"]:
-                            default_dict[raid_name][m]["Has extra drops"][edb]=False
-                        elif c.lower() in ["true","yes","1"]:
-                            default_dict[raid_name][m]["Has extra drops"][edb]=True
+                    default_dict[raid_name][m]["Has extra drops"][edb]={}
+                    for d in default_dict[raid_name][m]["Available difficulties"]:
+                        if b not in default_dict[raid_name][m]:
+                            default_dict[raid_name][m]["Has extra drops"][edb][d]=False
                         else:
-                            default_dict[raid_name][m]["Has extra drops"][edb]=False
+                            c=default_dict[raid_name][m].pop(b)
+                            if c.lower() in ["false","no","0","","-"]:
+                                default_dict[raid_name][m]["Has extra drops"][edb][d]=False
+                            elif c.lower() in ["true","yes","1"]:
+                                default_dict[raid_name][m]["Has extra drops"][edb][d]=True
+                            else:
+                                default_dict[raid_name][m]["Has extra drops"][edb][d]=False
                 for v in default_dict[raid_name][m]:
                     if default_dict[raid_name][m][v]=="" and v!="Raid type":
                         default_dict[raid_name][m][v]="?"
@@ -206,7 +208,6 @@ for r in raid_list:
             raid_list[r][M]["Drops"]["Mythic"]={a:[] for a in all_d}
             for b in bonus_drops_tier_based:
                 raid_list[r][M]["Drops"][extra_drops[b]]={a:[] for a in all_d}
-            raid_list[r][M]["Drops"]["as string"]={a:[] for a in all_d}
             # Health, FS:
             if M=="raiding":
                 diff_health_mult={"Easy":1,"Hard":3,"Legendary":9}
@@ -247,8 +248,8 @@ for r in raid_list:
                             if x in line:
                                 raid_list[r][M]["Drops"][x][d].append(line.pop(x))
                                 if raid_list[r][M]["Drops"][x][d][-1].lower() not in ["","0","no","false","-"]:
-                                    raid_list[r][M]["Has extra drops"][x]=True
-                            elif raid_list[r][M]["Has extra drops"][x]:
+                                    raid_list[r][M]["Has extra drops"][x][d]=True
+                            elif raid_list[r][M]["Has extra drops"][x][d]:
                                 raid_list[r][M]["Drops"][x][d].append("?")
                             else:
                                 raid_list[r][M]["Drops"][x][d].append("-")
@@ -278,12 +279,12 @@ for r in raid_list:
                         raid_list[r][M]["Drops"]["Mythic"][d].append("?")
                         for b in bonus_drops_tier_based:
                             x=extra_drops[b]
-                            if raid_list[r][M]["Has extra drops"][x]:
+                            if raid_list[r][M]["Has extra drops"][x][d]:
                                 raid_list[r][M]["Drops"][x][d].append("?")
                             else:
                                 raid_list[r][M]["Drops"][x][d].append("-")
                 # In hope that this will remain the same for every difficulty:
-                raid_list[r][M]["Extra drops"]["Loot expansion"][d]=raid_list[r][M]["Has extra drops"]["Loot expansion"]
+                raid_list[r][M]["Extra drops"]["Loot expansion"][d]=raid_list[r][M]["Has extra drops"]["Loot expansion"][d]
                 # Tiers, as a single character string:
                 if M=="raiding":
                     raid_list[r][M]["Tiers as string"][d]=""
@@ -329,7 +330,6 @@ for r in raid_list:
 
 
 ### On-hit drops
-# raid_list[raid_name][mode]["Has extra drops"]["On-hit drops"] will contain weither or not any difficulty has on-hit drops, even if it does not have on-hit drops on all of them
 for m in paths:
     for p0 in paths[m]:
         p=p0+".csv"
@@ -345,7 +345,7 @@ for m in paths:
                     if raid_list[raid_name][m]["Extra drops"]["On-hit drops"][d].lower() in ["","no","false","0","none","-"]:
                         raid_list[raid_name][m]["Extra drops"]["On-hit drops"][d]="no"
                     else:
-                        raid_list[raid_name][m]["Has extra drops"]["On-hit drops"]=True
+                        raid_list[raid_name][m]["Has extra drops"]["On-hit drops"][d]=True
         except:
             pass
 
