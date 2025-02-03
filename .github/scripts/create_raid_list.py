@@ -263,7 +263,7 @@ for r in raid_list:
                         if "Average stat points" in line:
                             raid_list[r][M]["Average stat points"][d].append(line.pop("Average stat points"))
                             try:
-                                avg=itc(round(raid_list[r][M]["Average stat points"][d][-1]/cti(dam)*100000,2))
+                                avg=itc(round(cti(raid_list[r][M]["Average stat points"][d][-1])/cti(dam)*100000,2))
                             except:
                                 avg=""
                             finally:
