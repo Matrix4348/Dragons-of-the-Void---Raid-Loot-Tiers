@@ -21,7 +21,10 @@ def itc(n): # Takes a number and writes it with comma separators.
     if isinstance(n,str):
         return n
     else:
-        return "{:,}".format(n)
+        if isinstance(n,float) and n%10==0:
+            return "{:,}".format(int(n))
+        else:
+            return "{:,}".format(n)
 
 def return_difficuties(d): # Returns each difficulty which first letter is in d.
     diff=[]
