@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      6.1
+// @version      6.2
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -231,7 +231,7 @@ function create_css(){
         }
         #DotVRLT\\ in-raid\\ div {
             background-color: var(--in-raid-colour);
-            width: 450px;
+            width: 500px;
             max-height: 130px;
             display: var(--in-raid-display);
             border: 1px solid black;
@@ -853,7 +853,7 @@ function create_in_raid_div(raid_name,mode,raid_difficulty){
     t.classList.add("dotvrlt_table");
     t.border=1;
     if(raid_list[raid_name][mode]["Loot format"]=="EHL"){
-        t.innerHTML=`<td class="dotvrlt_corners_top">`+raid_list[raid_name][mode]["Tiers as string"][raid_difficulty]+`</td>`;
+        t.innerHTML=`<td class="dotvrlt_corners_top" style="padding-left: 7px; padding-right: 7px;">`+raid_list[raid_name][mode]["Tiers as string"][raid_difficulty]+`</td>`;
     }
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
         t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Latest loot table known by the script (date of first use: `+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).release_date+`): <br><i>`+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL+`</i><br>For guaranteed up-to-date one: click "Loot", then "Expanded Loot".</td>`;
@@ -887,8 +887,7 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
         t.border=1;
         t.innerHTML=`<td class="dotvrlt_fixed_row dotvrlt_corners_top" colspan="`+ncol+`" style="font-size:18px;">`+raid_name+" ("+raid_difficulty.toLowerCase()+`)</td>`;
         d.appendChild(t);
-        var l1=2+raid_list[raid_name][mode]["Has extra drops"].Hidden[raid_difficulty]+(raid_list[raid_name][mode]?.["Average stat points"]?.[raid_difficulty]!=undefined);
-        var l2=2+raid_list[raid_name][mode]["Has extra drops"].Summoner[raid_difficulty]+raid_list[raid_name][mode]["Has extra drops"].Bonus[raid_difficulty];
+        var l1=Math.ceil(ncol/2), l2=Math.floor(ncol/2);
         var r0=t.insertRow();
         if(raid_list[raid_name][mode]["Raid type"]!=""){ r0.innerHTML=`<td colspan="`+l1+`">`+raid_list[raid_name][mode]["Raid type"]+`</td> <td colspan="`+l2+`"> Size: `+raid_list[raid_name][mode]["Raid size"]+`</td>`; }
         else{ r0.innerHTML=`<td colspan="`+ncol+`"> Size: `+raid_list[raid_name][mode]["Raid size"]+`</td>`; }
@@ -1151,17 +1150,17 @@ function createAverageStatsPointsTab(){
     t.classList.add("dotvrlt_table");
     document.getElementById("DotVRLT main table div").appendChild(t);
     t.innerHTML=`<tr class="dotvrlt_fixed_row">
-                     <td class="dotvrlt_first_column dotvrlt_sortable_header">Name</td>
-                     <td class="dotvrlt_sortable_header">Type</td>
-                     <td class="dotvrlt_sortable_header">Size</td>
-                     <td class="dotvrlt_sortable_header">Difficulty</td>
-                     <td>Loot tiers</td>
-                     <td class="dotvrlt_sortable_header">Average stat points</td>
+                     <td class="dotvrlt_first_column dotvrlt_sortable_header default_ascending current_ascending">Name</td>
+                     <td class="dotvrlt_sortable_header default_ascending current_ascending">Type</td>
+                     <td class="dotvrlt_sortable_header default_ascending current_ascending">Size</td>
+                     <td class="dotvrlt_sortable_header default_ascending current_ascending">Difficulty</td>
+                     <td class="dotvrlt_sortable_header default_ascending current_ascending">Loot tiers</td>
+                     <td class="dotvrlt_sortable_header default_descending current_descending">Average stat points</td>
                  </tr>`;
     /* Make various headers clickable for ascending and descending sorting: */
     const headers=t.getElementsByClassName("dotvrlt_fixed_row")[0];
-    for(let h of [0,1,2,3,5]){
-        //headers.getElementsByTagName("TD")[h].addEventListener("click",function(){ sortTable(t,h); }); // Disabled until sortTable no longer make the page crash...
+    for(let h of [0,1,2,3,4,5]){
+        headers.getElementsByTagName("TD")[h].addEventListener("click",function(){ sortTable(t,h); });
     }
     /* ----- */
     for(let k in raid_list){
@@ -1170,7 +1169,7 @@ function createAverageStatsPointsTab(){
             for(let j of D){
                 if(difficulties_to_display[j]==1){
                     if(raid_list[k][mode]["Average stat points"][j]!=[]){
-                        let tl=t.insertRow();
+                        var increment_counter=0;
                         let len=( raid_list[k][mode].Tiers[j] || [] ).length; // Reminder: for raids with an image loot table, raid_list[k][mode].Tiers is, by default, an empty object.
                         for(let v=0; v<len; v++){
                             if(![undefined,""].includes(raid_list[k][mode]["Average stat points per 100,000 damage"][j]?.[v])){
@@ -1183,12 +1182,12 @@ function createAverageStatsPointsTab(){
                                 <td>`+j+`</td>
                                 <td>`+tiers_text+`</td>
                                 <td>`+raid_list[k][mode]["Average stat points per 100,000 damage"][j][v]+`</td>`;
+                                increment_counter=increment_counter+1;
                             }
                         }
-                        if(tl.innerHTML==""){ t.tBodies[0].removeChild(tl); };
+                        counters[j]=counters[j]+(increment_counter>0)*1;
                     }
                 }
-                counters[j]=counters[j]+1;
             }
         }
     }
@@ -1237,71 +1236,51 @@ function get_last(a){ // Returns last element of an array
     return a[a.length-1]
 }
 
-function sortTable(table,n) { // Taken from https://www.w3schools.com/howto/howto_js_sort_table.asp
+function sortTable(table,n) { // Taken (and adapted) from https://daext.com/blog/how-to-create-an-html-table-with-sorting-and-filtering/
 
+    // Get the sorting order
+    let headers = table.getElementsByClassName("dotvrlt_fixed_row")[0];
+    let current_header = headers.getElementsByTagName("TD")[n];
+    let ascending = current_header.classList.contains("current_ascending");
 
-    //TERRIBLE PERFORMANCE
-    // solution?
-    var parent = table.parentNode;
-    var placeholder = document.createElement('table');
-    parent.replaceChild(placeholder, table);
+    // Get the table rows and remove the header.
+    let rows = Array.from(table.rows).slice(1);
 
-    var rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-    switching = true;
-    // Set the sorting direction to descending:
-    dir = "desc";
-    // Make a loop that will continue until no switching has been done:
-    while (switching) {
-        // Start by saying: no switching is done:
-        switching = false;
-        rows = table.rows;
-        // Loop through all table rows (except the first, which contains table headers):
-        for (i = 1; i < (rows.length - 1); i++) {
-            // Start by saying there should be no switching:
-            shouldSwitch = false;
-            // Get the two elements you want to compare, one from current row and one from the next:
-            x = rows[i].getElementsByTagName("TD")[n];
-            y = rows[i + 1].getElementsByTagName("TD")[n];
-            // Check if we are comparing numbers or strings:
-            var xt = x.innerHTML.toLowerCase(), yt = y.innerHTML.toLowerCase();
-            var are_numbers = !( isNaN(Number(parseFloat(xt.replaceAll(",","")))) || isNaN(Number(parseFloat(yt.replaceAll(",","")))) );
-            if(are_numbers){ xt = Number(parseFloat(xt.replaceAll(",",""))); yt = Number(parseFloat(yt.replaceAll(",",""))); }
-            // Check if the two rows should switch place, based on the direction, asc or desc:
-            if (dir == "asc") {
-                if (xt > yt) {
-                    // If so, mark as a switch and break the loop:
-                    shouldSwitch = true;
-                    break;
-                }
-            } else if (dir == "desc") {
-                if (xt < yt) {
-                    // If so, mark as a switch and break the loop:
-                    shouldSwitch = true;
-                    break;
-                }
-            }
-        }
-        if (shouldSwitch) {
-            // If a switch has been marked, make the switch and mark that a switch has been done:
-            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-            switching = true;
-            // Each time a switch is done, increase this count by 1:
-            switchcount ++;
-        } else {
-            // If no switching has been done AND the direction is "asc", set the direction to "desc" and run the while loop again.
-            if (switchcount == 0 && dir == "asc") {
-                dir = "desc";
-                switching = true;
-            }
+    // Generate the sorted rows.
+    let sortedRows = rows.sort((a, b) => {
+        let c = compareCells(a.cells[n].innerText,b.cells[n].innerText);
+        if(c == 0){ c = compareCells(a.cells[0].innerText,b.cells[0].innerText); }
+        if(ascending) { return c; }
+        else{ return -c; }
+    });
+
+    // Update the table data.
+    sortedRows.forEach(row => table.tBodies[0].appendChild(row));
+
+    // Change the sorting order of column n for next click, and reset the one of the others
+    current_header.classList.toggle("current_ascending");
+    current_header.classList.toggle("current_descending");
+    let sortable_headers = table.getElementsByClassName("dotvrlt_sortable_header");
+    for(let h of sortable_headers){
+        if (h != current_header){
+            let default_order = h.classList.contains("default_ascending") ? "ascending" : "descending";
+            h.classList.add("current_"+default_order);
+            h.classList.remove("current_"+["ascending","descending"][(default_order=="ascending")*1]);
         }
     }
+
     // Remove rounded corners styling to the previous last row and apply it to the new one:
     table.getElementsByClassName("dotvrlt_corners_bottom_left")[0].classList.remove("dotvrlt_corners_bottom_left");
     table.getElementsByClassName("dotvrlt_corners_bottom_right")[0].classList.remove("dotvrlt_corners_bottom_right");
     table.getElementsByClassName("dotvrlt_first_column")[table.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
     table.getElementsByTagName("tr")[table.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
 
-    parent.replaceChild(table, placeholder); // solution to performance issues?
+}
+
+function compareCells(A,B){ // Compares numerically and alphabetically two characters strings, and returns -1 if A<B, 0 if A=B and 1 if A>B
+    var a = Number(parseFloat(A.replaceAll(",","").replaceAll("FS: ",""))), b = Number(parseFloat(B.replaceAll(",","").replaceAll("FS: ","")));
+    if( isNaN(a) || isNaN(b) ){ a = A; b = B; }
+    if(a > b){ return 1; } else if(a == b){ return 0; } else{ return -1; }
 }
 
 async function DotVRLT(){
