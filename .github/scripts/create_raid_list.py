@@ -333,9 +333,9 @@ for r in raid_list:
                     for line in reader:
                         URL="https://matrix4348.github.io/loot-tables/"+line.pop("File name")
                         date=line.pop("Date of first use")
-                        raid_list[r][M]["Loot tables"][d].append({"URL":URL,"date_of_release":date})
+                        raid_list[r][M]["Loot tables"][d].append({"URL":URL,"release_date":date})
                     if len(raid_list[r][M]["Loot tables"][d])==0:
-                        raid_list[r][M]["Loot tables"][d].append({"URL":"<i>No loot table URL found.</i>","date_of_release":"Today"})
+                        raid_list[r][M]["Loot tables"][d].append({"URL":"<i>No loot table URL found.</i>","release_date":"Today"})
                 f.close()
 
 
