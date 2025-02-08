@@ -150,6 +150,9 @@ for m in paths:
                     default_dict[raid_name][m]["Available difficulties"] = return_difficuties(default_difficulties[types[p]])
                 # Let us replace empty cells with "?" and correct a few values:
                 default_dict[raid_name][m]["Has extra drops"]={}
+                default_dict[raid_name][m]["Extra drops"]={} # Most of this dictionary will be filled later.
+                default_dict[raid_name][m]["Extra drops"]["On-hit drops"]={a:"no" for a in default_dict[raid_name][m]["Available difficulties"]}
+                default_dict[raid_name][m]["Extra drops"]["Loot expansion"]={a:"no" for a in default_dict[raid_name][m]["Available difficulties"]}
                 for b in extra_drops:
                     edb=extra_drops[b]
                     default_dict[raid_name][m]["Has extra drops"][edb]={}
@@ -163,6 +166,9 @@ for m in paths:
                                 default_dict[raid_name][m]["Has extra drops"][edb][d]=False
                             elif c.lower() in ["true","yes","1"]:
                                 default_dict[raid_name][m]["Has extra drops"][edb][d]=True
+                            elif edb=="Loot expansion" or edb=="On-hit drops":
+                                default_dict[raid_name][m]["Has extra drops"][edb][d]=True
+                                default_dict[raid_name][m]["Extra drops"][edb][d]=c
                             else:
                                 default_dict[raid_name][m]["Has extra drops"][edb][d]=False
                 for v in default_dict[raid_name][m]:
@@ -207,9 +213,6 @@ for r in raid_list:
         raid_list[r][M]["Tiers"]={}
         raid_list[r][M]["Tiers as string"]={}
         raid_list[r][M]["Drops"]={}
-        raid_list[r][M]["Extra drops"]={}
-        raid_list[r][M]["Extra drops"]["On-hit drops"]={a:"no" for a in all_d}
-        raid_list[r][M]["Extra drops"]["Loot expansion"]={a:"no" for a in all_d}
         raid_list[r][M]["Average stat points"]={a:[] for a in all_d}
         raid_list[r][M]["Average stat points per 100,000 damage"]={a:[] for a in all_d}
         if raid_list[r][M]["Loot format"]=="EHL":
@@ -293,8 +296,10 @@ for r in raid_list:
                                 raid_list[r][M]["Drops"][x][d].append("?")
                             else:
                                 raid_list[r][M]["Drops"][x][d].append("-")
-                # In hope that this will remain the same for every difficulty:
-                raid_list[r][M]["Extra drops"]["Loot expansion"][d]=raid_list[r][M]["Has extra drops"]["Loot expansion"][d]
+                if raid_list[r][M]["Has extra drops"]["Loot expansion"][d]:
+                    raid_list[r][M]["Extra drops"]["Loot expansion"][d]="yes"
+                else:
+                    raid_list[r][M]["Extra drops"]["Loot expansion"][d]="no"
                 # Tiers, as a single character string:
                 if M=="raiding":
                     raid_list[r][M]["Tiers as string"][d]=""
