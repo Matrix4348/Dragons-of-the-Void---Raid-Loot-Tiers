@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      6.2
+// @version      6.3
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -167,6 +167,25 @@ function create_css(){
         .dotvrlt_corners div, .dotvrlt_corners table, .dotvrlt_corners tbody, .dotvrlt_corners tr, .dotvrlt_corners td {
             background-color: inherit;
         }
+        .dotvrlt_question_mark {
+            position: absolute;
+            right: 2%;
+            top: 2%;
+            cursor: pointer;
+            border-radius: 20px;
+            border: 1px solid black;
+            background-color: rgb(240,240,240) !important;
+            color: rgb(10,10,10);
+        }
+        .dotvrlt_hover_message {
+            background-color: white;
+            z-index: 100000;
+            position: fixed;
+            width: 500px;
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid black;
+        }
 
         .studious-inspector-container {
             z-index: 1;
@@ -241,7 +260,7 @@ function create_css(){
         }
         #DotVRLT\\ in-raid\\ table\\ div {
             width: 100%;
-            max-height: 80px;
+            max-height: 90px;
         }
         #DotVRLT\\ detailed\\ div {
             background-color: var(--in-raid-colour);
@@ -553,6 +572,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
     typeof(ColumnsToRemove)=="string" ? columns_to_remove=[ColumnsToRemove] : columns_to_remove=ColumnsToRemove;
     var counters={Easy:0,Hard:0,Legendary:0};
     document.getElementById("DotVRLT main title div").innerHTML=name;
+    create_question_mark(document.getElementById("DotVRLT main title div"));
     var nc=document.createElement("div");
     nc.id="DotVRLT notes container";
     nc.classList.add("dotvrlt_notes_container");
@@ -856,7 +876,8 @@ function create_in_raid_div(raid_name,mode,raid_difficulty){
         t.innerHTML=`<td class="dotvrlt_corners_top" style="padding-left: 7px; padding-right: 7px;">`+raid_list[raid_name][mode]["Tiers as string"][raid_difficulty]+`</td>`;
     }
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
-        t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Latest loot table known by the script (date of first use: `+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).release_date+`): <br><i>`+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL+`</i><br>For guaranteed up-to-date one: click "Loot", then "Expanded Loot".</td>`;
+        let on_hit_text = raid_list[raid_name][mode]["Has extra drops"]["On-hit drops"][raid_difficulty] ? "<br><b>On-hit drops: "+raid_list[raid_name][mode]["Extra drops"]["On-hit drops"][raid_difficulty]+"</b>" : "";
+        t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Latest loot table known by the script (date of first use: `+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).release_date+`): <br><i>`+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL+`</i><br>For guaranteed up-to-date one: click "Loot", then "Expanded Loot".`+on_hit_text+`</td>`;
     }
     td.appendChild(t);
     // In-raid settings creation.
@@ -887,6 +908,7 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
         t.border=1;
         t.innerHTML=`<td class="dotvrlt_fixed_row dotvrlt_corners_top" colspan="`+ncol+`" style="font-size:18px;">`+raid_name+" ("+raid_difficulty.toLowerCase()+`)</td>`;
         d.appendChild(t);
+        create_question_mark(t.getElementsByTagName("TD")[0]);
         var l1=Math.ceil(ncol/2), l2=Math.floor(ncol/2);
         var r0=t.insertRow();
         if(raid_list[raid_name][mode]["Raid type"]!=""){ r0.innerHTML=`<td colspan="`+l1+`">`+raid_list[raid_name][mode]["Raid type"]+`</td> <td colspan="`+l2+`"> Size: `+raid_list[raid_name][mode]["Raid size"]+`</td>`; }
@@ -894,14 +916,8 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
         var r1=t.insertRow();
         var dmg=damage_taken(raid_list[raid_name][mode].Damage[raid_difficulty],raid_list[raid_name][mode].Damage.Type);
         r1.innerHTML=`<td colspan="`+ncol+`"> Damage taken: `+dmg+` (base: `+raid_list[raid_name][mode].Damage[raid_difficulty]+`, type: `+raid_list[raid_name][mode].Damage.Type.toLowerCase()+`)</td>`;
-        if ( raid_list[raid_name][mode]["Has extra drops"]["On-hit drops"][raid_difficulty] || raid_list[raid_name][mode]["Has extra drops"]["Loot expansion"][raid_difficulty] ){
-            var r1b=t.insertRow();
-            var x1=raid_list[raid_name][mode]["Has extra drops"]["On-hit drops"][raid_difficulty], x2=raid_list[raid_name][mode]["Has extra drops"]["Loot expansion"][raid_difficulty];
-            var x3 = raid_list[raid_name][mode]["Extra drops"]["On-hit drops"][raid_difficulty], x4 = raid_list[raid_name][mode]["Extra drops"]["Loot expansion"][raid_difficulty] ? "yes" : "no";
-            if(x1*x2){ r1b.innerHTML=`<td colspan="`+l1+`"> On-hit drops: `+x3+`</td> <td colspan="`+l2+`"> Loot expansion: `+x4+`</td>`; }
-            else if(x1){ r1b.innerHTML=`<td colspan="`+(l1+l2)+`"> On-hit drops: `+x3+`</td>`; }
-            else{ r1b.innerHTML=`<td colspan="`+(l1+l2)+`"> Loot expansion: `+x4+`</td>`; }
-        }
+        var r1b=t.insertRow();
+        r1b.innerHTML=`<td colspan="`+l1+`"> On-hit drops: `+raid_list[raid_name][mode]["Extra drops"]["On-hit drops"][raid_difficulty]+`</td> <td colspan="`+l2+`"> Loot expansion: `+raid_list[raid_name][mode]["Extra drops"]["Loot expansion"][raid_difficulty]+`</td>`;
         var r2=t.insertRow(); r2.classList.add("dotvrlt_fixed_row_2"); r2.innerHTML=`<td class="dotvrlt_first_column" rowspan="2">Damage</td><td colspan="`+(ncol-1)+`">Loot drops</td>`;
         var r3=t.insertRow(); r3.classList.add("dotvrlt_fixed_row_3"); r3.innerHTML=`<td>Common</td><td>Rare</td><td>Mythic</td>`;
         if(raid_list[raid_name][mode]["Has extra drops"].Hidden[raid_difficulty]){ r3.innerHTML=r3.innerHTML+`<td>Hidden</td>`; }
@@ -1144,6 +1160,7 @@ function update_counters(counters){
 
 function createAverageStatsPointsTab(){
     document.getElementById("DotVRLT main title div").innerHTML="Average stat points per 100,000 damage";
+    create_question_mark(document.getElementById("DotVRLT main title div"));
     var counters={Easy:0, Hard:0, Legendary:0};
     var t=document.createElement("table");
     t.border="1";
@@ -1194,6 +1211,37 @@ function createAverageStatsPointsTab(){
     update_counters(counters);
     t.getElementsByClassName("dotvrlt_first_column")[t.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
     t.getElementsByTagName("tr")[t.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
+}
+
+function create_question_mark(div){
+    var text = document.createElement("div");
+    text.style.display="none";
+    text.classList.add("dotvrlt_hover_message");
+    text.innerHTML = `
+        <p>"FS" stands for "fair share". This is simply the health of the raid divided by the maximum number of participants. This is only meaningful in the way that, if everyone's damage exceeds this
+        threshold, then nobody would need to overhit a full raid.</p>
+
+        <p>"Summoner" and "hidden" columns: they display the level of the related skill (summoner's leftovers and secret keeper) that is needed for the extra loot to have <u>a chance</u> to drop,
+        when they exist.</p>
+
+        <p>"Bonus" column: it displays the level(s) of the relevant skill (discerning vision, astute observation, precise inspection) needed for each tier to give extra loot.
+        You will also find, at the end of each tier list and for each level of said skill, a line detailing the bonus that this level grants. If you are eligible for several bonuses, then you will
+        have to sum these lines up.</p>
+
+        <p>Loot expansion: Visible inside raids only, this cell indicates weither or not a raid is affected by the loot expansion skills.</p>
+
+        <p>On-hit drops: Visible inside raids only, this cell indicates the levels of keen eyes that unlock on-hit drops pools.</p>
+
+        <p>Average stat points: Unless stated otherwise, this columns indicates the average number of stat points per tier.<br>
+        Either way, average stat points take, into consideration, the direct drops and, if this is non-negligeable, the craftable stat points.</p>
+    `;
+    document.body.appendChild(text);
+    var q=document.createElement("div");
+    q.innerHTML="&ensp;?&ensp;";
+    q.classList.add("dotvrlt_question_mark");
+    q.addEventListener("mouseenter",function(e){ text.style.display = ""; text.style.left = e.clientX-20-500+"px"; text.style.top = e.clientY+"px"; });
+    q.addEventListener("mouseleave",function(e){ text.style.display = "none"; });
+    div.appendChild(q);
 }
 
 function sanitized_string(t){
