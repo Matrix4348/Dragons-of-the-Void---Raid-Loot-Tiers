@@ -46,7 +46,7 @@ output_file = "./main/community-gathered data/raid-list.json"
 paths = {
     "raiding": ["Regular raids","Guild raids"],
     "questing": ["Quest bosses", "Quest minibosses"],
-    "healthless": ["Special raids","World raids","Event raids"],
+    "healthless": ["Timed raids","World raids","Event raids"],
 }
 
 paths_to_files = {
@@ -54,7 +54,7 @@ paths_to_files = {
     "Guild raid": "Guild raids",
     "Quest boss": "Quest bosses",
     "Quest miniboss": "Quest minibosses",
-    "Special raid": "Special raids",
+    "Timed raid": "Timed raids",
     "Event raid": "Event raids",
     "World raid": "World raids"
 }
@@ -64,7 +64,7 @@ types = {
     "Guild raids.csv": "Guild raid",
     "Quest bosses.csv": "Quest boss",
     "Quest minibosses.csv": "Quest miniboss",
-    "Special raids.csv": "Special raid",
+    "Timed raids.csv": "Timed raid",
     "Event raids.csv": "Event raid",
     "World raids.csv": "World raid"
 }
@@ -74,7 +74,7 @@ loot_formats = {
     "Guild raid": "EHL",
     "Quest boss": "EHL",
     "Quest miniboss": "EHL",
-    "Special raid": "EHL",
+    "Timed raid": "EHL",
     "Event raid": "Image",
     "World raid": "Image"
 }
@@ -84,7 +84,7 @@ default_difficulties = {
     "Guild raid": "EHL",
     "Quest boss": "EHL",
     "Quest miniboss": "EHL",
-    "Special raid":"E",
+    "Timed raid":"E",
     "Event raid":"L",
     "World raid": "L"
 }
@@ -94,7 +94,7 @@ participants = {
     "Guild raid": { "Small": 5, "Medium": 10, "Large": 20, "Immense": 30 }, # Value for immense guild raids is an assumption until one is released
     "Quest boss": { "Quest": 1 },
     "Quest miniboss": {"Quest": 1},
-    "Special raid": { "World": 2000 },
+    "Timed raid": { "World": 2000 },
     "Event raid": {"World": 10000 },
     "World raid": { "World": 10000 }
 }
@@ -104,7 +104,7 @@ default_sizes = {
     "Guild raid": "Small",
     "Quest boss": "Quest",
     "Quest miniboss": "Quest",
-    "Special raid": "World",
+    "Timed raid": "World",
     "Event raid": "World",
     "World raid": "World"
 }

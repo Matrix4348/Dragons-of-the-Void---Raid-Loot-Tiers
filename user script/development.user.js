@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      6.3
+// @version      6.4
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -748,7 +748,7 @@ async function createTab(name){
     else if(name=="Guild"){ createTable("Guild raids",["raiding","healthless"],"All","Guild raid","Type"); }
     else if(name=="Event"){ createTable("Event raids",["raiding","healthless"],"All","Event raid",["Type","Size"]); }
     else if(name=="World "){ createTable("World raids",["raiding","healthless"],"All","World raid",["Type","Size"]); }
-    else if(name=="Special"){ createTable("Special raids",["raiding","healthless"],"All","Special raid",["Type","Size"]); }
+    else if(name=="Timed"){ createTable("Timed raids",["raiding","healthless"],"All","Timed raid",["Type","Size"]); }
     else if(name=="Questing"){ createTable("Quests","questing","All",["Quest boss","Quest miniboss"],["Size"]); }
     else if(name=="All"){ createTable("All raids",["raiding","healthless"],"All","All"); }
     else if(name=="Damage taken (raids)"){ createDamageTakenTable(["raiding","healthless"]); }
@@ -784,7 +784,7 @@ function create_tab_buttons_div(){
     createTabButton(t2,"Guild");
     createTabButton(t2,"Event");
     createTabButton(t2,"World ");
-    createTabButton(t2,"Special");
+    createTabButton(t2,"Timed");
     createTabButton(t2,"All");
     createTabButton(t2,"Questing");
     // Other buttons
