@@ -115,6 +115,7 @@ jobs:
           else
             git commit --allow-empty -m "Empty commit"
           fi
+          git pull --rebase --autostash
           git push
   export_files_on_workflow_dispatch:
     name: Export new and modified files, on workflow_dispatch
@@ -150,4 +151,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
           git commit --allow-empty -m "[Manual trigger] Update raid-list.json and loot tables"
+          git pull --rebase --autostash
           git push

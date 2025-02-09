@@ -33,4 +33,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add ./"user script"/latest.user.js
           git commit -m "${{ github.event.commits[0].message || '-' }}"
+          git pull --rebase --autostash
           git push
