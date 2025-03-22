@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      6.4
+// @version      7.0
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -64,8 +64,9 @@ async function fetch_online_raid_data(){
     }
     catch(e){
         // Fall back to the data known as of last update. DO NOT TOUCH THE LINE BELOW!
-        /* MARKER 1 */ raid_list={}; /* MARKER 1 */
+        /* MARKER 1 */ raid_list=raid_list||{}; /* MARKER 1 */
     }
+    setTimeout(fetch_online_raid_data,3600000); // Update raid data every hour, for long sessions.
 }
 
 function create_css(){
@@ -81,7 +82,8 @@ function create_css(){
             --main-colour: rgb(153,255,170);
             --in-raid-colour: rgb(255,255,255);
             --in-raid-table-max-height: 550px;
-            --in-raid-table-max-width: 400px;
+            --in-raid-table-body-max-height: 520px;
+            --in-raid-table-max-width: 420px;
         }
 
         .dotvrlt_corners {
@@ -151,15 +153,15 @@ function create_css(){
         }
         .dotvrlt_fixed_row_2 {
             position: sticky;
-            top: 30px;
+            top: 25px;
         }
         .dotvrlt_fixed_row_3 {
             position: sticky;
             top: 55px;
         }
-        .dotvrlt_fixed_row_2_bis {
-            position: sticky;
-            top: 25px;
+        .dotvrlt_table_container {
+            overflow-y: hidden;
+            height: auto;
         }
         .dotvrlt_sortable_header {
             cursor: pointer;
@@ -272,6 +274,11 @@ function create_css(){
             overflow-x: auto;
             overflow-y: auto;
             right: 0px;
+        }
+        #DotVRLT\\ detailed\\ table tbody {
+            display: block;
+            overflow-y: auto;
+            max-height: var(--in-raid-table-body-max-height);
         }
     `;
     document.body.appendChild(css);
@@ -634,7 +641,7 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
     }
     else{
         t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column" rowspan="2">Name</td> <td rowspan="2">Type</td> <td rowspan="2">Size</td> <td colspan="9">Loot tiers</td> </tr>
-        <tr class="dotvrlt_fixed_row_2_bis"> <td>Difficulty</td> <td>Damage</td> <td colspan="3">Common | rare | mythic</td> <td colspan="3">Summoner | hidden | bonus</td> <td>Average stat points</td> </tr>`;
+        <tr class="dotvrlt_fixed_row_2"> <td>Difficulty</td> <td>Damage</td> <td colspan="3">Common | rare | mythic</td> <td colspan="3">Summoner | hidden | bonus</td> <td>Average stat points</td> </tr>`;
         for(let k in raid_list){
             for(let mode of modes){
                 if(mode in raid_list[k]){
@@ -854,7 +861,7 @@ function press_in_raid_button(){
     }
 }
 
-function create_in_raid_div(raid_name,mode,raid_difficulty){
+async function create_in_raid_div(raid_name,mode,raid_difficulty){
     var d=document.createElement("div");
     d.id="DotVRLT in-raid div";
     d.classList.add("dotvrlt_corners");
@@ -877,7 +884,15 @@ function create_in_raid_div(raid_name,mode,raid_difficulty){
     }
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
         let on_hit_text = raid_list[raid_name][mode]["Has extra drops"]["On-hit drops"][raid_difficulty] ? "<br><b>On-hit drops: "+raid_list[raid_name][mode]["Extra drops"]["On-hit drops"][raid_difficulty]+"</b>" : "";
-        t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Latest loot table known by the script (date of first use: `+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).release_date+`): <br><i>`+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL+`</i><br>For guaranteed up-to-date one: click "Loot", then "Expanded Loot".`+on_hit_text+`</td>`;
+        var official_url="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(" ","_").replaceAll("'","_")+".png";
+        // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
+        var found_official_loot_table = await does_this_file_exist(official_url);
+        if(found_official_loot_table){
+            t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Current loot table: <br><i>`+official_url+on_hit_text+`</td>`;
+        }
+        else{
+            t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Latest loot table known by the script (date of first use: `+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).release_date+`): <br><i>`+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL+`</i><br>For guaranteed up-to-date one: click "Loot", then "Expanded Loot".`+on_hit_text+`</td>`;
+        }
     }
     td.appendChild(t);
     // In-raid settings creation.
@@ -890,7 +905,7 @@ function create_in_raid_div(raid_name,mode,raid_difficulty){
     cb2.onclick=async function(){ show_detailed_div=cb2.checked; await GM_setValue("show_detailed_div_stored",show_detailed_div); set_detailed_div_state(); };
 }
 
-function create_detailed_div(raid_name,mode,raid_difficulty){
+async function create_detailed_div(raid_name,mode,raid_difficulty){
     var d=document.createElement("div");
     d.id="DotVRLT detailed div";
     d.classList.add("dotvrlt_corners");
@@ -906,9 +921,13 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
         t.id="DotVRLT detailed table";
         t.classList.add("dotvrlt_table");
         t.border=1;
-        t.innerHTML=`<td class="dotvrlt_fixed_row dotvrlt_corners_top" colspan="`+ncol+`" style="font-size:18px;">`+raid_name+" ("+raid_difficulty.toLowerCase()+`)</td>`;
-        d.appendChild(t);
+        t.innerHTML=`<thead> <tr> <td class="dotvrlt_corners_top" colspan="`+ncol+`" style="font-size:18px;">`+raid_name+" ("+raid_difficulty.toLowerCase()+`)</td> </tr> </thead> <tbody></tbody>`;
+        var table_container=document.createElement("div");
+        table_container.classList.add("dotvrlt_table_container");
+        d.appendChild(table_container);
+        table_container.appendChild(t);
         create_question_mark(t.getElementsByTagName("TD")[0]);
+        t=t.tBodies[0];
         var l1=Math.ceil(ncol/2), l2=Math.floor(ncol/2);
         var r0=t.insertRow();
         if(raid_list[raid_name][mode]["Raid type"]!=""){ r0.innerHTML=`<td colspan="`+l1+`">`+raid_list[raid_name][mode]["Raid type"]+`</td> <td colspan="`+l2+`"> Size: `+raid_list[raid_name][mode]["Raid size"]+`</td>`; }
@@ -918,8 +937,8 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
         r1.innerHTML=`<td colspan="`+ncol+`"> Damage taken: `+dmg+` (base: `+raid_list[raid_name][mode].Damage[raid_difficulty]+`, type: `+raid_list[raid_name][mode].Damage.Type.toLowerCase()+`)</td>`;
         var r1b=t.insertRow();
         r1b.innerHTML=`<td colspan="`+l1+`"> On-hit drops: `+raid_list[raid_name][mode]["Extra drops"]["On-hit drops"][raid_difficulty]+`</td> <td colspan="`+l2+`"> Loot expansion: `+raid_list[raid_name][mode]["Extra drops"]["Loot expansion"][raid_difficulty]+`</td>`;
-        var r2=t.insertRow(); r2.classList.add("dotvrlt_fixed_row_2"); r2.innerHTML=`<td class="dotvrlt_first_column" rowspan="2">Damage</td><td colspan="`+(ncol-1)+`">Loot drops</td>`;
-        var r3=t.insertRow(); r3.classList.add("dotvrlt_fixed_row_3"); r3.innerHTML=`<td>Common</td><td>Rare</td><td>Mythic</td>`;
+        var r2=t.insertRow(); r2.classList.add("dotvrlt_fixed_row"); r2.innerHTML=`<td class="dotvrlt_first_column" rowspan="2">Damage</td><td colspan="`+(ncol-1)+`">Loot drops</td>`;
+        var r3=t.insertRow(); r3.classList.add("dotvrlt_fixed_row_2"); r3.innerHTML=`<td>Common</td><td>Rare</td><td>Mythic</td>`;
         if(raid_list[raid_name][mode]["Has extra drops"].Hidden[raid_difficulty]){ r3.innerHTML=r3.innerHTML+`<td>Hidden</td>`; }
         if(raid_list[raid_name][mode]["Has extra drops"].Summoner[raid_difficulty]){ r3.innerHTML=r3.innerHTML+`<td>Summoner</td>`; }
         if(raid_list[raid_name][mode]["Has extra drops"].Bonus[raid_difficulty]){ r3.innerHTML=r3.innerHTML+`<td>Bonus</td>`; }
@@ -952,7 +971,10 @@ function create_detailed_div(raid_name,mode,raid_difficulty){
             I.height=Math.min(I.naturalHeight,document.documentElement.style.getPropertyValue("--in-raid-table-max-height").replace("px","")).toString();
             I.width=Math.min(I.naturalWidth,"400").toString(); // --in-raid-table-max-width cannot be used because it has not been set using document.documentElement.style.setProperty
         });
-        i.src=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL;
+        var official_url="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(" ","_").replaceAll("'","_")+".png";
+        // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
+        var found_official_loot_table = await does_this_file_exist(official_url);
+        if(found_official_loot_table){ i.src=official_url; } else{ i.src=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL; }
         var z=0;
         i.addEventListener("click",
                            function(){
@@ -978,6 +1000,8 @@ function set_detailed_div_state(){
     document.documentElement.style.setProperty("--in-raid-table-max-height",H+"px");
     if(show_detailed_div&&in_raid_button_pressed){ document.documentElement.style.setProperty("--detailed-div-display","flex"); }
     else{ document.documentElement.style.setProperty("--detailed-div-display","none"); }
+    var Hhead=(detailed_div.getElementsByTagName("THEAD")?.[0]||document.createElement("div")).getBoundingClientRect().height;
+    document.documentElement.style.setProperty("--in-raid-table-body-max-height",(H-Hhead-5)+"px");
 }
 
 function current_fighting_mode(){
@@ -1014,8 +1038,83 @@ function in_raid_stuff(A){
             create_detailed_div(raid_name,mode,current_difficulty);
             create_in_raid_div(raid_name,mode,current_difficulty);
         }
+        else{ bring_stuff_for_some_unknown_raids(raid_name,mode,current_difficulty); }
     }
     else if(A){setTimeout(function(B){in_raid_stuff(B);},1000,A-1);}
+}
+
+async function bring_stuff_for_some_unknown_raids(raid_name,mode,current_difficulty){
+    if(mode=="healthless"){
+        var official_url="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(" ","_").replaceAll("'","_")+".png";
+        // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
+        var found_official_loot_table = await does_this_file_exist(official_url);
+        if(found_official_loot_table){
+            check_existence_of_area_for_button();
+            in_raid_button();
+
+            // Loot table:
+            let d=document.createElement("div");
+            d.id="DotVRLT detailed div";
+            d.classList.add("dotvrlt_corners");
+            let magics_area=document.getElementsByClassName("raid-effects")[0]||document.createElement("div");
+            d.style.top=magics_area.getBoundingClientRect().bottom+6+window.scrollY+"px";
+            document.getElementsByClassName("raid-container")[0].appendChild(d);
+            detailed_div=d;
+            set_detailed_div_state();
+            // Table creation.
+            let i=document.createElement("img");
+            i.id="DotVRLT detailed table";
+            i.style.margin="auto"; i.style.cursor="zoom-in";
+            i.addEventListener("load",
+                               function(){
+                let I=document.getElementById("DotVRLT detailed table");
+                I.height=Math.min(I.naturalHeight,document.documentElement.style.getPropertyValue("--in-raid-table-max-height").replace("px","")).toString();
+                I.width=Math.min(I.naturalWidth,"400").toString(); // --in-raid-table-max-width cannot be used because it has not been set using document.documentElement.style.setProperty
+            });
+            i.src=official_url;
+            let z=0;
+            i.addEventListener("click",
+                               function(){
+                var h0=document.documentElement.style.getPropertyValue("--in-raid-table-max-height").replace("px",""),
+                    w0=(document.documentElement.style.getPropertyValue("--in-raid-table-max-width")||"400").replace("px","");
+                var h = Math.min(i.naturalHeight,h0).toString(), w = Math.min(i.naturalWidth,w0).toString();
+                var H = Math.max(i.naturalHeight,h0).toString(), W = Math.max(i.naturalWidth,w0).toString();
+                if(z){i.width=w; i.height=h; i.style.cursor="zoom-in";}
+                else{i.width=W; i.height=H; i.style.cursor="zoom-out";}
+                z=1-z;
+            });
+            d.appendChild(i);
+
+            // Loot table address:
+            var d2=document.createElement("div");
+            d2.id="DotVRLT in-raid div";
+            d2.classList.add("dotvrlt_corners");
+            document.getElementsByClassName("broadcast-damage-container")[0].style.zIndex="1"; // Normal value is 0, but then the above z-index should be set to -1 and this would make the checkboxes unclickable.
+            var button_boundaries=document.getElementById("DotVRLT in-raid button").getBoundingClientRect();
+            d2.style.left=button_boundaries.x+window.scrollX+"px";
+            d2.style.top=button_boundaries.y+button_boundaries.height+5+window.scrollY+"px";
+            document.getElementsByClassName("raid-container")[0].appendChild(d2);
+            in_raid_div=d2;
+            // Creation of the three subdivs.
+            var td=document.createElement("div"); td.id="DotVRLT in-raid table div"; d2.appendChild(td);
+            var tt=document.createElement("div"); tt.id="DotVRLT in-raid settings div"; tt.classList.add("dotvrlt_in_raid_settings_div"); d2.appendChild(tt);
+            var tt2=document.createElement("div"); tt2.id="DotVRLT detailed settings div"; tt2.classList.add("dotvrlt_in_raid_settings_div"); d2.appendChild(tt2);
+            // Table creation.
+            var t=document.createElement("table");
+            t.classList.add("dotvrlt_table");
+            t.border=1;
+            t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Current loot table: <br><i>`+official_url+`</td>`;
+            td.appendChild(t);
+            // In-raid settings creation.
+            var cb=createNewCheckbox(tt, "", " Automatically display relevant raid tiers when entering a raid");
+            cb.defaultChecked=automatically_show_in_raid_div;
+            cb.onclick=async function(){ automatically_show_in_raid_div=cb.checked; await GM_setValue("automatically_show_in_raid_div_stored",automatically_show_in_raid_div); };
+            if(automatically_show_in_raid_div){ press_in_raid_button(); } else{ document.documentElement.style.setProperty("--in-raid-display","none"); }
+            var cb2=createNewCheckbox(tt2, "", " Display drop data (and more)");
+            cb2.defaultChecked=show_detailed_div;
+            cb2.onclick=async function(){ show_detailed_div=cb2.checked; await GM_setValue("show_detailed_div_stored",show_detailed_div); set_detailed_div_state(); };
+        }
+    }
 }
 
 function THE_WATCHER(){
@@ -1214,10 +1313,12 @@ function createAverageStatsPointsTab(){
 }
 
 function create_question_mark(div){
-    var text = document.createElement("div");
-    text.style.display="none";
-    text.classList.add("dotvrlt_hover_message");
-    text.innerHTML = `
+    var text = document.getElementsByClassName("dotvrlt_hover_message")?.[0]
+    if(!text){
+        text = document.createElement("div");
+        text.style.display="none";
+        text.classList.add("dotvrlt_hover_message");
+        text.innerHTML = `
         <p>"FS" stands for "fair share". This is simply the health of the raid divided by the maximum number of participants. This is only meaningful in the way that, if everyone's damage exceeds this
         threshold, then nobody would need to overhit a full raid.</p>
 
@@ -1234,8 +1335,9 @@ function create_question_mark(div){
 
         <p>Average stat points: Unless stated otherwise, this columns indicates the average number of stat points per tier.<br>
         Either way, average stat points take, into consideration, the direct drops and, if this is non-negligeable, the craftable stat points.</p>
-    `;
-    document.body.appendChild(text);
+        `;
+        document.body.appendChild(text);
+    }
     var q=document.createElement("div");
     q.innerHTML="&ensp;?&ensp;";
     q.classList.add("dotvrlt_question_mark");
@@ -1329,6 +1431,16 @@ function compareCells(A,B){ // Compares numerically and alphabetically two chara
     var a = Number(parseFloat(A.replaceAll(",","").replaceAll("FS: ",""))), b = Number(parseFloat(B.replaceAll(",","").replaceAll("FS: ","")));
     if( isNaN(a) || isNaN(b) ){ a = A; b = B; }
     if(a > b){ return 1; } else if(a == b){ return 0; } else{ return -1; }
+}
+
+async function does_this_file_exist(url){
+    try{
+        var r = await makeRequest("GET", url);
+        return true;
+    }
+    catch(e){
+        return false;
+    }
 }
 
 async function DotVRLT(){
