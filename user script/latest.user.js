@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      7.0
+// @version      7.0.1
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -916,7 +916,7 @@ async function create_detailed_div(raid_name,mode,raid_difficulty){
     set_detailed_div_state();
     // Table creation.
     if(raid_list[raid_name][mode]["Loot format"]=="EHL"){
-        var ncol=5+raid_list[raid_name][mode]["Has extra drops"].Hidden[raid_difficulty]+raid_list[raid_name][mode]["Has extra drops"].Summoner[raid_difficulty]+raid_list[raid_name][mode]["Has extra drops"].Bonus[raid_difficulty];
+        var ncol=4+raid_list[raid_name][mode]["Has extra drops"].Hidden[raid_difficulty]+raid_list[raid_name][mode]["Has extra drops"].Summoner[raid_difficulty]+raid_list[raid_name][mode]["Has extra drops"].Bonus[raid_difficulty]+(raid_list[raid_name][mode]["Average stat points"][raid_difficulty].length>0);
         var t=document.createElement("table");
         t.id="DotVRLT detailed table";
         t.classList.add("dotvrlt_table");
