@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      7.2
+// @version      7.3
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -1000,7 +1000,8 @@ function set_detailed_div_state(){
     detailed_div.style.top=T+window.scrollY+"px";
     var B=document.getElementsByClassName("raid-footer")[0].getBoundingClientRect().top-15;
     var H=B-T;
-    if( raid_list[document.getElementsByClassName("boss-name-container")[0].firstChild.innerHTML][current_fighting_mode()]["Loot format"]=="Image" ){ H=Math.min(550,H); }
+    var raid_name=document.getElementsByClassName("boss-name-container")[0].firstChild.innerHTML;
+    if( !(raid_name in raid_list) || raid_list[raid_name]?.[current_fighting_mode()]["Loot format"]=="Image" ){ H=Math.min(550,H); }
     document.documentElement.style.setProperty("--in-raid-table-max-height",H+"px");
     if(show_detailed_div&&in_raid_button_pressed){ document.documentElement.style.setProperty("--detailed-div-display","flex"); }
     else{ document.documentElement.style.setProperty("--detailed-div-display","none"); }
