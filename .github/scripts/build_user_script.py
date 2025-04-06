@@ -14,5 +14,5 @@ finally:
         f=F0.read()
         beginning=f.find(M)
         end=f.find(M,beginning+l)
-        newf=f[0:beginning]+M+" raid_list="+raid_list+"; "+M+f[end+l:]
+        newf=f[0:beginning]+M+" raid_list=raid_list||"+raid_list+"; "+M+f[end+l:]
         F.write(newf)
