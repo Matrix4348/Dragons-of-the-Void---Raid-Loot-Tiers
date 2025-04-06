@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      7.1
+// @version      7.2
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -884,7 +884,9 @@ async function create_in_raid_div(raid_name,mode,raid_difficulty){
     }
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
         let on_hit_text = raid_list[raid_name][mode]["Has extra drops"]["On-hit drops"][raid_difficulty] ? "<br><b>On-hit drops: "+raid_list[raid_name][mode]["Extra drops"]["On-hit drops"][raid_difficulty]+"</b>" : "";
-        var official_url="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+".png";
+        var ver=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL.match(/_[0-9]*\.png/g);
+        var ver2= ver>1 ? "_v"+ver : "";
+        var official_url="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver2+".png";
         // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
         var found_official_loot_table = await does_this_file_exist(official_url);
         if(found_official_loot_table){
@@ -971,7 +973,9 @@ async function create_detailed_div(raid_name,mode,raid_difficulty){
             I.height=Math.min(I.naturalHeight,document.documentElement.style.getPropertyValue("--in-raid-table-max-height").replace("px","")).toString();
             I.width=Math.min(I.naturalWidth,"400").toString(); // --in-raid-table-max-width cannot be used because it has not been set using document.documentElement.style.setProperty
         });
-        var official_url="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+".png";
+        var ver=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL.match(/_[0-9]*\.png/g);
+        var ver2= ver>1 ? "_v"+ver : "";
+        var official_url="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver2+".png";
         // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
         var found_official_loot_table = await does_this_file_exist(official_url);
         if(found_official_loot_table){ i.src=official_url; } else{ i.src=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL; }
