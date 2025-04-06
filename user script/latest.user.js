@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      7.3
+// @version      7.4
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -885,11 +885,13 @@ async function create_in_raid_div(raid_name,mode,raid_difficulty){
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
         let on_hit_text = raid_list[raid_name][mode]["Has extra drops"]["On-hit drops"][raid_difficulty] ? "<br><b>On-hit drops: "+raid_list[raid_name][mode]["Extra drops"]["On-hit drops"][raid_difficulty]+"</b>" : "";
         var ver=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL.match(/_[0-9]*\.png/g);
-        var ver2= ver>1 ? "_v"+ver : "";
-        var official_url="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver2+".png";
+        var ver2= ver>1 ? "_v"+ver : "",
+            ver3= ver>0 ? "_v"+(Number(ver)+1) : "";
+        var url1="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver2+".png",
+            url2="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver3+".png";
+        var official_url=check_several_url(url1,url2);
         // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
-        var found_official_loot_table = await does_this_file_exist(official_url);
-        if(found_official_loot_table){
+        if(official_url){
             t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Current loot table: <br><i>`+official_url+on_hit_text+`</td>`;
         }
         else{
@@ -974,11 +976,13 @@ async function create_detailed_div(raid_name,mode,raid_difficulty){
             I.width=Math.min(I.naturalWidth,"400").toString(); // --in-raid-table-max-width cannot be used because it has not been set using document.documentElement.style.setProperty
         });
         var ver=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL.match(/_[0-9]*\.png/g);
-        var ver2= ver>1 ? "_v"+ver : "";
-        var official_url="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver2+".png";
+        var ver2= ver>1 ? "_v"+ver : "",
+            ver3= ver>0 ? "_v"+(Number(ver)+1) : "";
+        var url1="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver2+".png",
+            url2="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver3+".png";
+        var official_url=check_several_url(url1,url2);
         // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
-        var found_official_loot_table = await does_this_file_exist(official_url);
-        if(found_official_loot_table){ i.src=official_url; } else{ i.src=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL; }
+        if(official_url){ i.src=official_url; } else{ i.src=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL; }
         var z=0;
         i.addEventListener("click",
                            function(){
@@ -1388,7 +1392,7 @@ function sanitized_object(o){
 }
 
 function get_last(a){ // Returns last element of an array
-    return a[a.length-1]
+    return a[a.length-1];
 }
 
 function sortTable(table,n) { // Taken (and adapted) from https://daext.com/blog/how-to-create-an-html-table-with-sorting-and-filtering/
@@ -1446,6 +1450,15 @@ async function does_this_file_exist(url){
     catch(e){
         return false;
     }
+}
+
+async function check_several_url(U){ // Returns the last element of the array U that is a working URL, or undefined
+    var url=undefined;
+    for(let u of U){
+        var b = await does_this_file_exist(u);
+        if(b){ url=u; }
+    }
+    return url;
 }
 
 async function DotVRLT(){
