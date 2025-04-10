@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      7.4.1
+// @version      8.0
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -189,8 +189,8 @@ function create_css(){
             border: 1px solid black;
         }
 
-        .studious-inspector-container {
-            z-index: 1;
+        .broadcast-damage-container, .raid-chat-container, .studious-inspector-container {
+            z-index: 2;
         }
 
         #DotVRLT\\ main\\ button {
@@ -273,7 +273,8 @@ function create_css(){
             position: absolute;
             overflow-x: auto;
             overflow-y: auto;
-            right: 0px;
+            right: 340px;
+            z-index: 1;
         }
         #DotVRLT\\ detailed\\ table tbody {
             display: block;
@@ -865,7 +866,6 @@ async function create_in_raid_div(raid_name,mode,raid_difficulty){
     var d=document.createElement("div");
     d.id="DotVRLT in-raid div";
     d.classList.add("dotvrlt_corners");
-    document.getElementsByClassName("broadcast-damage-container")[0].style.zIndex="1"; // Normal value is 0, but then the above z-index should be set to -1 and this would make the checkboxes unclickable.
     var button_boundaries=document.getElementById("DotVRLT in-raid button").getBoundingClientRect();
     d.style.left=button_boundaries.x+window.scrollX+"px";
     d.style.top=button_boundaries.y+button_boundaries.height+5+window.scrollY+"px";
@@ -1098,7 +1098,6 @@ async function bring_stuff_for_some_unknown_raids(raid_name,mode,current_difficu
             var d2=document.createElement("div");
             d2.id="DotVRLT in-raid div";
             d2.classList.add("dotvrlt_corners");
-            document.getElementsByClassName("broadcast-damage-container")[0].style.zIndex="1"; // Normal value is 0, but then the above z-index should be set to -1 and this would make the checkboxes unclickable.
             var button_boundaries=document.getElementById("DotVRLT in-raid button").getBoundingClientRect();
             d2.style.left=button_boundaries.x+window.scrollX+"px";
             d2.style.top=button_boundaries.y+button_boundaries.height+5+window.scrollY+"px";
