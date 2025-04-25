@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      8.1
+// @version      8.2
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -19,9 +19,9 @@ var raid_list;
 var options_div, main_div, in_raid_div, detailed_div;
 var button_pressed=false, in_raid_button_pressed=false;
 var difficulties_to_display_default={"Easy":1,"Hard":1,"Legendary":1};
-var automatically_show_in_raid_div_default=1, show_detailed_div_default=true, show_advanced_view_default=false;
+var automatically_show_in_raid_div_default=1, show_detailed_div_default=true, show_advanced_view_default=false, put_detailed_div_above_raid_chat_default=false;
 var current_tab_default="About";
-var difficulties_to_display, automatically_show_in_raid_div, current_tab, show_detailed_div, show_advanced_view;
+var difficulties_to_display, automatically_show_in_raid_div, current_tab, show_detailed_div, show_advanced_view, put_detailed_div_above_raid_chat;
 var custom_colours={"Easy":"rgb(0,255,0)","Hard":"rgb(255,165,0)","Legendary":"rgb(238,130,238)","Main":"rgb(153,255,170)","Buttons":"rgb(153,187,255)"};
 var colourless_mode_default=0, colourless_mode, rounded_corners_default=1, rounded_corners, current_difficulty;
 var player_stats={};
@@ -78,6 +78,8 @@ function create_css(){
             --options-and-main-divs-display: none;
             --in-raid-display: none;
             --detailed-div-display: none;
+            --detailed-div-right: 10px;
+            --detailed-div-top: 6px;
             --button-colour: rgb(153,187,255);
             --main-colour: rgb(153,255,170);
             --in-raid-colour: rgb(255,255,255);
@@ -166,7 +168,7 @@ function create_css(){
         .dotvrlt_sortable_header {
             cursor: pointer;
         }
-        .dotvrlt_corners div, .dotvrlt_corners table, .dotvrlt_corners tbody, .dotvrlt_corners tr, .dotvrlt_corners td {
+        .dotvrlt_corners div, .dotvrlt_corners table, .dotvrlt_corners tbody, .dotvrlt_corners tr, .dotvrlt_corners td, .dotvrlt_corners select {
             background-color: inherit;
         }
         .dotvrlt_question_mark {
@@ -273,7 +275,8 @@ function create_css(){
             position: absolute;
             overflow-x: auto;
             overflow-y: auto;
-            right: 340px;
+            right: var(--detailed-div-right);
+            top: var(--detailed-div-top);
             z-index: 1;
         }
         #DotVRLT\\ detailed\\ table tbody {
@@ -391,6 +394,7 @@ async function initialize_saved_variables(){ // Note: Just in case, global varia
     automatically_show_in_raid_div=await GM_getValue("automatically_show_in_raid_div_stored",automatically_show_in_raid_div_default);
     show_detailed_div=await GM_getValue("show_detailed_div_stored",show_detailed_div_default);
     show_advanced_view=await GM_getValue("show_advanced_view_stored",show_advanced_view_default);
+    put_detailed_div_above_raid_chat=await GM_getValue("put_detailed_div_above_raid_chat_stored",put_detailed_div_above_raid_chat_default);
     colourless_mode=await GM_getValue("colourless_mode_stored",colourless_mode_default);
     rounded_corners=await GM_getValue("rounded_corners_stored",rounded_corners_default);
     player_stats.defense=await GM_getValue("defense_stored",0);
@@ -904,17 +908,25 @@ async function create_in_raid_div(raid_name,mode,raid_difficulty){
     cb.defaultChecked=automatically_show_in_raid_div;
     cb.onclick=async function(){ automatically_show_in_raid_div=cb.checked; await GM_setValue("automatically_show_in_raid_div_stored",automatically_show_in_raid_div); };
     if(automatically_show_in_raid_div){ press_in_raid_button(); } else{ document.documentElement.style.setProperty("--in-raid-display","none"); }
-    var cb2=createNewCheckbox(tt2, "", " Display drop data (and more)");
+    var cb2=createNewCheckbox(tt2, "", " Display drop data (and more) [location: <select id='DotVRLT detailed div location dropdown'></select> ]");
     cb2.defaultChecked=show_detailed_div;
     cb2.onclick=async function(){ show_detailed_div=cb2.checked; await GM_setValue("show_detailed_div_stored",show_detailed_div); set_detailed_div_state(); };
+    // A dropdown menu to place detailed_div at the left or above raid chat
+    var dropdown=document.getElementById("DotVRLT detailed div location dropdown");
+    var o1=document.createElement("option"); o1.innerHTML="next to raid chat"; dropdown.appendChild(o1);
+    var o2=document.createElement("option"); o2.innerHTML="above raid chat"; dropdown.appendChild(o2);
+    dropdown.selectedIndex = put_detailed_div_above_raid_chat*1; // First option is of index 0, second option is of index 1 and so on.
+    dropdown.addEventListener("change",function(){
+        put_detailed_div_above_raid_chat=!put_detailed_div_above_raid_chat;
+        set_detailed_div_state();
+        GM_setValue("put_detailed_div_above_raid_chat_stored",put_detailed_div_above_raid_chat);
+    });
 }
 
 async function create_detailed_div(raid_name,mode,raid_difficulty){
     var d=document.createElement("div");
     d.id="DotVRLT detailed div";
     d.classList.add("dotvrlt_corners");
-    var magics_area=document.getElementsByClassName("raid-effects")[0]||document.createElement("div");
-    d.style.top=magics_area.getBoundingClientRect().bottom+6+window.scrollY+"px";
     document.getElementsByClassName("raid-container")[0].appendChild(d);
     detailed_div=d;
     set_detailed_div_state();
@@ -999,18 +1011,40 @@ async function create_detailed_div(raid_name,mode,raid_difficulty){
 }
 
 function set_detailed_div_state(){
+    var top=6+window.scrollY, y_limit=-15, right=10;
     var magics_area=document.getElementsByClassName("raid-effects")[0]||document.createElement("div");
-    var T=magics_area.getBoundingClientRect().bottom+6;
-    detailed_div.style.top=T+window.scrollY+"px";
-    var B=document.getElementsByClassName("raid-footer")[0].getBoundingClientRect().top-15;
-    var H=B-T;
+    var raid_center=document.getElementsByClassName("raid-header-center")[0]||document.createElement("div");
+    var chat_container=document.getElementsByClassName("raid-chat-container")[0];
+
+    // Top
+    if(put_detailed_div_above_raid_chat || !chat_container){ top += magics_area.getBoundingClientRect().bottom; }
+    else{ top += Math.max( magics_area.getBoundingClientRect().bottom, raid_center.getBoundingClientRect().bottom ); }
+    document.documentElement.style.setProperty("--detailed-div-top",top+"px");
+
+    // Heights and display
+    if( put_detailed_div_above_raid_chat && chat_container ){ y_limit+=chat_container.getBoundingClientRect().top; }
+    else{ y_limit+=document.getElementsByClassName("raid-footer")[0].getBoundingClientRect().top; }
+    var H=y_limit-top;
     var raid_name=document.getElementsByClassName("boss-name-container")[0].firstChild.innerHTML;
     if( !(raid_name in raid_list) || raid_list[raid_name]?.[current_fighting_mode()]["Loot format"]=="Image" ){ H=Math.min(550,H); }
     document.documentElement.style.setProperty("--in-raid-table-max-height",H+"px");
+
     if(show_detailed_div&&in_raid_button_pressed){ document.documentElement.style.setProperty("--detailed-div-display","flex"); }
     else{ document.documentElement.style.setProperty("--detailed-div-display","none"); }
+
     var Hhead=(detailed_div.getElementsByTagName("THEAD")?.[0]||document.createElement("div")).getBoundingClientRect().height;
     document.documentElement.style.setProperty("--in-raid-table-body-max-height",(H-Hhead-5)+"px");
+
+    // Right
+    if( chat_container && !put_detailed_div_above_raid_chat ){
+        var distance_from_chat_to_right = document.body.getBoundingClientRect().width - chat_container.getBoundingClientRect().left;
+        right+=distance_from_chat_to_right;
+    }
+    document.documentElement.style.setProperty("--detailed-div-right",right+"px");
+
+    // Image loot tables do not always properly resize without clicking (when being moved, or on window resize for example), so I will simulate a double click as a "temporary" workaround.
+    document.getElementById("DotVRLT detailed table")?.click();
+    document.getElementById("DotVRLT detailed table")?.click();
 }
 
 function current_fighting_mode(){
@@ -1065,8 +1099,6 @@ async function bring_stuff_for_some_unknown_raids(raid_name,mode,current_difficu
             let d=document.createElement("div");
             d.id="DotVRLT detailed div";
             d.classList.add("dotvrlt_corners");
-            let magics_area=document.getElementsByClassName("raid-effects")[0]||document.createElement("div");
-            d.style.top=magics_area.getBoundingClientRect().bottom+6+window.scrollY+"px";
             document.getElementsByClassName("raid-container")[0].appendChild(d);
             detailed_div=d;
             set_detailed_div_state();
@@ -1121,6 +1153,16 @@ async function bring_stuff_for_some_unknown_raids(raid_name,mode,current_difficu
             var cb2=createNewCheckbox(tt2, "", " Display drop data (and more)");
             cb2.defaultChecked=show_detailed_div;
             cb2.onclick=async function(){ show_detailed_div=cb2.checked; await GM_setValue("show_detailed_div_stored",show_detailed_div); set_detailed_div_state(); };
+            // A dropdown menu to place detailed_div at the left or above raid chat
+            var dropdown=document.getElementById("DotVRLT detailed div location dropdown");
+            var o1=document.createElement("option"); o1.innerHTML="next to raid chat"; dropdown.appendChild(o1);
+            var o2=document.createElement("option"); o2.innerHTML="above raid chat"; dropdown.appendChild(o2);
+            dropdown.selectedIndex = put_detailed_div_above_raid_chat*1; // First option is of index 0, second option is of index 1 and so on.
+            dropdown.addEventListener("change",function(){
+                put_detailed_div_above_raid_chat=!put_detailed_div_above_raid_chat;
+                set_detailed_div_state();
+                GM_setValue("put_detailed_div_above_raid_chat_stored",put_detailed_div_above_raid_chat);
+            });
         }
     }
 }
