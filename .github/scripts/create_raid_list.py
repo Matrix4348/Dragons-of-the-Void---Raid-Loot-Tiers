@@ -339,8 +339,12 @@ for r in raid_list:
                         URL="https://matrix4348.github.io/loot-tables/"+line.pop("File name")
                         date=line.pop("Date of first use")
                         raid_list[r][M]["Loot tables"][d].append({"URL":URL,"release_date":date})
+                        if raid_list[r][M]["Has extra drops"]["Hidden"][d]:
+                            raid_list[r][M]["Loot tables"][d][-1]["hidden_loot"] = line.pop("Hidden loot")
                     if len(raid_list[r][M]["Loot tables"][d])==0:
                         raid_list[r][M]["Loot tables"][d].append({"URL":"<i>No loot table URL found.</i>","release_date":"Today"})
+                        if raid_list[r][M]["Has extra drops"]["Hidden"][d]:
+                            raid_list[r][M]["Loot tables"][d][-1]["hidden_loot"] = "-"
                 f.close()
 
 
