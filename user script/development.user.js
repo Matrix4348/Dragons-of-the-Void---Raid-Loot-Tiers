@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      8.2
+// @version      8.3
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -888,6 +888,7 @@ async function create_in_raid_div(raid_name,mode,raid_difficulty){
     }
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
         let on_hit_text = raid_list[raid_name][mode]["Has extra drops"]["On-hit drops"][raid_difficulty] ? "<br><b>On-hit drops: "+raid_list[raid_name][mode]["Extra drops"]["On-hit drops"][raid_difficulty]+"</b>" : "";
+        let hidden_text = raid_list[raid_name][mode]["Has extra drops"].Hidden[raid_difficulty] ? "<br><b>Hidden loot: "+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty])?.hidden_loot+"</b>" : "";
         var ver=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL.match(/_[0-9]*\.png/g);
         var ver2= ver>1 ? "_v"+ver : "",
             ver3= ver>0 ? "_v"+(Number(ver)+1) : "";
@@ -1150,7 +1151,7 @@ async function bring_stuff_for_some_unknown_raids(raid_name,mode,current_difficu
             cb.defaultChecked=automatically_show_in_raid_div;
             cb.onclick=async function(){ automatically_show_in_raid_div=cb.checked; await GM_setValue("automatically_show_in_raid_div_stored",automatically_show_in_raid_div); };
             if(automatically_show_in_raid_div){ press_in_raid_button(); } else{ document.documentElement.style.setProperty("--in-raid-display","none"); }
-            var cb2=createNewCheckbox(tt2, "", " Display drop data (and more)");
+            var cb2=createNewCheckbox(tt2, "", " Display drop data (and more) [location: <select id='DotVRLT detailed div location dropdown'></select> ]");
             cb2.defaultChecked=show_detailed_div;
             cb2.onclick=async function(){ show_detailed_div=cb2.checked; await GM_setValue("show_detailed_div_stored",show_detailed_div); set_detailed_div_state(); };
             // A dropdown menu to place detailed_div at the left or above raid chat
