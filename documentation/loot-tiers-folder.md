@@ -48,7 +48,7 @@ If a raid has an image loot table, then you will find two types of files:
 
 For convenience reasons and in order to navigate easily between them (especially if they get updated over time), loot tables should be named as such: Raid_Name_Number, with "Number" starting at 1 and incrementing by one every time the loot table gets modified ("0" is reserved for beta).<br>
 
-`Loot table.csv` contains two columns: "file name" and "date of first use". The second column is obvious (usual format: "January 31st, 2024") and in the first column, type the name of the image that was uploaded to the folder (case sensitive, and do not forget the file extension).<br>
+`Loot table.csv` contains two mandatory columns: "file name" and "date of first use". The second column is obvious (usual format: "January 31st, 2024") and in the first column, type the name of the image that was uploaded to the folder (case sensitive, and do not forget the file extension).<br>
 
 #### <ins>For example:</ins> 
 If the John Rabbit world raid was released on April 1st, 2024 and if it was summoned again on April 1st, 2025 with a new loot table, then we would have John_Rabbit_1.png and John_Rabbit_2.png in `community-gathered data/Loot tiers and drop data/World raids/John Rabbit/`, alongside `community-gathered data/Loot tiers and drop data/World raids/John Rabbit/Loot tables.csv`, which would look the following way: 
@@ -57,6 +57,8 @@ File Name,Date of first use
 John_Rabbit_1.png,"April 1st, 2024"
 John_Rabbit_2.png,"April 1st, 2025"
 ```
+
+A third column, "Hidden loot" can be added if the raid has hidden loot. If so, add the related loot skill levels and the first affected tiers the following way: ```"SK1[tier 1], SK2[tier 2]"```. If some raid versions do not have hidden loot, then input a "-" for them.
 
 ## Raid tiers we have to determine
 
