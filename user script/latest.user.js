@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      8.3
+// @version      8.3.1
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -900,7 +900,7 @@ async function create_in_raid_div(raid_name,mode,raid_difficulty){
             t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Current loot table: <br><i>`+official_url+on_hit_text+`</td>`;
         }
         else{
-            t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Latest loot table known by the script (date of first use: `+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).release_date+`): <br><i>`+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL+`</i><br>For guaranteed up-to-date one: click "Loot", then "Expanded Loot".`+on_hit_text+`</td>`;
+            t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Latest loot table known by the script (date of first use: `+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).release_date+`): <br><i>`+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL+`</i><br>For guaranteed up-to-date one: click "Loot", then "Expanded Loot".`+on_hit_text+hidden_text+`</td>`;
         }
     }
     td.appendChild(t);
