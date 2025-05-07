@@ -58,7 +58,7 @@ John_Rabbit_1.png,"April 1st, 2024"
 John_Rabbit_2.png,"April 1st, 2025"
 ```
 
-A third column, "Hidden loot" can be added if the raid has hidden loot. If so, add the related loot skill levels and the first affected tiers the following way: ```"SK1[tier 1], SK2[tier 2]"```. If some raid versions do not have hidden loot, then input a "-" for them.
+A third column, "Hidden loot" can be added if the raid has hidden loot. If so, add the related loot skill levels and the first affected tiers the following way: ```"SK1[tier 1], SK2[tier 2]"```, or just ```"SK1, SK2"``` if you ignore the tiers. If some raid versions do not have hidden loot, then input a "-" for them.
 
 ## Raid tiers we have to determine
 
