@@ -3,10 +3,6 @@ on:
     branches:
       - main
     paths:
-      - "**.png"
-      - "**.jpg"
-      - "**.jpeg"
-      - "**.webp"
       - "community-gathered data/raid-list.json"
       - "community-gathered data/**.csv"
   workflow_dispatch:
@@ -75,11 +71,6 @@ jobs:
         id: changes
         with:
            filters: |
-              images:
-                - "**.png"
-                - "**.jpg"
-                - "**.jpeg"
-                - "**.webp"
               raid_list:
                 - './"community-gathered data"/raid-list.json'
               tables:
@@ -97,21 +88,14 @@ jobs:
       - name: Put the raid list into the io repository
         if: steps.changes.outputs.raid_list == 'true' || steps.changes.outputs.tables == 'true'
         run: python main/.github/scripts/copy_raid_list_from_main_repository_to_io_repository.py
-      - name: Put the images into the io repository
-        if: steps.changes.outputs.images == 'true'
-        run: python main/.github/scripts/add_new_images_in_main_repository_to_io_repository.py
       - name: Commit changes
         run: |
           cd ./io/
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
-          if [ ${{ steps.changes.outputs.raid_list }} == 'true' -o ${{ steps.changes.outputs.tables }} == 'true' ] && [ ${{ steps.changes.outputs.images }} == 'true' ]; then
-            git commit --allow-empty -m "Update raid-list.json and loot tables"
-          elif [ ${{ steps.changes.outputs.raid_list }} == 'true' -o ${{ steps.changes.outputs.tables }} == 'true' ]; then
+          if [ ${{ steps.changes.outputs.raid_list }} == 'true' -o ${{ steps.changes.outputs.tables }} == 'true' ]; then
             git commit --allow-empty -m "Update raid-list.json"
-          elif [ ${{ steps.changes.outputs.images }} == 'true' ]; then
-            git commit --allow-empty -m "Update loot tables"
           else
             git commit --allow-empty -m "Empty commit"
           fi
@@ -142,14 +126,12 @@ jobs:
         run: python main/.github/scripts/create_raid_list.py
       - name: Put the raid list into the io repository
         run: python main/.github/scripts/copy_raid_list_from_main_repository_to_io_repository.py
-      - name: Put the images into the io repository
-        run: python main/.github/scripts/add_new_images_in_main_repository_to_io_repository.py
       - name: Commit changes
         run: |
           cd ./io/
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit --allow-empty -m "[Manual trigger] Update raid-list.json and loot tables"
+          git commit --allow-empty -m "[Manual trigger] Update raid-list.json"
           git pull --rebase --autostash
           git push

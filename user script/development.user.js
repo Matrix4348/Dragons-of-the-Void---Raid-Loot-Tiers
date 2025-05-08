@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      8.3.2
+// @version      8.4
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -889,19 +889,13 @@ async function create_in_raid_div(raid_name,mode,raid_difficulty){
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
         let on_hit_text = raid_list[raid_name][mode]["Has extra drops"]["On-hit drops"][raid_difficulty] ? "<br><b>On-hit drops: "+raid_list[raid_name][mode]["Extra drops"]["On-hit drops"][raid_difficulty]+"</b>" : "";
         let hidden_text = raid_list[raid_name][mode]["Has extra drops"].Hidden[raid_difficulty] ? "<br><b>Hidden loot: "+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty])?.hidden_loot+"</b>" : "";
-        var ver=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL.match(/_[0-9]*\.png/g);
-        var ver2= ver>1 ? "_v"+ver : "",
-            ver3= ver>0 ? "_v"+(Number(ver)+1) : "";
-        var url1="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver2+".png",
-            url2="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver3+".png";
-        var official_url=await check_several_url([url1,url2]);
+        var url1=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL;
+        var ver=url1.match(/_v([0-9])*\.png/)?.[1];
+        var ver2= ver>0 ? "_v"+(Number(ver)+1) : "";
+        var url2="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver2+".png";
         // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
-        if(official_url){
-            t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Current loot table: <br><i>`+official_url+on_hit_text+hidden_text`</td>`;
-        }
-        else{
-            t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Latest loot table known by the script (date of first use: `+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).release_date+`): <br><i>`+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL+`</i><br>For guaranteed up-to-date one: click "Loot", then "Expanded Loot".`+on_hit_text+hidden_text+`</td>`;
-        }
+        var official_url = ( await does_this_file_exist(url2) ) ? url2 : url1;
+        t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Current loot table: <br><i>`+official_url+on_hit_text+hidden_text`</td>`;
     }
     td.appendChild(t);
     // In-raid settings creation.
@@ -988,14 +982,12 @@ async function create_detailed_div(raid_name,mode,raid_difficulty){
             I.height=Math.min(I.naturalHeight,document.documentElement.style.getPropertyValue("--in-raid-table-max-height").replace("px","")).toString();
             I.width=Math.min(I.naturalWidth,"400").toString(); // --in-raid-table-max-width cannot be used because it has not been set using document.documentElement.style.setProperty
         });
-        var ver=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL.match(/_[0-9]*\.png/g);
-        var ver2= ver>1 ? "_v"+ver : "",
-            ver3= ver>0 ? "_v"+(Number(ver)+1) : "";
-        var url1="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver2+".png",
-            url2="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver3+".png";
-        var official_url=await check_several_url([url1,url2]);
+        var url1=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL;
+        var ver=url1.match(/_v([0-9])*\.png/)?.[1];
+        var ver2= ver>0 ? "_v"+(Number(ver)+1) : "";
+        var url2="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver2+".png";
         // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
-        if(official_url){ i.src=official_url; } else{ i.src=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL; }
+        i.src = ( await does_this_file_exist(url2) ) ? url2 : url1;
         var z=0;
         i.addEventListener("click",
                            function(){
@@ -1434,7 +1426,7 @@ function sanitized_object(o){
 }
 
 function get_last(a){ // Returns last element of an array
-    return a[a.length-1];
+    if( Array.isArray(a) ){ return a[a.length-1]; }else{ return undefined; }
 }
 
 function sortTable(table,n) { // Taken (and adapted) from https://daext.com/blog/how-to-create-an-html-table-with-sorting-and-filtering/
@@ -1492,15 +1484,6 @@ async function does_this_file_exist(url){
     catch(e){
         return false;
     }
-}
-
-async function check_several_url(U){ // Returns the last element of the array U that is a working URL, or undefined
-    var url=undefined;
-    for(let u of U){
-        var b = await does_this_file_exist(u);
-        if(b){ url=u; }
-    }
-    return url;
 }
 
 async function DotVRLT(){
