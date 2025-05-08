@@ -336,7 +336,7 @@ for r in raid_list:
                     raid_list[r][M]["Loot tables"][d]=[]
                     reader = csv.DictReader(f, delimiter=',')
                     for line in reader:
-                        URL="https://matrix4348.github.io/loot-tables/"+line.pop("File name")
+                        URL=line.pop("URL")
                         date=line.pop("Date of first use")
                         raid_list[r][M]["Loot tables"][d].append({"URL":URL,"release_date":date})
                         if raid_list[r][M]["Has extra drops"]["Hidden"][d]:
