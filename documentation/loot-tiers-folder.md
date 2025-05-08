@@ -42,23 +42,19 @@ There are two cases that you will encounter: raids whose tiers players must figu
 
 ## Image loot tables
 
-If a raid has an image loot table, then you will find two types of files:
-* the loot tables (any format among png, jpg, jpeg and webp - maybe even gif - would do, but I prefer png)
-* a file named "Loot table.csv"
+If a raid has an image loot table, then you will find a file named "Loot table.csv"
 
-For convenience reasons and in order to navigate easily between them (especially if they get updated over time), loot tables should be named as such: Raid_Name_Number, with "Number" starting at 1 and incrementing by one every time the loot table gets modified ("0" is reserved for beta).<br>
-
-`Loot table.csv` contains two mandatory columns: "file name" and "date of first use". The second column is obvious (usual format: "January 31st, 2024") and in the first column, type the name of the image that was uploaded to the folder (case sensitive, and do not forget the file extension).<br>
-
-#### <ins>For example:</ins> 
-If the John Rabbit world raid was released on April 1st, 2024 and if it was summoned again on April 1st, 2025 with a new loot table, then we would have John_Rabbit_1.png and John_Rabbit_2.png in `community-gathered data/Loot tiers and drop data/World raids/John Rabbit/`, alongside `community-gathered data/Loot tiers and drop data/World raids/John Rabbit/Loot tables.csv`, which would look the following way: 
-```
-File Name,Date of first use
-John_Rabbit_1.png,"April 1st, 2024"
-John_Rabbit_2.png,"April 1st, 2025"
-```
+It contains two mandatory columns: "URL" and "date of first use". Usual format for dates is the following one: "January 31st, 2024".<br>
 
 A third column, "Hidden loot" can be added if the raid has hidden loot. If so, add the related loot skill levels and the first affected tiers the following way: ```"SK1[tier 1], SK2[tier 2]"```, or just ```"SK1, SK2"``` if you ignore the tiers. If some raid versions do not have hidden loot, then input a "-" for them.
+
+#### <ins>For example:</ins> 
+If the John Rabbit world raid was released on April 1st, 2024 and if it was summoned again on April 1st, 2025 with a new loot table alongside hidden loot for first and third levels of secret keeper, then `community-gathered data/Loot tiers and drop data/World raids/John Rabbit/Loot tables.csv` would look as follows: 
+```
+URL,Date of first use,Hidden loot
+https://files.dragonsofthevoid.com/images/raid/loot-tables/john_rabbit.png,"April 1st, 2024",-
+https://files.dragonsofthevoid.com/images/raid/loot-tables/john_rabbit_v2.png,"April 1st, 2025","SK1, SK3"
+```
 
 ## Raid tiers we have to determine
 
