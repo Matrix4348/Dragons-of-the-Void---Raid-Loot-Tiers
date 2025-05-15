@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      8.4.1
+// @version      8.5
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -11,6 +11,7 @@
 // @grant        GM_setValue
 // @grant        GM.getValue
 // @grant        GM.setValue
+// @grant        unsafeWindow
 // ==/UserScript==
 
 // Global variables.
@@ -976,35 +977,21 @@ async function create_detailed_div(raid_name,mode,raid_difficulty){
         var i=document.createElement("img");
         i.id="DotVRLT detailed table";
         i.style.margin="auto"; i.style.cursor="zoom-in";
-        i.addEventListener("load",
-                           function(){
-            let I=document.getElementById("DotVRLT detailed table");
-            I.height=Math.min(I.naturalHeight,document.documentElement.style.getPropertyValue("--in-raid-table-max-height").replace("px","")).toString();
-            I.width=Math.min(I.naturalWidth,"400").toString(); // --in-raid-table-max-width cannot be used because it has not been set using document.documentElement.style.setProperty
-        });
+        i.addEventListener("load",set_detailed_div_state);
         var url1=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL;
         var ver=url1.match(/_v([0-9])*\.png/)?.[1];
         var ver2= ver>0 ? "_v"+(Number(ver)+1) : "";
         var url2="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver2+".png";
         // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
         i.src = ( await does_this_file_exist(url2) ) ? url2 : url1;
-        var z=0;
-        i.addEventListener("click",
-                           function(){
-            var h0=document.documentElement.style.getPropertyValue("--in-raid-table-max-height").replace("px",""),
-                w0=(document.documentElement.style.getPropertyValue("--in-raid-table-max-width")||"400").replace("px","");
-            var h = Math.min(i.naturalHeight,h0).toString(), w = Math.min(i.naturalWidth,w0).toString();
-            var H = Math.max(i.naturalHeight,h0).toString(), W = Math.max(i.naturalWidth,w0).toString();
-            if(z){i.width=w; i.height=h; i.style.cursor="zoom-in";}
-            else{i.width=W; i.height=H; i.style.cursor="zoom-out";}
-            z=1-z;
-        });
+        i.addEventListener("click",click_loot_table);
         d.appendChild(i);
     }
 }
 
 function set_detailed_div_state(){
     var top=6+window.scrollY, y_limit=-15, right=10;
+    var raid=document.getElementById("game-view")||document.body;
     var magics_area=document.getElementsByClassName("raid-effects")[0]||document.createElement("div");
     var raid_center=document.getElementsByClassName("raid-header-center")[0]||document.createElement("div");
     var chat_container=document.getElementsByClassName("raid-chat-container")[0];
@@ -1030,14 +1017,31 @@ function set_detailed_div_state(){
 
     // Right
     if( chat_container && !put_detailed_div_above_raid_chat ){
-        var distance_from_chat_to_right = document.body.getBoundingClientRect().width - chat_container.getBoundingClientRect().left;
+        var distance_from_chat_to_right = raid.getBoundingClientRect().width - chat_container.getBoundingClientRect().left;
         right+=distance_from_chat_to_right;
     }
     document.documentElement.style.setProperty("--detailed-div-right",right+"px");
 
-    // Image loot tables do not always properly resize without clicking (when being moved, or on window resize for example), so I will simulate a double click as a "temporary" workaround.
-    document.getElementById("DotVRLT detailed table")?.click();
-    document.getElementById("DotVRLT detailed table")?.click();
+    // Width (in case we need to change it later but also to be able to use document.documentElement.style.getProperty, which is not possible without a prior use of ...setProperty)
+    var W=420;
+    if( !(raid_name in raid_list) || raid_list[raid_name]?.[current_fighting_mode()]["Loot format"]=="Image" ){ W=Math.min(400,W); }
+    document.documentElement.style.setProperty("--in-raid-table-max-width",W+"px");
+
+    // Adjust size of image loot tables by double-clicking on them (max-width and max-height can cause quirks...)
+    if( !(raid_name in raid_list) || raid_list[raid_name]?.[current_fighting_mode()]["Loot format"]=="Image" ){ click_loot_table(); click_loot_table(); }
+}
+
+function click_loot_table(){
+    var i=document.getElementById("DotVRLT detailed table");
+    if(i){
+        var z = (i.style.cursor == "zoom-out");
+        var h0=document.documentElement.style.getPropertyValue("--in-raid-table-max-height").replace("px",""),
+            w0=document.documentElement.style.getPropertyValue("--in-raid-table-max-width").replace("px","");
+        var h = Math.min(i.naturalHeight,h0).toString(), w = Math.min(i.naturalWidth,w0).toString();
+        var H = Math.max(i.naturalHeight,h0).toString(), W = Math.max(i.naturalWidth,w0).toString();
+        if(z){i.width=w; i.height=h; i.style.cursor="zoom-in"; }
+        else{i.width=W; i.height=H; i.style.cursor="zoom-out"; }
+    }
 }
 
 function current_fighting_mode(){
@@ -1268,7 +1272,7 @@ function actualize_corners(rounded_corners){
 }
 
 function resizing_listener(){
-    if(typeof(document.getElementById("DotVRLT detailed div"))!="undefined"){
+    if(document.getElementById("DotVRLT detailed div")!=undefined){
         set_detailed_div_state();
     }
     main_div.style.left=document.getElementById("DotVRLT main button").getBoundingClientRect().x+window.scrollX-100+"px";
@@ -1503,8 +1507,7 @@ async function DotVRLT(){
     actualize_colours(colourless_mode);
     actualize_corners(rounded_corners);
     THE_WATCHER();
-    document.addEventListener("resize",resizing_listener);
-    document.addEventListener("fullscreenchange",resizing_listener);
+    unsafeWindow.addEventListener("resize",resizing_listener); // Note: the "resize" event is only fired by the window object ("unsafeWindow" in Greasemonkey); no other object, not even document, would work!
 }
 
 // Execution.
