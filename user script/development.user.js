@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      8.5
+// @version      8.6
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -21,7 +21,7 @@ var options_div, main_div, in_raid_div, detailed_div;
 var button_pressed=false, in_raid_button_pressed=false;
 var difficulties_to_display_default={"Easy":1,"Hard":1,"Legendary":1};
 var automatically_show_in_raid_div_default=1, show_detailed_div_default=true, show_advanced_view_default=false, put_detailed_div_above_raid_chat_default=false;
-var current_tab_default="About";
+var current_tab_default="About", latest_loot_table_URL="", tiers_to_share="";
 var difficulties_to_display, automatically_show_in_raid_div, current_tab, show_detailed_div, show_advanced_view, put_detailed_div_above_raid_chat;
 var custom_colours={"Easy":"rgb(0,255,0)","Hard":"rgb(255,165,0)","Legendary":"rgb(238,130,238)","Main":"rgb(153,255,170)","Buttons":"rgb(153,187,255)"};
 var colourless_mode_default=0, colourless_mode, rounded_corners_default=1, rounded_corners, current_difficulty;
@@ -253,10 +253,16 @@ function create_css(){
             height: 30px;
             margin-top: 5px;
         }
+        #DotVRLT\\ share\\ tiers\\ button {
+            position: relative;
+            font-size: 14px;
+            margin-top: 4px;
+            display: var(--in-raid-display);
+        }
         #DotVRLT\\ in-raid\\ div {
             background-color: var(--in-raid-colour);
             width: 500px;
-            max-height: 130px;
+            max-height: 180px;
             display: var(--in-raid-display);
             border: 1px solid black;
             overflow: auto;
@@ -867,6 +873,33 @@ function press_in_raid_button(){
     }
 }
 
+function create_share_button(){
+    var raid_chat_container=document.getElementsByClassName("raid-chat-container")?.[0];
+    if(raid_chat_container){
+        var b=document.createElement("button");
+        b.id="DotVRLT share tiers button";
+        b.innerHTML="Share tiers to raid chat";
+        b.style.left=document.getElementsByClassName("leader-board")[0].getBoundingClientRect().right+10+"px";
+        b.classList.add("dotvrlt_corners");
+        b.classList.add("dotvrlt_button");
+        b.onclick=function(){
+            var chat_input_container = raid_chat_container.getElementsByTagName("TEXTAREA")[0],
+                buttons = raid_chat_container.getElementsByClassName("btn-text"),
+                k=0, send_button=buttons[k];
+            while(send_button.textContent!="Send"){ k++; send_button=buttons[k]; }
+            var original_content=chat_input_container.value;
+            chat_input_container.value=tiers_to_share;
+            chat_input_container.dispatchEvent(new Event('input'));
+            setTimeout(function(){
+                send_button.click();
+                chat_input_container.value=original_content;
+                if(original_content!=""){ chat_input_container.dispatchEvent(new Event('input')); chat_input_container.focus(); }
+            },1000); // Because some things seem to take time, sometimes... Something to investigate during a boring day, I guess.
+        };
+        in_raid_div.insertBefore(b,document.getElementById("DotVRLT in-raid settings div"));
+    }
+}
+
 async function create_in_raid_div(raid_name,mode,raid_difficulty){
     var d=document.createElement("div");
     d.id="DotVRLT in-raid div";
@@ -881,22 +914,20 @@ async function create_in_raid_div(raid_name,mode,raid_difficulty){
     var tt=document.createElement("div"); tt.id="DotVRLT in-raid settings div"; tt.classList.add("dotvrlt_in_raid_settings_div"); d.appendChild(tt);
     var tt2=document.createElement("div"); tt2.id="DotVRLT detailed settings div"; tt2.classList.add("dotvrlt_in_raid_settings_div"); d.appendChild(tt2);
     // Table creation.
+    tiers_to_share="";
     var t=document.createElement("table");
     t.classList.add("dotvrlt_table");
     t.border=1;
     if(raid_list[raid_name][mode]["Loot format"]=="EHL"){
         t.innerHTML=`<td class="dotvrlt_corners_top" style="padding-left: 7px; padding-right: 7px;">`+raid_list[raid_name][mode]["Tiers as string"][raid_difficulty]+`</td>`;
+        tiers_to_share = "Loot tiers: " + t.innerText;
     }
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
         let on_hit_text = raid_list[raid_name][mode]["Has extra drops"]["On-hit drops"][raid_difficulty] ? "<br><b>On-hit drops: "+raid_list[raid_name][mode]["Extra drops"]["On-hit drops"][raid_difficulty]+"</b>" : "";
         let hidden_text = raid_list[raid_name][mode]["Has extra drops"].Hidden[raid_difficulty] ? "<br><b>Hidden loot: "+get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty])?.hidden_loot+"</b>" : "";
-        var url1=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL;
-        var ver=url1.match(/_v([0-9])*\.png/)?.[1];
-        var ver2= ver>0 ? "_v"+(Number(ver)+1) : "";
-        var url2="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver2+".png";
-        // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
-        var official_url = ( await does_this_file_exist(url2) ) ? url2 : url1;
+        var official_url = latest_loot_table_URL;
         t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Current loot table: <br><i>`+official_url+on_hit_text+hidden_text+`</td>`;
+        tiers_to_share = "Loot table: " + official_url + (on_hit_text ? " || " + on_hit_text.replaceAll(/<(\/?)[a-zA-Z]*>/g,"") : "") + (hidden_text ? " || " + hidden_text.replaceAll(/<(\/?)[a-zA-Z]*>/g,"") : "");
     }
     td.appendChild(t);
     // In-raid settings creation.
@@ -976,14 +1007,10 @@ async function create_detailed_div(raid_name,mode,raid_difficulty){
     else if(raid_list[raid_name][mode]["Loot format"]=="Image"){
         var i=document.createElement("img");
         i.id="DotVRLT detailed table";
-        i.style.margin="auto"; i.style.cursor="zoom-in";
+        i.style.margin="auto"; i.style.cursor="zoom-out"; // Note: with the current code, the loot table loads zoomed-in, then immediately gets zoomed-out.
         i.addEventListener("load",set_detailed_div_state);
-        var url1=get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL;
-        var ver=url1.match(/_v([0-9])*\.png/)?.[1];
-        var ver2= ver>0 ? "_v"+(Number(ver)+1) : "";
-        var url2="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+ver2+".png";
-        // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
-        i.src = ( await does_this_file_exist(url2) ) ? url2 : url1;
+        i.addEventListener("load",click_loot_table); // Note: same note as above.
+        i.src = latest_loot_table_URL;
         i.addEventListener("click",click_loot_table);
         d.appendChild(i);
     }
@@ -1006,7 +1033,7 @@ function set_detailed_div_state(){
     else{ y_limit+=document.getElementsByClassName("raid-footer")[0].getBoundingClientRect().top; }
     var H=y_limit-top;
     var raid_name=document.getElementsByClassName("boss-name-container")[0].firstChild.innerHTML;
-    if( !(raid_name in raid_list) || raid_list[raid_name]?.[current_fighting_mode()]["Loot format"]=="Image" ){ H=Math.min(550,H); }
+    if( !(raid_name in raid_list) || raid_list[raid_name]?.[current_fighting_mode()]?.["Loot format"]=="Image" ){ H=Math.min(550,H); }
     document.documentElement.style.setProperty("--in-raid-table-max-height",H+"px");
 
     if(show_detailed_div&&in_raid_button_pressed){ document.documentElement.style.setProperty("--detailed-div-display","flex"); }
@@ -1024,16 +1051,16 @@ function set_detailed_div_state(){
 
     // Width (in case we need to change it later but also to be able to use document.documentElement.style.getProperty, which is not possible without a prior use of ...setProperty)
     var W=420;
-    if( !(raid_name in raid_list) || raid_list[raid_name]?.[current_fighting_mode()]["Loot format"]=="Image" ){ W=Math.min(400,W); }
+    if( !(raid_name in raid_list) || raid_list[raid_name]?.[current_fighting_mode()]?.["Loot format"]=="Image" ){ W=Math.min(400,W); }
     document.documentElement.style.setProperty("--in-raid-table-max-width",W+"px");
 
     // Adjust size of image loot tables by double-clicking on them (max-width and max-height can cause quirks...)
-    if( !(raid_name in raid_list) || raid_list[raid_name]?.[current_fighting_mode()]["Loot format"]=="Image" ){ click_loot_table(); click_loot_table(); }
+    if( !(raid_name in raid_list) || raid_list[raid_name]?.[current_fighting_mode()]?.["Loot format"]=="Image" ){ click_loot_table(); click_loot_table(); }
 }
 
 function click_loot_table(){
     var i=document.getElementById("DotVRLT detailed table");
-    if(i){
+    if(i?.tagName=="IMG"){
         var z = (i.style.cursor == "zoom-out");
         var h0=document.documentElement.style.getPropertyValue("--in-raid-table-max-height").replace("px",""),
             w0=document.documentElement.style.getPropertyValue("--in-raid-table-max-width").replace("px","");
@@ -1042,6 +1069,23 @@ function click_loot_table(){
         if(z){i.width=w; i.height=h; i.style.cursor="zoom-in"; }
         else{i.width=W; i.height=H; i.style.cursor="zoom-out"; }
     }
+}
+
+async function check_latest_loot_table(raid_name,mode,raid_difficulty){
+    var default_URL, URL_to_check;
+    if(raid_list[raid_name]?.[mode]?.["Loot format"]=="Image"){
+        default_URL = get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL;
+        var ver = default_URL.match(/_v([0-9])*\.png/)?.[1];
+        var ver2 = ver>0 ? "_v"+(Number(ver)+1) : "";
+        URL_to_check = "https://files.dragonsofthevoid.com/images/raid/loot-tables/" + raid_name.toLowerCase().replaceAll(/\W/g,"_") + ver2 + ".png";
+        // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
+    }
+    else if(!raid_list[raid_name]){
+        default_URL = "";
+        URL_to_check = "https://files.dragonsofthevoid.com/images/raid/loot-tables/" + raid_name.toLowerCase().replaceAll(/\W/g,"_") + ".png";
+        // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
+    }
+    if(default_URL!=undefined){ latest_loot_table_URL = ( await does_this_file_exist(URL_to_check) ) ? URL_to_check : default_URL; }
 }
 
 function current_fighting_mode(){
@@ -1057,14 +1101,14 @@ function check_existence_of_area_for_button(){
         d.setAttribute("data-v-6fbb6b33",""); // Check weither or not the name of this attribute changes overtime.
         document.getElementsByClassName("raid-header-center")[0].appendChild(d);
     }
-    if (document.getElementsByClassName("dotv-btn dotv-btn-xl active").length==0){
+    if(document.getElementsByClassName("dotv-btn dotv-btn-xl active").length==0){
         var d2=document.createElement("div");
         d2.style.marginTop="100px";
         document.getElementsByClassName("leader-board")[0].appendChild(d2);
     }
 }
 
-function in_raid_stuff(A){
+async function in_raid_stuff(A){
     if( document.getElementsByClassName("raid-header-center").length>0 && document.getElementById("DotVRLT in-raid button")==null ){
         var mode=current_fighting_mode();
         var raid_name=document.getElementsByClassName("boss-name-container")[0].firstChild.innerHTML;
@@ -1072,11 +1116,13 @@ function in_raid_stuff(A){
         var rd1=rd0.substring(5,rd0.length);
         assign_current_difficulty(rd1[0].toUpperCase()+rd1.substring(1,rd1.length));
         actualize_colours(colourless_mode);
-        if(raid_name in raid_list){
+        await check_latest_loot_table(raid_name,mode,current_difficulty); // This allows to only check for the correct URL once, but we need to wait for the result.
+        if( raid_list[raid_name]?.[mode] ){
             check_existence_of_area_for_button();
             in_raid_button();
             create_detailed_div(raid_name,mode,current_difficulty);
             create_in_raid_div(raid_name,mode,current_difficulty);
+            create_share_button();
         }
         else{ bring_stuff_for_some_unknown_raids(raid_name,mode,current_difficulty); }
     }
@@ -1084,83 +1130,65 @@ function in_raid_stuff(A){
 }
 
 async function bring_stuff_for_some_unknown_raids(raid_name,mode,current_difficulty){
-    if(mode=="healthless"){
-        var official_url="https://files.dragonsofthevoid.com/images/raid/loot-tables/"+raid_name.toLowerCase().replaceAll(/\W/g,"_")+".png";
-        // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
-        var found_official_loot_table = await does_this_file_exist(official_url);
-        if(found_official_loot_table){
-            check_existence_of_area_for_button();
-            in_raid_button();
+    var official_url = latest_loot_table_URL;
+    if(official_url){
+        check_existence_of_area_for_button();
+        in_raid_button();
 
-            // Loot table:
-            let d=document.createElement("div");
-            d.id="DotVRLT detailed div";
-            d.classList.add("dotvrlt_corners");
-            document.getElementsByClassName("raid-container")[0].appendChild(d);
-            detailed_div=d;
+        // Loot table:
+        let d=document.createElement("div");
+        d.id="DotVRLT detailed div";
+        d.classList.add("dotvrlt_corners");
+        document.getElementsByClassName("raid-container")[0].appendChild(d);
+        detailed_div=d;
+        set_detailed_div_state();
+        // Table creation.
+        let i=document.createElement("img");
+        i.id="DotVRLT detailed table";
+        i.style.margin="auto"; i.style.cursor="zoom-in";
+        i.addEventListener("click",click_loot_table);
+        i.src=official_url;
+        i.addEventListener("click",click_loot_table);
+        d.appendChild(i);
+
+        // Loot table address:
+        var d2=document.createElement("div");
+        d2.id="DotVRLT in-raid div";
+        d2.classList.add("dotvrlt_corners");
+        var button_boundaries=document.getElementById("DotVRLT in-raid button").getBoundingClientRect();
+        d2.style.left=button_boundaries.x+window.scrollX+"px";
+        d2.style.top=button_boundaries.y+button_boundaries.height+5+window.scrollY+"px";
+        document.getElementsByClassName("raid-container")[0].appendChild(d2);
+        in_raid_div=d2;
+        // Creation of the three subdivs.
+        var td=document.createElement("div"); td.id="DotVRLT in-raid table div"; d2.appendChild(td);
+        var tt=document.createElement("div"); tt.id="DotVRLT in-raid settings div"; tt.classList.add("dotvrlt_in_raid_settings_div"); d2.appendChild(tt);
+        var tt2=document.createElement("div"); tt2.id="DotVRLT detailed settings div"; tt2.classList.add("dotvrlt_in_raid_settings_div"); d2.appendChild(tt2);
+        // Table creation.
+        var t=document.createElement("table");
+        t.classList.add("dotvrlt_table");
+        t.border=1;
+        t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Current loot table: <br><i>`+official_url+`</td>`;
+        tiers_to_share = "Loot table: " + official_url;
+        td.appendChild(t);
+        // In-raid settings creation.
+        var cb=createNewCheckbox(tt, "", " Automatically display relevant raid tiers when entering a raid");
+        cb.defaultChecked=automatically_show_in_raid_div;
+        cb.onclick=async function(){ automatically_show_in_raid_div=cb.checked; await GM_setValue("automatically_show_in_raid_div_stored",automatically_show_in_raid_div); };
+        if(automatically_show_in_raid_div){ press_in_raid_button(); } else{ document.documentElement.style.setProperty("--in-raid-display","none"); }
+        var cb2=createNewCheckbox(tt2, "", " Display drop data (and more) [location: <select id='DotVRLT detailed div location dropdown'></select> ]");
+        cb2.defaultChecked=show_detailed_div;
+        cb2.onclick=async function(){ show_detailed_div=cb2.checked; await GM_setValue("show_detailed_div_stored",show_detailed_div); set_detailed_div_state(); };
+        // A dropdown menu to place detailed_div at the left or above raid chat
+        var dropdown=document.getElementById("DotVRLT detailed div location dropdown");
+        var o1=document.createElement("option"); o1.innerHTML="next to raid chat"; dropdown.appendChild(o1);
+        var o2=document.createElement("option"); o2.innerHTML="above raid chat"; dropdown.appendChild(o2);
+        dropdown.selectedIndex = put_detailed_div_above_raid_chat*1; // First option is of index 0, second option is of index 1 and so on.
+        dropdown.addEventListener("change",function(){
+            put_detailed_div_above_raid_chat=!put_detailed_div_above_raid_chat;
             set_detailed_div_state();
-            // Table creation.
-            let i=document.createElement("img");
-            i.id="DotVRLT detailed table";
-            i.style.margin="auto"; i.style.cursor="zoom-in";
-            i.addEventListener("load",
-                               function(){
-                let I=document.getElementById("DotVRLT detailed table");
-                I.height=Math.min(I.naturalHeight,document.documentElement.style.getPropertyValue("--in-raid-table-max-height").replace("px","")).toString();
-                I.width=Math.min(I.naturalWidth,"400").toString(); // --in-raid-table-max-width cannot be used because it has not been set using document.documentElement.style.setProperty
-            });
-            i.src=official_url;
-            let z=0;
-            i.addEventListener("click",
-                               function(){
-                var h0=document.documentElement.style.getPropertyValue("--in-raid-table-max-height").replace("px",""),
-                    w0=(document.documentElement.style.getPropertyValue("--in-raid-table-max-width")||"400").replace("px","");
-                var h = Math.min(i.naturalHeight,h0).toString(), w = Math.min(i.naturalWidth,w0).toString();
-                var H = Math.max(i.naturalHeight,h0).toString(), W = Math.max(i.naturalWidth,w0).toString();
-                if(z){i.width=w; i.height=h; i.style.cursor="zoom-in";}
-                else{i.width=W; i.height=H; i.style.cursor="zoom-out";}
-                z=1-z;
-            });
-            d.appendChild(i);
-
-            // Loot table address:
-            var d2=document.createElement("div");
-            d2.id="DotVRLT in-raid div";
-            d2.classList.add("dotvrlt_corners");
-            var button_boundaries=document.getElementById("DotVRLT in-raid button").getBoundingClientRect();
-            d2.style.left=button_boundaries.x+window.scrollX+"px";
-            d2.style.top=button_boundaries.y+button_boundaries.height+5+window.scrollY+"px";
-            document.getElementsByClassName("raid-container")[0].appendChild(d2);
-            in_raid_div=d2;
-            // Creation of the three subdivs.
-            var td=document.createElement("div"); td.id="DotVRLT in-raid table div"; d2.appendChild(td);
-            var tt=document.createElement("div"); tt.id="DotVRLT in-raid settings div"; tt.classList.add("dotvrlt_in_raid_settings_div"); d2.appendChild(tt);
-            var tt2=document.createElement("div"); tt2.id="DotVRLT detailed settings div"; tt2.classList.add("dotvrlt_in_raid_settings_div"); d2.appendChild(tt2);
-            // Table creation.
-            var t=document.createElement("table");
-            t.classList.add("dotvrlt_table");
-            t.border=1;
-            t.innerHTML=`<td class="dotvrlt_corners_top" style="word-break:break-all">Current loot table: <br><i>`+official_url+`</td>`;
-            td.appendChild(t);
-            // In-raid settings creation.
-            var cb=createNewCheckbox(tt, "", " Automatically display relevant raid tiers when entering a raid");
-            cb.defaultChecked=automatically_show_in_raid_div;
-            cb.onclick=async function(){ automatically_show_in_raid_div=cb.checked; await GM_setValue("automatically_show_in_raid_div_stored",automatically_show_in_raid_div); };
-            if(automatically_show_in_raid_div){ press_in_raid_button(); } else{ document.documentElement.style.setProperty("--in-raid-display","none"); }
-            var cb2=createNewCheckbox(tt2, "", " Display drop data (and more) [location: <select id='DotVRLT detailed div location dropdown'></select> ]");
-            cb2.defaultChecked=show_detailed_div;
-            cb2.onclick=async function(){ show_detailed_div=cb2.checked; await GM_setValue("show_detailed_div_stored",show_detailed_div); set_detailed_div_state(); };
-            // A dropdown menu to place detailed_div at the left or above raid chat
-            var dropdown=document.getElementById("DotVRLT detailed div location dropdown");
-            var o1=document.createElement("option"); o1.innerHTML="next to raid chat"; dropdown.appendChild(o1);
-            var o2=document.createElement("option"); o2.innerHTML="above raid chat"; dropdown.appendChild(o2);
-            dropdown.selectedIndex = put_detailed_div_above_raid_chat*1; // First option is of index 0, second option is of index 1 and so on.
-            dropdown.addEventListener("change",function(){
-                put_detailed_div_above_raid_chat=!put_detailed_div_above_raid_chat;
-                set_detailed_div_state();
-                GM_setValue("put_detailed_div_above_raid_chat_stored",put_detailed_div_above_raid_chat);
-            });
-        }
+            GM_setValue("put_detailed_div_above_raid_chat_stored",put_detailed_div_above_raid_chat);
+        });
     }
 }
 
