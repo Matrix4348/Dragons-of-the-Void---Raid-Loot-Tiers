@@ -33,7 +33,6 @@
 All the data collected by the players and displayed by the user script is located in this folder.
 
 It contains the following files and folder:
-* [raid-list.json](raid-list-json.md)
 * [Basic data](basic-data-folder.md)
 * [Base damage taken](base-damage-taken-folder.md)
 * [Loot tiers and drop data](loot-tiers-folder.md)
