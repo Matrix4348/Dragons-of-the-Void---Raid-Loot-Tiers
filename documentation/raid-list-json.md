@@ -30,7 +30,7 @@
 
 </div>
 
-`raid-list.json` is the file that the user script fetches the raid data from. All of the relevant files are automatically merged into this big one, whenever one of the relevant files is modified. `raid-list.json`is then uploaded, once again automatically, to https://matrix4348.github.io/Dragons-of-the-Void---Raid-Loot-Tiers/raid-list.json.<br>
+`raid-list.json`, located in the "docs" folder, is the file that the user script fetches the raid data from. All of the relevant files are automatically merged into this big one, whenever one of the relevant files is modified. `raid-list.json`is then uploaded, once again automatically, to https://matrix4348.github.io/Dragons-of-the-Void---Raid-Loot-Tiers/raid-list.json.<br>
 There is no reason to touch it. Any manual change made to it would end up being automatically overwritten, anyway.
 
 > [!Note]
