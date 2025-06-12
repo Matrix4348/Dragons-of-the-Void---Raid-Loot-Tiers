@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      8.6
+// @version      9.0
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -60,7 +60,7 @@ function makeRequest(method, url) {
 
 async function fetch_online_raid_data(){
     try{
-        var r = await makeRequest("GET", "https://matrix4348.github.io/dragons-of-the-void/raid-list.json");
+        var r = await makeRequest("GET", "https://matrix4348.github.io/Dragons-of-the-Void---Raid-Loot-Tiers/raid-list.json");
         raid_list=sanitized_object(JSON.parse(r));
     }
     catch(e){
