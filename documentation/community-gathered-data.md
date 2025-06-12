@@ -42,6 +42,9 @@ It contains the following files and folder:
 > [!WARNING]
 > Most of the files that you will encounter are csv files. You can learn more about them [here](what-is-a-csv-file.md).
 
+> [!NOTE]
+> All relevant files are automatically merged into `docs/raid-list.json`, which is then automatically uploaded to a place that the script will fetch it from. The merging process occurs whenever those files get modified.
+
 <hr>
 
 <div align="center">
