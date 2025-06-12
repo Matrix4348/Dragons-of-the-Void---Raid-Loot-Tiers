@@ -41,7 +41,7 @@ damage_path = "./main/community-gathered data/Base damage taken/"
 loot_path = "./main/community-gathered data/Loot tiers and drop data/"
 on_hit_path = "./main/community-gathered data/On-hit drops/"
 notes_file = "./main/community-gathered data/Notes.csv"
-output_file = "./main/community-gathered data/raid-list.json"
+output_file = "./main/docs/raid-list.json"
 
 paths = {
     "raiding": ["Regular raids","Guild raids"],

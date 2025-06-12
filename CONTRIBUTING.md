@@ -26,6 +26,9 @@ All data related to the user script code is located in the ["user script" folder
 The documentation comprises [README.md](README.md), [CONTRIBUTING.md](CONTRIBUTING.md) and the ["documentation" folder](documentation). If you find any error, technical inaccuracy, grammatical error or if you think that you can improve it, feel free to suggest your changes.<br>
 All of these files support [Markdown](https://docs.github.com/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) and a lot of HTML. [This guide](https://github.com/9EED/Markdown-guide) covers almost all formatting available on GitHub and is pretty clean.
 
+> [!WARNING]
+> `./documentation/`, which contains documentation for contributors, must not be mixed up with `./docs/`, the folder that contains files that are automatically uploaded to a web site from which they can be used by the user script (or by people if such a thing is ever made).
+
 ## Improving the repository automation
 
 Files related to the repository automation are located in the [.github folder](documentation/github-folder.md).
