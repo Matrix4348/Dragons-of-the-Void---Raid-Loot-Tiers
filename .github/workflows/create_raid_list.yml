@@ -18,6 +18,7 @@ jobs:
       - name: Checkout repository content
         uses: actions/checkout@v4 # Checkout the repository content to github runner.
         with:
+          token: ${{ secrets.MY_PAT }}
           path: main
       - name: Setup Python version
         uses: actions/setup-python@v5
