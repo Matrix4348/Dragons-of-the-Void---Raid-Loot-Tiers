@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      9.0
+// @version      9.1
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -1076,7 +1076,7 @@ async function check_latest_loot_table(raid_name,mode,raid_difficulty){
     if(raid_list[raid_name]?.[mode]?.["Loot format"]=="Image"){
         default_URL = get_last(raid_list[raid_name][mode]["Loot tables"][raid_difficulty]).URL;
         var ver = default_URL.match(/_v([0-9])*\.png/)?.[1];
-        var ver2 = ver>0 ? "_v"+(Number(ver)+1) : "";
+        var ver2 = ver>0 ? "_v"+(Number(ver)+1) : "_v2";
         URL_to_check = "https://files.dragonsofthevoid.com/images/raid/loot-tables/" + raid_name.toLowerCase().replaceAll(/\W/g,"_") + ver2 + ".png";
         // Note: I do not know if raid loot tables will always be named the same way, nor how they would be name when containing something like 's. Until then, I am assuming that "'" is treated like " ".
     }
