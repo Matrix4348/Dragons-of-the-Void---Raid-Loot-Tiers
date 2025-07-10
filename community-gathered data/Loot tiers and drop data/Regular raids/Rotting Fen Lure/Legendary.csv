@@ -13,4 +13,4 @@ Damage,Common,Rare,Mythic,Summoner,Bonus,Average stat points
 "5,675,000",6,4,2,?,0,53.76
 "6,500,000",6,4,3,SL1,"DV6",61.67
 DV3,+0,+1,+0,-,DV3,"+4.79"
-DV6,+0,+1,+0,-,DV6,"+4.79"
+DV6,+0,+0,+1,-,DV6,"+7.91"
