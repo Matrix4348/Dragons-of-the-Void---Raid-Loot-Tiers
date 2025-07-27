@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      9.1
+// @version      9.2
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -191,7 +191,7 @@ function create_css(){
             font-size: 14px;
             border: 1px solid black;
         }
-
+        
         .broadcast-damage-container, .raid-chat-container, .studious-inspector-container {
             z-index: 1;
         }
