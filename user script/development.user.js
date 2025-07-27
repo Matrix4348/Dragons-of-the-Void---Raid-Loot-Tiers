@@ -193,7 +193,7 @@ function create_css(){
         }
 
         .broadcast-damage-container, .raid-chat-container, .studious-inspector-container {
-            z-index: 2;
+            z-index: 1;
         }
 
         #DotVRLT\\ main\\ button {
