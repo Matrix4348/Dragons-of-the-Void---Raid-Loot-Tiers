@@ -1,10 +1,13 @@
 Raid name,Type,Easy,Hard,Legendary
 Bone Dragon,Dark,42,65,280
 Corrupted Golem,Physical,15,25,105
+Demon Chaosoldier,Dark,40,65,280
 Elven Rangers,Physical,12,35,190
 Fallen Naga Subedar,Poison,34,60,250
 Galeohog,Poison,25,44,220
+Giant Bombeetle,Nature,36,64,260
 Greater Ent,Nature,16,38,200
+Grootslang,Physical,45,75,300
 Jagar the Red,Fire,35,60,260
 Lesser Tree Ent,Nature,4,30,120
 Naga Karamati,Lightning,26,50,230
@@ -13,3 +16,5 @@ Rotting Fen Lure,Nature,25,45,210
 Sand Wyrm,Physical,20,40,200
 Sentry Ghoul,Physical,35,55,230
 Superior Watcher,Magic,6,32,180
+Xaphegorgh,Fire,48,82,305
+Xarbruutu,Dark,51,85,330
