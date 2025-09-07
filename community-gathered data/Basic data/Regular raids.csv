@@ -1,10 +1,13 @@
 Raid name,Raid size,Health on easy,On-hit drops?,Loot expansion?
 Bone Dragon,Immense,"90,000,000",Yes,Yes
 Corrupted Golem,Medium,"12,000,000",No,No
+Demon Chaosoldier,Medium,"20,000,000",No,No
 Elven Rangers,Small,"1,000,000",Yes,No
 Fallen Naga Subedar,Large,"28,000,000",Yes,Yes
 Galeohog,Large,"22,000,000",Yes,Yes
+Giant Bombeetle,Small,"4,000,000"Yes,No
 Greater Ent,Medium,"8,000,000",Yes,No
+Grootslang,Large,"44,000,000",No,Yes
 Jagar the Red,Immense,"80,000,000",Yes,Yes
 Lesser Tree Ent,Small,"200,000",No,No
 Naga Karamati,Large,"24,000,000",Yes,Yes
@@ -13,3 +16,5 @@ Rotting Fen Lure,Small,"3,000,000",No,No
 Sand Wyrm,Small,"2,500,000",No,No
 Sentry Ghoul,Medium,"13,000,000",No,No
 Superior Watcher,Medium,"4,000,000",No,No
+Xaphegorgh,Immense,"112,500,000",Yes,Yes
+Xarbruutu,Immense,"240,400,000",Yes,Yes
