@@ -1,10 +1,13 @@
 Raid name,Health on easy,Health on hard,Health on legendary,On-hit drops?,Loot expansion?
 Bone Dragon,"32,000","475,000","1,425,000",Yes,No
 Corrupted Golem,"18,000","260,000","720,000",No,No
+Demon Chaosoldier,"34,000","500,000,1,500,000",No,No
 Elven Rangers,"10,000","120,000","360,000",Yes,No
 Fallen Naga Subedar,"26,000","380,000","1,140,000",Yes,No
 Galeohog,"18,000","260,000","720,000",Yes,No
+Giant Bombeetle,"64,000","850,000","2,550,000",Yes,No
 Greater Ent,"15,000","200,000","600,000",Yes,No
+Grootslang,"40000","595,000","1,785,000",No,No
 Jagar the Red,"25,000","375,000","1,125,000",Yes,No
 Lesser Tree Ent,"5,000","90,000","270,000",No,No
 Naga Karamati,"20,000","300,000","900,000",Yes,No
@@ -13,3 +16,5 @@ Rotting Fen Lure,"16,000","250,000","750,000",No,No
 Sand Wyrm,"12,000","150,000","450,000",No,No
 Sentry Ghoul,"21,000","320,000","960,000",No,No
 Superior Watcher,"10,000","120,000","360,000",No,No
+Xaphegorgh,"48000","650,000","1,950,000",No,No
+Xarbruutu,"64000","850,000","2,550,000",?,?
