@@ -10,4 +10,4 @@ Damage,Common,Rare,Mythic,Bonus,Average stat points
 "591,000",4,3,2,?,?
 "704,000",5,3,2,?,?
 "825,000",5,3,3,"DV4",?
-DV4,+0,+0,+0,-,-,DV4,-
+DV4,+0,+0,+0,DV4,-
