@@ -90,8 +90,8 @@ default_difficulties = {
 }
 
 participants = {
-    "": { "Small": 10, "Medium": 50, "Large": 100, "Immense": 250 },
-    "Guild raid": { "Small": 5, "Medium": 10, "Large": 20, "Immense": 30 }, # Value for immense guild raids is an assumption until one is released
+    "": { "Small": 10, "Medium": 50, "Large": 100, "Immense": 250, "Epic": 500 },
+    "Guild raid": { "Small": 5, "Medium": 10, "Large": 20, "Immense": 25, "Epic": 30 }, # Value for epic guild raids is an assumption until such a raid is released
     "Quest boss": { "Quest": 1 },
     "Quest miniboss": {"Quest": 1},
     "Timed raid": { "World": 2000 },
