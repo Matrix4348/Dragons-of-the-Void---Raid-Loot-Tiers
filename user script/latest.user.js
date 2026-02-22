@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      9.2
+// @version      10.0
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -737,8 +737,7 @@ function createAboutTab(){
     Studious inspector data has been summarized by TAMS <a href='https://docs.google.com/spreadsheets/d/e/2PACX-1vS1C0_DiI1Qax4rE3n_Gf_w9QhHyO2jH_KAMwoF60p4pi5cJnsc-hnzRuuTOFyMu1tceFuTbF0ZlZ72/pubhtml'>here</a>.</p>
     <br>
     <p>Please, report any bugs you may encounter and make any suggestion that you might have, either on <a href='https://github.com/Matrix4348/Dragons-of-the-Void---Raid-Loot-Tiers'>GitHub</a>
-    (where one can even directly submit their changes), <a href='https://greasyfork.org/en/scripts/450685-dragons-of-the-void-raid-loot-tiers/feedback'>Greasyfork</a>,
-    <a href='https://www.kongregate.com/accounts/Matrix4348'>Kongregate</a> or anywhere else you might find me.</p>
+    (where one can even directly submit their changes) or <a href='https://greasyfork.org/en/scripts/450685-dragons-of-the-void-raid-loot-tiers/feedback'>Greasyfork</a>.</p>
     <br>
     <p>Update logs can be found <a href='https://greasyfork.org/en/scripts/450685-dragons-of-the-void-raid-loot-tiers/versions'>here</a>.</p>`;
     var nv=(GM_info.scriptHandler+GM_info.version).toLowerCase().substring(0,13);
@@ -762,6 +761,7 @@ async function createTab(name){
     else if(name=="Medium"){ createTable("Medium raids",["raiding","healthless"],"Medium","All","Size"); }
     else if(name=="Large"){ createTable("Large raids",["raiding","healthless"],"Large","All","Size"); }
     else if(name=="Immense"){ createTable("Immense raids",["raiding","healthless"],"Immense","All","Size"); }
+    else if(name=="Epic"){ createTable("Epic raids",["raiding","healthless"],"Epic","All","Size"); }
     else if(name=="World"){ createTable("World-size raids",["raiding","healthless"],"World","All","Size"); }
     else if(name=="Regular"){ createTable("Regular raids","raiding","All","","Type"); }
     else if(name=="Guild"){ createTable("Guild raids",["raiding","healthless"],"All","Guild raid","Type"); }
@@ -796,6 +796,7 @@ function create_tab_buttons_div(){
     createTabButton(t1,"Medium");
     createTabButton(t1,"Large");
     createTabButton(t1,"Immense");
+    createTabButton(t1,"Epic");
     createTabButton(t1,"World");
     createTabButton(t1,"All");
     // Filter by raid type
