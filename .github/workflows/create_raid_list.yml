@@ -4,6 +4,7 @@ on:
       - main
     paths:
       - "community-gathered data/**.csv"
+      - "community-gathered data/Raid sizes.json"
   workflow_dispatch:
 
 jobs:

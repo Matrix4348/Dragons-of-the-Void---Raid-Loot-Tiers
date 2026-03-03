@@ -2,6 +2,7 @@ import csv
 import json
 from collections import defaultdict
 
+### Functions that will be used several times
 def cti(n): # Takes a character string containing a number with comma separators and returns the associated number as an integer or a floating number.
     if isinstance(n,int) or isinstance(n,float):
         return n
@@ -36,78 +37,31 @@ def return_difficuties(d): # Returns each difficulty which first letter is in d.
         diff.append("Legendary")
     return diff
 
+def return_naming_for_type(dict,type): # Returns the (first) key in dict such that dict[key]["Raid type"]=type
+    for key in dict:
+        if dict[key]["Raid type"] == type:
+            return key
+
+### Paths (or bases of paths) to relevant files
 base_path = "./main/community-gathered data/Basic data/"
 damage_path = "./main/community-gathered data/Base damage taken/"
 loot_path = "./main/community-gathered data/Loot tiers and drop data/"
 on_hit_path = "./main/community-gathered data/On-hit drops/"
 notes_file = "./main/community-gathered data/Notes.csv"
+raid_types_attributes_file = "./main/community-gathered data/Raid types attributes.csv"
+raid_sizes_file = "./main/community-gathered data/Raid sizes.json"
 output_file = "./main/docs/raid-list.json"
 
-paths = {
-    "raiding": ["Regular raids","Guild raids"],
-    "questing": ["Quest bosses", "Quest minibosses"],
-    "healthless": ["Timed raids","World raids","Event raids"],
-}
+### Global variables
+dico = defaultdict(list) # dico will contain data shared by all raids of each type
+with open(raid_types_attributes_file, "r") as t:
+    reader = csv.DictReader(t, delimiter=",")
+    for line in reader:
+        folder = line.pop("Folder/file name")
+        dico[folder]=line.copy()
+dico = {x[0]:{y:z for y,z in x[1].items()} for x in sorted(dico.items())}
 
-paths_to_files = {
-    "": "Regular raids",
-    "Guild raid": "Guild raids",
-    "Quest boss": "Quest bosses",
-    "Quest miniboss": "Quest minibosses",
-    "Timed raid": "Timed raids",
-    "Event raid": "Event raids",
-    "World raid": "World raids"
-}
-
-types = {
-    "Regular raids.csv": "",
-    "Guild raids.csv": "Guild raid",
-    "Quest bosses.csv": "Quest boss",
-    "Quest minibosses.csv": "Quest miniboss",
-    "Timed raids.csv": "Timed raid",
-    "Event raids.csv": "Event raid",
-    "World raids.csv": "World raid"
-}
-
-loot_formats = {
-    "": "EHL",
-    "Guild raid": "EHL",
-    "Quest boss": "EHL",
-    "Quest miniboss": "EHL",
-    "Timed raid": "EHL",
-    "Event raid": "Image",
-    "World raid": "Image"
-}
-
-default_difficulties = {
-    "": "EHL",
-    "Guild raid": "EHL",
-    "Quest boss": "EHL",
-    "Quest miniboss": "EHL",
-    "Timed raid":"E",
-    "Event raid":"L",
-    "World raid": "L"
-}
-
-participants = {
-    "": { "Small": 10, "Medium": 50, "Large": 100, "Immense": 250, "Epic": 500 },
-    "Guild raid": { "Small": 5, "Medium": 10, "Large": 20, "Immense": 25, "Epic": 30 }, # Value for epic guild raids is an assumption until such a raid is released
-    "Quest boss": { "Quest": 1 },
-    "Quest miniboss": {"Quest": 1},
-    "Timed raid": { "World": 2000 },
-    "Event raid": {"World": 10000 },
-    "World raid": { "World": 10000 }
-}
-
-default_sizes = {
-    "": "Small",
-    "Guild raid": "Small",
-    "Quest boss": "Quest",
-    "Quest miniboss": "Quest",
-    "Timed raid": "World",
-    "Event raid": "World",
-    "World raid": "World"
-}
+participants = json.load(open(raid_sizes_file,"r"))
 
 bonus_drops_tier_based = ["Summoner loot?","Hidden loot?","Bonus tiers?"]
 
@@ -119,88 +73,88 @@ extra_drops = {
     "Loot expansion?": "Loot expansion"
 }
 
+### Basic data files
 default_dict = defaultdict(list)
 
-### Basic data files
-for m in paths:
-    for p0 in paths[m]:
-        p=p0+".csv"
-        try:
-            f=open(base_path+p, 'r')
-            reader = csv.DictReader(f, delimiter=',')
-            for line in reader:
-                raid_name = line.pop('Raid name')
-                if raid_name not in default_dict:
-                    default_dict[raid_name]=defaultdict(list)
-                default_dict[raid_name][m]=line.copy()
-                if "Raid type" not in default_dict[raid_name][m]:
-                    default_dict[raid_name][m]["Raid type"]=types[p]
-                if "Raid size" not in default_dict[raid_name][m]:
-                    default_dict[raid_name][m]["Raid size"]=default_sizes[default_dict[raid_name][m]["Raid type"]]
-                if "Maximum number of participants" not in default_dict[raid_name][m]:
-                    if "Raid size" in default_dict[raid_name][m]:
-                        default_dict[raid_name][m]["Maximum number of participants"]=participants[default_dict[raid_name][m]["Raid type"]][default_dict[raid_name][m]["Raid size"]]
-                    else:
-                        default_dict[raid_name][m]["Maximum number of participants"]=1
-                if "Loot format" not in default_dict[raid_name][m]:
-                    default_dict[raid_name][m]["Loot format"]=loot_formats[types[p]]
-                if "Available difficulties" in default_dict[raid_name][m]:
-                    default_dict[raid_name][m]["Available difficulties"] = return_difficuties(default_dict[raid_name][m].pop("Available difficulties"))
+for p0 in dico:
+    m = dico[p0]["Fighting mode"]
+    p=p0+".csv"
+    try:
+        f=open(base_path+p, 'r')
+        reader = csv.DictReader(f, delimiter=',')
+        for line in reader:
+            raid_name = line.pop('Raid name')
+            if raid_name not in default_dict:
+                default_dict[raid_name]=defaultdict(list)
+            default_dict[raid_name][m]=line.copy()
+            if "Raid type" not in default_dict[raid_name][m]:
+                default_dict[raid_name][m]["Raid type"]=dico[p0]["Raid type"]
+            if "Raid size" not in default_dict[raid_name][m]:
+                default_dict[raid_name][m]["Raid size"]=list(participants[default_dict[raid_name][m]["Raid type"]])[0]
+            if "Maximum number of participants" not in default_dict[raid_name][m]:
+                if "Raid size" in default_dict[raid_name][m]:
+                    default_dict[raid_name][m]["Maximum number of participants"]=participants[default_dict[raid_name][m]["Raid type"]][default_dict[raid_name][m]["Raid size"]]
                 else:
-                    default_dict[raid_name][m]["Available difficulties"] = return_difficuties(default_difficulties[types[p]])
-                # Let us replace empty cells with "?" and correct a few values:
-                default_dict[raid_name][m]["Has extra drops"]={}
-                default_dict[raid_name][m]["Extra drops"]={} # Most of this dictionary will be filled later.
-                default_dict[raid_name][m]["Extra drops"]["On-hit drops"]={a:"no" for a in default_dict[raid_name][m]["Available difficulties"]}
-                default_dict[raid_name][m]["Extra drops"]["Loot expansion"]={a:"no" for a in default_dict[raid_name][m]["Available difficulties"]}
-                for b in extra_drops:
-                    edb=extra_drops[b]
-                    default_dict[raid_name][m]["Has extra drops"][edb]={}
-                    if b not in default_dict[raid_name][m]:
-                        for d in default_dict[raid_name][m]["Available difficulties"]:
+                    default_dict[raid_name][m]["Maximum number of participants"]=1
+            if "Loot format" not in default_dict[raid_name][m]:
+                default_dict[raid_name][m]["Loot format"]=dico[p0]["Loot format"]
+            if "Available difficulties" in default_dict[raid_name][m]:
+                default_dict[raid_name][m]["Available difficulties"] = return_difficuties(default_dict[raid_name][m].pop("Available difficulties"))
+            else:
+                default_dict[raid_name][m]["Available difficulties"] = return_difficuties(dico[p0]["Available difficulties"])
+            # Let us replace empty cells with "?" and correct a few values:
+            default_dict[raid_name][m]["Has extra drops"]={}
+            default_dict[raid_name][m]["Extra drops"]={} # Most of this dictionary will be filled later.
+            default_dict[raid_name][m]["Extra drops"]["On-hit drops"]={a:"no" for a in default_dict[raid_name][m]["Available difficulties"]}
+            default_dict[raid_name][m]["Extra drops"]["Loot expansion"]={a:"no" for a in default_dict[raid_name][m]["Available difficulties"]}
+            for b in extra_drops:
+                edb=extra_drops[b]
+                default_dict[raid_name][m]["Has extra drops"][edb]={}
+                if b not in default_dict[raid_name][m]:
+                    for d in default_dict[raid_name][m]["Available difficulties"]:
+                        default_dict[raid_name][m]["Has extra drops"][edb][d]=False
+                else:
+                    c=default_dict[raid_name][m].pop(b)
+                    for d in default_dict[raid_name][m]["Available difficulties"]:
+                        if c.lower() in ["false","no","0","","-"]:
                             default_dict[raid_name][m]["Has extra drops"][edb][d]=False
-                    else:
-                        c=default_dict[raid_name][m].pop(b)
-                        for d in default_dict[raid_name][m]["Available difficulties"]:
-                            if c.lower() in ["false","no","0","","-"]:
-                                default_dict[raid_name][m]["Has extra drops"][edb][d]=False
-                            elif c.lower() in ["true","yes","1"]:
-                                default_dict[raid_name][m]["Has extra drops"][edb][d]=True
-                            elif edb=="Loot expansion" or edb=="On-hit drops":
-                                default_dict[raid_name][m]["Has extra drops"][edb][d]=True
-                                default_dict[raid_name][m]["Extra drops"][edb][d]=c
-                            else:
-                                default_dict[raid_name][m]["Has extra drops"][edb][d]=False
-                for v in default_dict[raid_name][m]:
-                    if default_dict[raid_name][m][v]=="" and v!="Raid type":
-                        default_dict[raid_name][m][v]="?"
-            f.close()
-        except:
-            pass
+                        elif c.lower() in ["true","yes","1"]:
+                            default_dict[raid_name][m]["Has extra drops"][edb][d]=True
+                        elif edb=="Loot expansion" or edb=="On-hit drops":
+                            default_dict[raid_name][m]["Has extra drops"][edb][d]=True
+                            default_dict[raid_name][m]["Extra drops"][edb][d]=c
+                        else:
+                            default_dict[raid_name][m]["Has extra drops"][edb][d]=False
+            for v in default_dict[raid_name][m]:
+                if default_dict[raid_name][m][v]=="" and v!="Raid type":
+                    default_dict[raid_name][m][v]="?"
+        f.close()
+    except:
+        pass
 
 
 raid_list = {raid[0]:{m[0]:{v1:v2 for v1,v2 in m[1].items()} for m in raid[1].items()} for raid in sorted(default_dict.items())}
 
 
 ### Damage taken files
-for m in paths:
-    for p0 in paths[m]:
-        p=p0+".csv"
-        try:
-            f=open(damage_path+p, 'r')
-            reader = csv.DictReader(f, delimiter=',')
-            for line in reader:
-                raid_name = line.pop('Raid name')
-                if raid_name in raid_list and m in raid_list[raid_name]:
-                    damage_list={v1:v2 for v1,v2 in line.items()}
-                    raid_list[raid_name][m]["Damage"]=damage_list.copy()
-            # For the raids without a line in the damage taken csv:
-            for r in raid_list:
-                if m in raid_list[r] and "Damage" not in raid_list[r][m]:
-                    raid_list[r][m]["Damage"]={h:"?" for h in reader.fieldnames}
-            f.close()
-        except:
-            pass
+for p0 in dico:
+    m = dico[p0]["Fighting mode"]
+    p=p0+".csv"
+    try:
+        f=open(damage_path+p, 'r')
+        reader = csv.DictReader(f, delimiter=',')
+        for line in reader:
+            raid_name = line.pop('Raid name')
+            if raid_name in raid_list and m in raid_list[raid_name]:
+                damage_list={v1:v2 for v1,v2 in line.items()}
+                raid_list[raid_name][m]["Damage"]=damage_list.copy()
+        # For the raids without a line in the damage taken csv:
+        for r in raid_list:
+            if m in raid_list[r] and "Damage" not in raid_list[r][m]:
+                raid_list[r][m]["Damage"]={h:"?" for h in reader.fieldnames}
+        f.close()
+    except:
+        pass
 
 
 ### Raid tiers, drops, loot tables
@@ -240,10 +194,11 @@ for r in raid_list:
             # Tiers, drops:
             for d in all_d:
                 raid_list[r][M]["Tiers"][d]=[]
+                folder_name = return_naming_for_type(dico,raid_list[r][M]["Raid type"])
                 try:
-                    f=open(loot_path+paths_to_files[raid_list[r][M]["Raid type"]]+"/"+r+"/"+d+".csv", 'r')
+                    f=open(loot_path+folder_name+"/"+r+"/"+d+".csv", 'r')
                 except:
-                    f=open(loot_path+paths_to_files[raid_list[r][M]["Raid type"]]+"/"+"_Example_/"+d+".csv", 'r')
+                    f=open(loot_path+folder_name+"/"+"_Example_/"+d+".csv", 'r')
                 finally:
                     reader = csv.DictReader(f, delimiter=',')
                     for line in reader:
@@ -327,10 +282,11 @@ for r in raid_list:
                 if thing_to_remove in raid_list[r][M]:
                     raid_list[r][M].pop("Health on "+d.lower()) # Health data was moved to raid_list[r][M]["Health"][d].
         elif raid_list[r][M]["Loot format"]=="Image":
+            folder_name = return_naming_for_type(dico,raid_list[r][M]["Raid type"])
             try:
-                f=open(loot_path+paths_to_files[raid_list[r][M]["Raid type"]]+"/"+r+"/Loot tables.csv", 'r')
+                f=open(loot_path+folder_name+"/"+r+"/Loot tables.csv", 'r')
             except:
-                f=open(loot_path+paths_to_files[raid_list[r][M]["Raid type"]]+"/"+"_Example_/Loot tables.csv", 'r')
+                f=open(loot_path+folder_name+"/"+"_Example_/Loot tables.csv", 'r')
             finally:
                 for d in all_d: # This will have to be reworked if a case with several difficulties arise
                     raid_list[r][M]["Loot tables"][d]=[]
@@ -349,24 +305,24 @@ for r in raid_list:
 
 
 ### On-hit drops
-for m in paths:
-    for p0 in paths[m]:
-        p=p0+".csv"
-        try:
-            f=open(on_hit_path+p, 'r')
-            reader = csv.DictReader(f, delimiter=',')
-            for line in reader:
-                raid_name = line.pop('Raid name')
-                if raid_name in raid_list and m in raid_list[raid_name]:
-                    drop_list={v1:v2 for v1,v2 in line.items()}
-                    raid_list[raid_name][m]["Extra drops"]["On-hit drops"]=drop_list.copy()
-                for d in raid_list[raid_name][m]["Extra drops"]["On-hit drops"]:
-                    if raid_list[raid_name][m]["Extra drops"]["On-hit drops"][d].lower() in ["","no","false","0","none","-"]:
-                        raid_list[raid_name][m]["Extra drops"]["On-hit drops"][d]="no"
-                    else:
-                        raid_list[raid_name][m]["Has extra drops"]["On-hit drops"][d]=True
-        except:
-            pass
+for p0 in dico:
+    m = dico[p0]["Fighting mode"]
+    p=p0+".csv"
+    try:
+        f=open(on_hit_path+p, 'r')
+        reader = csv.DictReader(f, delimiter=',')
+        for line in reader:
+            raid_name = line.pop('Raid name')
+            if raid_name in raid_list and m in raid_list[raid_name]:
+                drop_list={v1:v2 for v1,v2 in line.items()}
+                raid_list[raid_name][m]["Extra drops"]["On-hit drops"]=drop_list.copy()
+            for d in raid_list[raid_name][m]["Extra drops"]["On-hit drops"]:
+                if raid_list[raid_name][m]["Extra drops"]["On-hit drops"][d].lower() in ["","no","false","0","none","-"]:
+                    raid_list[raid_name][m]["Extra drops"]["On-hit drops"][d]="no"
+                else:
+                    raid_list[raid_name][m]["Has extra drops"]["On-hit drops"][d]=True
+    except:
+        pass
 
 
 ### Notes

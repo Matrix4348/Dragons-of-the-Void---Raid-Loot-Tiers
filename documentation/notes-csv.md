@@ -60,6 +60,6 @@ This note applies to the raid version of easy Bone Dragon.
 
 <div align="center">
   
-  [< On-hit drops](on-hit-drops-folder.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [Updating the user script >](updating-user-script.md)
+  [< On-hit drops](on-hit-drops-folder.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [Raid sizes.json >](raid-sizes-json.md)
   
 </div>

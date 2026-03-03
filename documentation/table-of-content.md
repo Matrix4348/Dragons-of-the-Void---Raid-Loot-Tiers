@@ -26,6 +26,10 @@
 
 * [Notes.csv](notes-csv.md)
 
+* [Raid sizes.json](raid-sizes-json.md)
+
+* [Raid types attributes.csv](raid-types-attributes-csv.md)
+
 [Updating the user script](updating-user-script.md)
 
 [The .github folder](github-folder.md)

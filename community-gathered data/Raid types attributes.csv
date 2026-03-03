@@ -1,0 +1,8 @@
+Folder/file name,Raid type,Fighting mode,Loot format,Available difficulties
+Event raids,Event raid,healthless,Image,L
+Guild raids,Guild raid,raiding,EHL,EHL
+Quest bosses,Quest boss,questing,EHL,EHL
+Quest minibosses,Quest miniboss,questing,EHL,EHL
+Regular raids,,raiding,EHL,EHL
+Timed raids,Timed raid,healthless,EHL,E
+World raids,World raid,healthless,Image,L

@@ -38,6 +38,8 @@ It contains the following files and folder:
 * [Loot tiers and drop data](loot-tiers-folder.md)
 * [On-hit drops](on-hit-drops-folder.md)
 * [Notes.csv](notes-csv.md)
+* [Raid sizes.json](raid-sizes-json.md)
+* [Raid types attributes.csv](raid-types-attributes-csv.md)
 
 > [!WARNING]
 > Most of the files that you will encounter are csv files. You can learn more about them [here](what-is-a-csv-file.md).
