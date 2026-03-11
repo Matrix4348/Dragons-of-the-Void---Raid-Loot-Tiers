@@ -1,5 +1,7 @@
 Raid name,Raid size,Health on easy,On-hit drops?,Loot expansion?
+Amanus Charmer,"9,600,000",No,Yes
 Basiliscus,Medium,"3,200,000",No,No
+Fen Lure Plant,"12,400,000",Yes,Yes
 Fungal Fiend,Small,"100,000",No,No
 Gargouille Sentry,Large,"6,500,000",No,Yes
 Icy Whelp Siplada,Large,"5,600,000",Yes,Yes
@@ -7,6 +9,7 @@ Lord Kaspar Laurent,Immense,"9,500,000",No,Yes
 Marauding Mercenaries,Medium,"2,500,000",No,No
 Mushveli,Small,"1,500,000",No,No
 Nitroglycergnat,Medium,"750,000",No,No
+Purple Slime,"4,500,000",No,No
 Rogue Slime,Small,"750,000",No,No
 Shambling Ghoul,Medium,"2,900,000",No,No
 Tunnanu,Large,"4,600,000",No,Yes
