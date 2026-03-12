@@ -1,5 +1,7 @@
 Raid name,Type,Easy,Hard,Legendary
+Amanus Charmer,Poison,24,50,240
 Basiliscus,Poison,24,70,260
+Fen Lure Plant,Nature,42,78,320
 Fungal Fiend,Nature,6,30,140
 Gargouille Sentry,Magic,16,35,130
 Icy Whelp Siplada,Ice,15,26,64
@@ -7,6 +9,7 @@ Lord Kaspar Laurent,Dark,36,60,250
 Marauding Mercenaries,Physical,21.6,57.6,240
 Mushveli,Physical,12,44,160
 Nitroglycergnat,Nature,16,45,240
+Purple Slime,Acid,36,62,270
 Rogue Slime,Acid,15,40,160
 Shambling Ghoul,Physical,20,50,220
 Tunnanu,Physical,12,22,56

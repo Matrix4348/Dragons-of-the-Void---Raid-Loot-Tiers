@@ -1,6 +1,6 @@
 draft = "./main/user script/development.user.js"
 latest = "./main/user script/latest.user.js"
-raid_list_file = "./main/community-gathered data/raid-list.json"
+raid_list_file = "./main/docs/raid-list.json"
 
 try:
     with open(raid_list_file,"r") as reader:
@@ -16,3 +16,4 @@ finally:
         end=f.find(M,beginning+l)
         newf=f[0:beginning]+M+" raid_list=raid_list||"+raid_list+"; "+M+f[end+l:]
         F.write(newf)
+
