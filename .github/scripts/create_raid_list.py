@@ -87,6 +87,8 @@ for p0 in dico:
             if raid_name not in default_dict:
                 default_dict[raid_name]=defaultdict(list)
             default_dict[raid_name][m]=line.copy()
+            default_dict[raid_name][m]["Name"]=raid_name # The reason for duplicating this is a more convenient filtering process.
+            default_dict[raid_name][m]["Mode"]=m # The reason for duplicating this is a more convenient filtering process.
             if "Raid type" not in default_dict[raid_name][m]:
                 default_dict[raid_name][m]["Raid type"]=dico[p0]["Raid type"]
             if "Raid size" not in default_dict[raid_name][m]:
