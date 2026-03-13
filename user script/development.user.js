@@ -70,7 +70,7 @@ async function fetch_online_raid_data(){
     catch(e){
         // Fall back to the data known as of last update. DO NOT TOUCH THE LINES BELOW!
         /* MARKER 1 */ raid_list=raid_list||{}; /* MARKER 1 */
-        /* MARKER 2 */ raid_filters=raid_filters||{}; /* MARKER 2 */
+        /* MARKER 2 */ raid_filters=raid_filters||{};/* MARKER 2 */
     }
     setTimeout(fetch_online_raid_data,3600000); // Update raid data every hour, for long sessions.
 }
@@ -195,6 +195,55 @@ function create_css(){
             padding: 5px;
             font-size: 14px;
             border: 1px solid black;
+        }
+        /*.dotvrlt-filter-dropdown label {
+            display: block;
+        }
+        .dotvrlt-filter-dropdown button {
+            //width: 100%;
+        }
+        .dotvrlt-dropdown-overselect {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }*/
+        .dotvrlt-filter-dropdown {
+            display: inline-block;
+        }
+        .dotvrlt-filter-dropdown .dotvrlt-dropdown-anchor {
+            position: relative;
+            cursor: pointer;
+            display: inline-block;
+            padding: 5px 50px 5px 10px;
+            border: 1px solid #ccc;
+        }
+        .dotvrlt-filter-dropdown .dotvrlt-dropdown-anchor:after {
+            position: absolute;
+            content: "";
+            border-left: 2px solid black;
+            border-top: 2px solid black;
+            padding: 5px;
+            right: 10px;
+            top: 20%;
+            transform: rotate(-135deg);
+        }
+        .dotvrlt-filter-dropdown .dotvrlt-dropdown-anchor:active:after {
+            right: 8px;
+            top: 21%;
+        }
+        .dotvrlt-filter-dropdown ul {
+            padding: 2px;
+            display: none;
+            margin: 0;
+            border: 1px solid #ccc;
+            border-top: none;
+            z-index: 2;
+            background-color: white;
+        }
+        .dotvrlt-filter-dropdown li {
+            list-style: none;
         }
 
         .broadcast-damage-container, .raid-chat-container, .studious-inspector-container {
@@ -482,19 +531,24 @@ function create_options_div(){
     d.style.top=button_boundaries.y+button_boundaries.height+10+window.scrollY+"px";
     document.body.appendChild(d);
     options_div=d;
-}
-
-function create_options_title_div(){
+    // Title
     var t=document.createElement("div");
     t.id="DotVRLT options title div";
     t.innerHTML="Options";
     options_div.appendChild(t);
-}
-
-function create_filters_div(){
-    var d=document.createElement("div");
-    d.id="DotVRLT filters div";
-    options_div.appendChild(d);
+    // Filters
+    var f=document.createElement("div");
+    f.id="DotVRLT filters div";
+    options_div.appendChild(f);
+    // Tab buttons
+    var B=document.createElement("div");
+    B.id="DotVRLT tab buttons div";
+    options_div.appendChild(B);
+    // Extra settings
+    var x=document.createElement("div");
+    x.id="DotVRLT extra settings div";
+    x.classList.add("dotvrlt_row_of_buttons_3");
+    options_div.appendChild(x);
 }
 
 function createNewCheckbox(div, id, content){
@@ -512,7 +566,7 @@ function createNewCheckbox(div, id, content){
 
 function createButtonWithCheckbox(div, dotvrlt, content){
     var b=document.createElement("button");
-    b.classList.add("dotvrlt-filter-button");
+    b.classList.add( "dropdown_name" in dotvrlt ? "dotvrlt-filter-dropdown-button" : "dotvrlt-filter-button" );
     b.dotvrlt = dotvrlt;
     b.dotvrlt.button_name = content;
     div.appendChild(b);
@@ -520,59 +574,67 @@ function createButtonWithCheckbox(div, dotvrlt, content){
     checkbox.type = "checkbox";
     b.appendChild(checkbox);
     var t=document.createElement("span");
-    //t.innerHTML = " " + content + " <span class='dotvrlt-counter'></span>";
-    t.innerHTML = content + "<span class='dotvrlt-counter'></span>";
+    t.innerHTML = "dropdown_name" in dotvrlt ? content : content + "<span class='dotvrlt-counter'></span>"; // TO-DO: Remove that span once and for all.
     b.appendChild(t);
     b.addEventListener("click", function(e){ if(e.target!=checkbox){ checkbox.checked = !checkbox.checked; } });
     return {checkbox:checkbox,button:b};
 }
 
-function create_difficulty_selector(){
-    var d=document.getElementById("DotVRLT filters div");
-    var t=document.createElement("span");
-    t.innerHTML="Difficulty to display: ";
-    d.appendChild(t);
-    var all=createNewCheckbox(d, "DotVRLT show all checkbox", " All <span id='dotvrlt_counter_All'></span>");
-    var easy=createNewCheckbox(d, "DotVRLT show easy checkbox", " Easy <span id='dotvrlt_counter_Easy'></span>");
-    var hard=createNewCheckbox(d, "DotVRLT show hard checkbox", " Hard <span id='dotvrlt_counter_Hard'></span>");
-    var legendary=createNewCheckbox(d, "DotVRLT show legendary checkbox", " Legendary <span id='dotvrlt_counter_Legendary'></span>");
-    easy.defaultChecked=my_filters.Easy;
-    easy.onclick=async function(){
-        my_filters.Easy=easy.checked;
-        await GM_setValue("Easy_stored",my_filters.Easy);
-        if(my_filters.Easy&my_filters.Hard&my_filters.Legendary){ all.checked=true; }
-        else{ all.checked=false; }
-        createTab(current_tab);
-    };
-    hard.defaultChecked=my_filters.Hard;
-    hard.onclick=async function(){
-        my_filters.Hard=hard.checked;
-        await GM_setValue("Hard_stored",my_filters.Hard);
-        if(my_filters.Easy&my_filters.Hard&my_filters.Legendary){ all.checked=true; }
-        else{ all.checked=false; }
-        createTab(current_tab);
-    };
-    legendary.defaultChecked=my_filters.Legendary;
-    legendary.onclick=async function(){
-        my_filters.Legendary=legendary.checked;
-        await GM_setValue("Legendary_stored",my_filters.Legendary);
-        if(my_filters.Easy&my_filters.Hard&my_filters.Legendary){ all.checked=true; }
-        else{ all.checked=false; }
-        createTab(current_tab);
-    };
-    all.defaultChecked=my_filters.Easy&my_filters.Hard&my_filters.Legendary;
-    all.onclick=async function(){
-        my_filters.Easy=all.checked;
-        await GM_setValue("Easy_stored",my_filters.Easy);
-        easy.checked=all.checked;
-        my_filters.Hard=all.checked;
-        await GM_setValue("Hard_stored",my_filters.Hard);
-        hard.checked=all.checked;
-        my_filters.Legendary=all.checked;
-        await GM_setValue("Legendary_stored",my_filters.Legendary);
-        legendary.checked=all.checked;
-        createTab(current_tab);
-    };
+function createDropdownButton(div, dotvrlt, content){
+    /*var form = document.createElement("form");
+    form.classList.add("dotvrlt-filter-dropdown");
+    form.dotvrlt = dotvrlt;
+    form.dotvrlt.dropdown_name = content;
+    div.appendChild(form);
+    var d0=document.createElement("div");
+    form.appendChild(d0);
+    var d1 = document.createElement("div"), d2 = document.createElement("div");
+    d0.appendChild(d1);
+    d2.style.display = "none";
+    d0.appendChild(d2);
+    var s = document.createElement("select"); d1.appendChild(s);
+    var o = document.createElement("option");
+    o.innerHTML = content;
+    s.appendChild(o);
+    var d3 = document.createElement("div"); d3.classList.add("dotvrlt-dropdown-overselect"); d1.appendChild(d3);*/
+    var form = document.createElement("div");
+    form.classList.add("dotvrlt-filter-dropdown");
+    form.dotvrlt = dotvrlt;
+    form.dotvrlt.button_name = content;
+    form.dotvrlt.dropdown_name = content;
+    div.appendChild(form);
+    var s = document.createElement("span");
+    s.classList.add("dotvrlt-dropdown-anchor");
+    s.innerHTML = content;
+    form.appendChild(s);
+    var u = document.createElement("u1");
+    u.style.display = "none";
+    form.appendChild(u);
+
+    /*var L1 = document.createElement("label"); d2.appendChild(L1);
+    var all = createButtonWithCheckbox(L1, {"filter_type":"all"}, "All", true);
+    var none = createButtonWithCheckbox(L1, {"filter_type":"none"}, "None", true);*/
+    var L = document.createElement("li"); u.appendChild(L);
+    var all = createButtonWithCheckbox(L, {"filter_type":"all", "dropdown_name":content}, "All");
+    var none = createButtonWithCheckbox(L, {"filter_type":"none", "dropdown_name":content}, "None");
+    var values = dotvrlt.value;
+    var checkboxes = [all.checkbox, none.checkbox], buttons = [all.button, none.button];
+    for(let f of values){
+        let dotvrlt2 = {}; for(let z in dotvrlt){ dotvrlt2[z] = dotvrlt[z]; } dotvrlt2.value = f;
+        //let l = document.createElement("label"); d2.appendChild(l);
+        let l = document.createElement("li"); u.appendChild(l);
+        let x = createButtonWithCheckbox(l, dotvrlt2, f);
+        checkboxes = checkboxes.concat(x.checkbox);
+        buttons = buttons.concat(x.button);
+    }
+
+    var expanded = false;
+    /*form.addEventListener("click", function(){
+        if (!expanded) { d2.style.display = "block"; expanded = true; }
+        else { d2.style.display = "none"; expanded = false; }
+    })*/
+    s.addEventListener("click", function() { u.style.display = expanded ? "none" : "block"; expanded = !expanded; });
+    return {dropdown_button:form,checkboxes:checkboxes,buttons:buttons};
 }
 
 function create_one_filters_row(div,name,filters){
@@ -583,26 +645,63 @@ function create_one_filters_row(div,name,filters){
     t.innerHTML = name;
     d.appendChild(t);
     var all = createButtonWithCheckbox(d, {"filter_type":"all"}, "All");
+    var checkboxes_count = 0;
     for(let filter in filters){
-        var f = createButtonWithCheckbox(d, filters[filter], filter);
-        var v = my_filters?.[name]?.[filter];
-        f.checkbox.defaultChecked = v!=undefined ? v : true;
+        if( filters[filter].filter_type == "checkbox" ){
+            var f = createButtonWithCheckbox(d, filters[filter], filter);
+            var v = my_filters?.[name]?.[filter];
+            f.checkbox.defaultChecked = v!=undefined ? v : true;
+            checkboxes_count += 1;
+        }
+        else if( filters[filter].filter_type == "dropdown" ){
+            var dropdown = createDropdownButton(d, filters[filter], filter);
+            let all_checkbox, none_checkbox;
+            for(let k=0; k<dropdown.checkboxes.length; k++){
+                let bk = dropdown.buttons[k], ck = dropdown.checkboxes[k];
+                if( bk.dotvrlt.filter_type == "all"){ all_checkbox = ck; }
+                else if( bk.dotvrlt.filter_type == "none"){ none_checkbox = ck; }
+                else{
+                    let vk = my_filters?.[name]?.[filter]?.[bk.dotvrlt.value];
+                    ck.defaultChecked = vk!=undefined ? vk : true;
+                }
+            }
+            [all_checkbox.defaultChecked, none_checkbox.defaultChecked] = count_checked_filters_on_a_row(dropdown.dropdown_button);
+        }
     }
     var none = createButtonWithCheckbox(d, {"filter_type":"none"}, "None");
-    [all.checkbox.defaultChecked, none.checkbox.defaultChecked] = count_checked_filters_on_a_row(d);
+    if(checkboxes_count==0){ all.button.remove(); none.button.remove(); }
+    else{ [all.checkbox.defaultChecked, none.checkbox.defaultChecked] = count_checked_filters_on_a_row(d); }
 
     var buttons = d.getElementsByClassName("dotvrlt-filter-button");
     var BL = buttons.length;
     for(let i = 0; i<BL; i++){
         buttons[i].addEventListener("click", function(){ click_a_filter_button(d,name,buttons,i); });
     }
+
+    var dropdowns = d.getElementsByClassName("dotvrlt-filter-dropdown");
+    for(let dropdown of dropdowns){
+        let dropdown_buttons = dropdown.getElementsByClassName("dotvrlt-filter-dropdown-button");
+        let DL = dropdown_buttons.length;
+        for(let i = 0; i<DL; i++){
+            dropdown_buttons[i].addEventListener("click", function(){ click_a_filter_button(dropdown,dropdown.dotvrlt.button_name,dropdown_buttons,i); });
+        }
+    }
 }
 
-function count_checked_filters_on_a_row(filter_div){ // Returns an array with two booleans: the first is true if everything is checked, the other is nothing is checked.
-    var filters = filter_div.getElementsByClassName("dotvrlt-filter-button");
+function count_checked_filters_on_a_row(filter_div){
+    // Actually counts either checked classic filters on a row OR checked filters in a dropdown menu, depending on what filter_div is.
+    // Returns an array with two booleans: the first is true if everything is checked, the other is nothing is checked.
+    var c = filter_div.classList.contains("dotvrlt-filter-dropdown") ? "dotvrlt-filter-dropdown-button" : "dotvrlt-filter-button";
+    var filters = filter_div.getElementsByClassName(c);
     var L = filters.length;
     var all = 1, none = 1;
-    for(let j = 1; j < L-1; j++){ all *= filters[j].firstElementChild.checked; none *= !filters[j].firstElementChild.checked;}
+    for(let j = 0; j < L; j++){
+        var button = filters[j];
+        if ( !["all","none"].includes(button.dotvrlt.filter_type) ){
+            all *= button.firstElementChild.checked;
+            none *= !button.firstElementChild.checked;
+        }
+    }
     return [Boolean(all), Boolean(none)];
 }
 
@@ -610,35 +709,58 @@ function click_a_filter_button(filter_row, row_name, buttons, index_in_row){
     var BL = buttons.length;
     var button = buttons[index_in_row];
     var checkbox = button.firstElementChild;
-    if (index_in_row == 0 || index_in_row == BL-1){
-        for(let j = 1; j<BL-1; j++){
-            let b = buttons[j], cb = b.firstElementChild;
-            ( my_filters[row_name] = my_filters[row_name] || {} )[b.dotvrlt.button_name] = index_in_row == 0 ? checkbox.checked : !checkbox.checked;
-            GM_setValue("filters_"+row_name+"_"+b.dotvrlt.button_name, index_in_row == 0 ? checkbox.checked : !checkbox.checked);
-            cb.checked = index_in_row == 0 ? checkbox.checked : !checkbox.checked;
+    var all_button, none_button;
+    for(let b of buttons){
+        if( b.dotvrlt.filter_type == "all" ){ all_button = b; }
+        else if( b.dotvrlt.filter_type == "none" ){ none_button = b; }
+    }
+    if ( ["all","none"].includes(button.dotvrlt.filter_type) ){
+        for(let b of buttons){
+            if( !["all","none"].includes(b.dotvrlt.filter_type) ){
+                let cb = b.firstElementChild;
+                if( button.dotvrlt.filter_type == "checkbox" ){
+                    ( my_filters[row_name] = my_filters[row_name] || {} )[b.dotvrlt.button_name] = button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked;
+                    GM_setValue("filters_"+row_name+"_"+b.dotvrlt.button_name, button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked);
+                }
+                else if( button.dotvrlt.filter_type == "dropdown" ){
+                    my_filters[row_name] = my_filters[row_name] || {};
+                    ( my_filters[row_name][b.dotvrlt.dropdown_name] = my_filters[row_name][b.dotvrlt.dropdown_name] || {} )[b.dotvrlt.button_name] = button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked;
+                    GM_setValue("filters_"+row_name+"_"+b.dotvrlt.dropdown_name+"_"+b.dotvrlt.button_name, button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked);
+                }
+                cb.checked = button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked;
+            }
         }
     }
     else{
-        ( my_filters[row_name] = my_filters[row_name] || {} )[button.dotvrlt.button_name] = checkbox.checked;
-        GM_setValue("filters_"+row_name+"_"+button.dotvrlt.button_name, checkbox.checked);
+        if( button.dotvrlt.filter_type == "checkbox" ){
+            ( my_filters[row_name] = my_filters[row_name] || {} )[button.dotvrlt.button_name] = checkbox.checked;
+            GM_setValue("filters_"+row_name+"_"+button.dotvrlt.button_name, checkbox.checked);
+        }
+        else if( button.dotvrlt.filter_type == "dropdown" ){
+            my_filters[row_name] = my_filters[row_name] || {};
+            ( my_filters[row_name][button.dotvrlt.dropdown_name] = my_filters[row_name][button.dotvrlt.dropdown_name] || {} )[button.dotvrlt.button_name] = checkbox.checked;
+            GM_setValue("filters_"+row_name+"_"+button.dotvrlt.dropdown_name+"_"+button.dotvrlt.button_name, checkbox.checked);
+        }
     }
-    [buttons[0].firstElementChild.checked, buttons[BL-1].firstElementChild.checked] = count_checked_filters_on_a_row(filter_row);
+    [all_button.firstElementChild.checked, none_button.firstElementChild.checked] = count_checked_filters_on_a_row(filter_row);
     createTab(current_tab);
 }
 
 function fill_filters_div(){
-    // Will replace create_difficulty_selector
     var filter_div = document.getElementById("DotVRLT filters div");
-    // create-one_filters_row(filter_div,"Raids: ",{ "Select raids to display": {filter_type:"dropdown", key:"Name", value:keys(raid_list)} });
+    create_one_filters_row(filter_div,"Raids: ",{ "Select raids to display": {filter_type:"dropdown", key:"Name", value:Object.keys(raid_list)} });
     for(let row in raid_filters){ create_one_filters_row(filter_div,row,raid_filters[row]); }
 }
 
-function get_filtered_out_values(){ // Returns an object with the following keys: difficulty, Mode, Name, any key in raids. Each key is associated to an array containing all disallowed values for said key.
+function get_filtered_out_values(){ // Returns an object with the following keys: difficulty and any key in raids. Each key is associated to an array containing all disallowed values for said key.
     var filters = {};
-    var buttons = document.getElementsByClassName("dotvrlt-filter-button");
-    for(let button of buttons){
-        if( !["all","none"].includes(button.dotvrlt.filter_type) && !button.firstElementChild.checked ){
-            filters[button.dotvrlt.key] = ( filters[button.dotvrlt.key] || [] ).concat(button.dotvrlt.value);
+    var classes = ["dotvrlt-filter-button","dotvrlt-filter-dropdown-button"];
+    for(let c of classes){
+        var buttons = document.getElementsByClassName(c);
+        for(let button of buttons){
+            if( !["all","none"].includes(button.dotvrlt.filter_type) && !button.firstElementChild.checked ){
+                filters[button.dotvrlt.key] = ( filters[button.dotvrlt.key] || [] ).concat(button.dotvrlt.value);
+            }
         }
     }
     return filters;
@@ -715,7 +837,7 @@ function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a s
         t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column">Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> </tr>`;
         for(let k in raid_list){
             for(let mode in raid_list[k]){
-                if( !modes.includes(mode) ){ // Once raid.Mode (and raid.Name) exists, put that with the rest
+                if( !modes.includes(mode) && !names.includes(k) ){ // Once raid.Mode (and raid.Name) exists, put that with the rest
                     let is_wanted = true;
                     for(let f in unwanted_values){
                         if(f in raid_list[k][mode]){ is_wanted *= !unwanted_values[f].includes(raid_list[k][mode][f]); }
@@ -735,7 +857,7 @@ function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a s
                                         if( !Notes.includes(n) ){ Notes[Notes.length]=n; }
                                     }
                                 }
-                                if(raid_list[k][mode]["Loot format"]=="EHL"){
+                                if( raid_list[k][mode]["Loot format"]=="EHL" || raid_list[k][mode]["Loot format"]=="Guesses" ){
                                     let tl=t.insertRow();
                                     if(firstdiff==1){
                                         tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td>`+raid_list[k][mode]["Tiers as string"][j]+`</td>`;
@@ -768,7 +890,7 @@ function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a s
         <tr class="dotvrlt_fixed_row_2"> <td>Difficulty</td> <td>Damage</td> <td colspan="3">Common | rare | mythic</td> <td colspan="3">Summoner | hidden | bonus</td> <td>Average stat points</td> </tr>`;
         for(let k in raid_list){
             for(let mode in raid_list[k]){
-                if( !modes.includes(mode) ){ // Once raid.Mode (and raid.Name) exists, put that with the rest
+                if( !modes.includes(mode) && !names.includes(k) ){ // Once raid.Mode (and raid.Name) exists, put that with the rest
                     let is_wanted = true;
                     for(let f in unwanted_values){
                         if(f in raid_list[k][mode]){ is_wanted *= !unwanted_values[f].includes(raid_list[k][mode][f]); }
@@ -791,7 +913,7 @@ function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a s
                                         if( !Notes.includes(n) ){ Notes[Notes.length]=n; }
                                     }
                                 }
-                                if(raid_list[k][mode]["Loot format"]=="EHL"){
+                                if( raid_list[k][mode]["Loot format"]=="EHL" || raid_list[k][mode]["Loot format"]=="Guesses" ){
                                     let tl=t.insertRow();
                                     var tiers0_text=raid_list[k][mode].Tiers[j][0];
                                     if(tiers0_text==raid_list[k][mode].FS[j]){ tiers0_text="<b>FS: "+tiers0_text+"</b>"; }
@@ -890,8 +1012,8 @@ function createTabButton(div,bname){
     div.appendChild(b);
 }
 
-function create_tab_buttons_div(){
-    var t=document.createElement("div"); t.id="DotVRLT tab buttons div"; options_div.appendChild(t);
+function fill_tab_buttons_div(){
+    var t = document.getElementById("DotVRLT tab buttons div");
     //var t1=document.createElement("div"); t1.classList.add("dotvrlt_row_of_buttons_1"); t1.innerHTML="Raid size: "; t.appendChild(t1);
     //var t2=document.createElement("div"); t2.classList.add("dotvrlt_row_of_buttons_1"); t2.innerHTML="Raid type: "; t.appendChild(t2);
     //var t3=document.createElement("div"); t3.classList.add("dotvrlt_row_of_buttons_2"); /*t3.innerHTML="Other: ";*/ t.appendChild(t3);
@@ -903,11 +1025,8 @@ function create_tab_buttons_div(){
     createTabButton(t3,"About");
 }
 
-function create_extra_div(){
-    var d=document.createElement("div");
-    d.id="DotVRLT extra settings div";
-    d.classList.add("dotvrlt_row_of_buttons_3");
-    options_div.appendChild(d);
+function fill_extra_div(){
+    var d=document.getElementById("DotVRLT extra settings div");
     var adv=createNewCheckbox(d, "DotVRLT advanced view checkbox", " Advanced view ");
     adv.defaultChecked=show_advanced_view;
     adv.onclick=async function(){
@@ -1007,7 +1126,7 @@ async function create_in_raid_div(raid_name,mode,raid_difficulty){
     var t=document.createElement("table");
     t.classList.add("dotvrlt_table");
     t.border=1;
-    if(raid_list[raid_name][mode]["Loot format"]=="EHL"){
+    if( raid_list[raid_name][mode]["Loot format"]=="EHL" || raid_list[raid_name][mode]["Loot format"]=="Guesses" ){
         t.innerHTML=`<td class="dotvrlt_corners_top" style="padding-left: 7px; padding-right: 7px;">`+raid_list[raid_name][mode]["Tiers as string"][raid_difficulty]+`</td>`;
         tiers_to_share = "Loot tiers: " + t.innerText;
     }
@@ -1047,7 +1166,7 @@ async function create_detailed_div(raid_name,mode,raid_difficulty){
     detailed_div=d;
     set_detailed_div_state();
     // Table creation.
-    if(raid_list[raid_name][mode]["Loot format"]=="EHL"){
+    if( raid_list[raid_name][mode]["Loot format"]=="EHL" || raid_list[raid_name][mode]["Loot format"]=="Guesses" ){
         var ncol=4+raid_list[raid_name][mode]["Has extra drops"].Hidden[raid_difficulty]+raid_list[raid_name][mode]["Has extra drops"].Summoner[raid_difficulty]+raid_list[raid_name][mode]["Has extra drops"].Bonus[raid_difficulty]+(raid_list[raid_name][mode]["Average stat points"][raid_difficulty].length>0);
         var t=document.createElement("table");
         t.id="DotVRLT detailed table";
@@ -1310,7 +1429,7 @@ function createDamageTakenTable(){
     t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column">Name</td> <td>Type</td> <td>Damage type</td> <td colspan="2">Damage taken</td></tr>`;
     for(let k in raid_list){
         for(let mode in raid_list[k]){
-            if(!( unwanted_values.Mode || [] ).includes(mode)){ // To remove once raid.Mode exists (remove from crateTable, createDamageTakenTable and stats points gain comparison
+            if( !( unwanted_values.Mode || [] ).includes(mode) && !( unwanted_values.Name || [] ).includes(k) ){ // To remove once raid.Mode exists (remove from crateTable, createDamageTakenTable and stats points gain comparison
                 let is_wanted = true;
                 for(let f in unwanted_values){
                     if(f in raid_list[k][mode]){ is_wanted *= !unwanted_values[f].includes(raid_list[k][mode][f]); }
@@ -1452,7 +1571,7 @@ function createAverageStatsPointsTab(){
     var unwanted_values = get_filtered_out_values();
     for(let k in raid_list){
         for(let mode in raid_list[k]){
-            if(!( unwanted_values.Mode || [] ).includes(mode)){ // To remove once raid.Mode exists (remove from crateTable, createDamageTakenTable and stats points gain comparison
+            if( !( unwanted_values.Mode || [] ).includes(mode) && !( unwanted_values.Name || [] ).includes(k) ){ // To remove once raid.Mode exists (remove from crateTable, createDamageTakenTable and stats points gain comparison
                 let is_wanted = true;
                 for(let f in unwanted_values){
                     if(f in raid_list[k][mode]){ is_wanted *= !unwanted_values[f].includes(raid_list[k][mode][f]); }
@@ -1631,12 +1750,9 @@ async function DotVRLT(){
     create_main_button();
     create_main_div();
     create_options_div();
-    create_options_title_div();
-    create_filters_div();
-    //create_difficulty_selector();
-    create_tab_buttons_div();
+    fill_tab_buttons_div();
     fill_filters_div();
-    create_extra_div();
+    fill_extra_div();
     createTab(current_tab);
     actualize_colours(colourless_mode);
     actualize_corners(rounded_corners);
