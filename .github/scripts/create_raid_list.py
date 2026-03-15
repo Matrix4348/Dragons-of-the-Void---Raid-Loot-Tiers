@@ -348,5 +348,5 @@ for name in raid_list:
                         pass
 
 ### File creation
-with open(output_file, 'w') as f:
+with open(output_file, 'w+') as f:
     json.dump(raid_list, f)

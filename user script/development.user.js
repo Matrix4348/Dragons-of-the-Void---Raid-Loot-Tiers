@@ -70,9 +70,9 @@ async function fetch_online_raid_data(){
     catch(e){
         // Fall back to the data known as of last update. DO NOT TOUCH THE LINES BELOW!
         /* MARKER 1 */ raid_list=raid_list||{}; /* MARKER 1 */
-        /* MARKER 2 */ raid_filters=raid_filters||{};/* MARKER 2 */
+        /* MARKER 2 */ raid_filters=raid_filters||{}; /* MARKER 2 */
     }
-    setTimeout(fetch_online_raid_data,3600000); // Update raid data every hour, for long sessions.
+    setTimeout( function(){ fetch_online_raid_data(); fill_filters_div(); },3600000); // Update raid data and raid filters every hour, for long sessions.
 }
 
 function create_css(){
@@ -120,27 +120,23 @@ function create_css(){
             height: 25px;
             margin-left: 2px;
             margin-right: 3px;
-            margin-bottom: 5px;
+            margin-top: 3px;
             font-size: 14px;
             width: auto;
         }
         .dotvrlt_row_of_buttons_1 {
             font-size: 15px;
             width: 100%;
-            height: 30px;
             text-align: left;
+            margin-top: 3px;
+            margin-bottom: 3px;
         }
         .dotvrlt_row_of_buttons_2 {
             font-size: 15px;
             width: 100%;
-            max-height: 55px;
-            text-align: left;
-        }
-        .dotvrlt_row_of_buttons_3 {
-            font-size: 15px;
-            width: 100%;
-            height: 25px;
             text-align: center;
+            margin-top: 3px;
+            margin-bottom: 3px;
         }
         .dotvrlt_notes_container {
             max-height: 100px;
@@ -196,30 +192,23 @@ function create_css(){
             font-size: 14px;
             border: 1px solid black;
         }
-        /*.dotvrlt-filter-dropdown label {
-            display: block;
+        .dotvrlt-filter-row {
+            margin-top: 3px;
+            margin-bottom: 3px;
         }
-        .dotvrlt-filter-dropdown button {
-            //width: 100%;
-        }
-        .dotvrlt-dropdown-overselect {
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-        }*/
         .dotvrlt-filter-dropdown {
             display: inline-block;
         }
-        .dotvrlt-filter-dropdown .dotvrlt-dropdown-anchor {
+        .dotvrlt-dropdown-anchor {
             position: relative;
             cursor: pointer;
             display: inline-block;
-            padding: 5px 50px 5px 10px;
+            padding: 5px 30px 5px 10px;
             border: 1px solid #ccc;
+            background-color: ButtonFace;
+            font-size: 14px;
         }
-        .dotvrlt-filter-dropdown .dotvrlt-dropdown-anchor:after {
+        .dotvrlt-dropdown-anchor:after {
             position: absolute;
             content: "";
             border-left: 2px solid black;
@@ -229,21 +218,28 @@ function create_css(){
             top: 20%;
             transform: rotate(-135deg);
         }
-        .dotvrlt-filter-dropdown .dotvrlt-dropdown-anchor:active:after {
+        .dotvrlt-dropdown-anchor:active:after {
             right: 8px;
             top: 21%;
         }
-        .dotvrlt-filter-dropdown ul {
+        .dotvrlt-filter-dropdown u1 {
             padding: 2px;
             display: none;
             margin: 0;
             border: 1px solid #ccc;
             border-top: none;
             z-index: 2;
-            background-color: white;
+            position: absolute;
+            max-height: 150px;
+            overflow: auto;
+            background-color: ButtonFace;
         }
         .dotvrlt-filter-dropdown li {
             list-style: none;
+        }
+        .dotvrlt-filter-dropdown-button {
+            width: 100%;
+            text-align: left;
         }
 
         .broadcast-damage-container, .raid-chat-container, .studious-inspector-container {
@@ -255,7 +251,7 @@ function create_css(){
             height: 50px;
         }
         #DotVRLT\\ main\\ div {
-            width: 601px;
+            max-width: 630px;
             max-height: 500px;
             display: var(--options-and-main-divs-display);
             overflow: auto;
@@ -277,7 +273,7 @@ function create_css(){
         }
         #DotVRLT\\ options\\ div {
             width: 550px;
-            //max-height: 275px;
+            max-height: 500px;
             display: var(--options-and-main-divs-display);
             overflow: auto;
             background-color: var(--main-colour);
@@ -292,18 +288,14 @@ function create_css(){
             text-align: center;
         }
         #DotVRLT\\ filters\\ div {
-            //width: 100%;
-            //height: 30px;
+            width: 99%;
             margin-left: 5px;
             font-size: 15px;
             text-align: left;
         }
         #DotVRLT\\ tab\\ buttons\\ div {
-            width: 100%;
-            max-height: 90px;
-            margin-top: 5px;
+            width: 99%;
             margin-left: 5px;
-            text-align: center;
         }
         #DotVRLT\\ in-raid\\ button {
             width: 127px;
@@ -547,7 +539,7 @@ function create_options_div(){
     // Extra settings
     var x=document.createElement("div");
     x.id="DotVRLT extra settings div";
-    x.classList.add("dotvrlt_row_of_buttons_3");
+    x.classList.add("dotvrlt_row_of_buttons_2");
     options_div.appendChild(x);
 }
 
@@ -573,68 +565,57 @@ function createButtonWithCheckbox(div, dotvrlt, content){
     var checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     b.appendChild(checkbox);
+    b.checkbox = checkbox;
     var t=document.createElement("span");
-    t.innerHTML = "dropdown_name" in dotvrlt ? content : content + "<span class='dotvrlt-counter'></span>"; // TO-DO: Remove that span once and for all.
+    t.innerHTML = content;
     b.appendChild(t);
     b.addEventListener("click", function(e){ if(e.target!=checkbox){ checkbox.checked = !checkbox.checked; } });
-    return {checkbox:checkbox,button:b};
+    return b;
 }
 
 function createDropdownButton(div, dotvrlt, content){
-    /*var form = document.createElement("form");
-    form.classList.add("dotvrlt-filter-dropdown");
-    form.dotvrlt = dotvrlt;
-    form.dotvrlt.dropdown_name = content;
-    div.appendChild(form);
-    var d0=document.createElement("div");
-    form.appendChild(d0);
-    var d1 = document.createElement("div"), d2 = document.createElement("div");
-    d0.appendChild(d1);
-    d2.style.display = "none";
-    d0.appendChild(d2);
-    var s = document.createElement("select"); d1.appendChild(s);
-    var o = document.createElement("option");
-    o.innerHTML = content;
-    s.appendChild(o);
-    var d3 = document.createElement("div"); d3.classList.add("dotvrlt-dropdown-overselect"); d1.appendChild(d3);*/
-    var form = document.createElement("div");
-    form.classList.add("dotvrlt-filter-dropdown");
-    form.dotvrlt = dotvrlt;
-    form.dotvrlt.button_name = content;
-    form.dotvrlt.dropdown_name = content;
-    div.appendChild(form);
+    var d = document.createElement("div");
+    d.classList.add("dotvrlt-filter-dropdown");
+    d.dotvrlt = dotvrlt;
+    d.dotvrlt.button_name = content;
+    d.dotvrlt.dropdown_name = content;
+    div.appendChild(d);
     var s = document.createElement("span");
     s.classList.add("dotvrlt-dropdown-anchor");
     s.innerHTML = content;
-    form.appendChild(s);
+    d.appendChild(s);
     var u = document.createElement("u1");
     u.style.display = "none";
-    form.appendChild(u);
+    d.appendChild(u);
 
-    /*var L1 = document.createElement("label"); d2.appendChild(L1);
-    var all = createButtonWithCheckbox(L1, {"filter_type":"all"}, "All", true);
-    var none = createButtonWithCheckbox(L1, {"filter_type":"none"}, "None", true);*/
     var L = document.createElement("li"); u.appendChild(L);
     var all = createButtonWithCheckbox(L, {"filter_type":"all", "dropdown_name":content}, "All");
     var none = createButtonWithCheckbox(L, {"filter_type":"none", "dropdown_name":content}, "None");
+    all.style.width = "50%"; none.style.width = "50%";
+    all.all = all; all.none = none;
+    none.all = all; none.none = none;
     var values = dotvrlt.value;
-    var checkboxes = [all.checkbox, none.checkbox], buttons = [all.button, none.button];
+    var buttons = [all, none];
     for(let f of values){
-        let dotvrlt2 = {}; for(let z in dotvrlt){ dotvrlt2[z] = dotvrlt[z]; } dotvrlt2.value = f;
-        //let l = document.createElement("label"); d2.appendChild(l);
-        let l = document.createElement("li"); u.appendChild(l);
+        let dotvrlt2 = {};
+        for(let z in dotvrlt){ dotvrlt2[z] = dotvrlt[z]; }
+        dotvrlt2.value = f;
+        let l = document.createElement("li");
+        u.appendChild(l);
         let x = createButtonWithCheckbox(l, dotvrlt2, f);
-        checkboxes = checkboxes.concat(x.checkbox);
-        buttons = buttons.concat(x.button);
+        x.all = all;
+        x.none = none;
+        buttons = buttons.concat(x);
     }
 
     var expanded = false;
-    /*form.addEventListener("click", function(){
-        if (!expanded) { d2.style.display = "block"; expanded = true; }
-        else { d2.style.display = "none"; expanded = false; }
-    })*/
-    s.addEventListener("click", function() { u.style.display = expanded ? "none" : "block"; expanded = !expanded; });
-    return {dropdown_button:form,checkboxes:checkboxes,buttons:buttons};
+    s.addEventListener("click", function(){ u.style.display = expanded ? "none" : "block"; expanded = !expanded; });
+    unsafeWindow.addEventListener("click", function(e){ if( e.target != u && e.target.offsetParent != u && expanded && e.target != s ){ s.click(); } });
+
+    d.buttons = buttons;
+    d.all = all;
+    d.none = none;
+    return d;
 }
 
 function create_one_filters_row(div,name,filters){
@@ -655,27 +636,26 @@ function create_one_filters_row(div,name,filters){
         }
         else if( filters[filter].filter_type == "dropdown" ){
             var dropdown = createDropdownButton(d, filters[filter], filter);
-            let all_checkbox, none_checkbox;
-            for(let k=0; k<dropdown.checkboxes.length; k++){
-                let bk = dropdown.buttons[k], ck = dropdown.checkboxes[k];
-                if( bk.dotvrlt.filter_type == "all"){ all_checkbox = ck; }
-                else if( bk.dotvrlt.filter_type == "none"){ none_checkbox = ck; }
-                else{
+            for(let k=0; k<dropdown.buttons.length; k++){
+                let bk = dropdown.buttons[k];
+                if( !["all","none"].includes(bk.dotvrlt.filter_type) ){
                     let vk = my_filters?.[name]?.[filter]?.[bk.dotvrlt.value];
-                    ck.defaultChecked = vk!=undefined ? vk : true;
+                    bk.checkbox.defaultChecked = vk!=undefined ? vk : true;
                 }
             }
-            [all_checkbox.defaultChecked, none_checkbox.defaultChecked] = count_checked_filters_on_a_row(dropdown.dropdown_button);
+            [dropdown.all.checkbox.defaultChecked, dropdown.none.checkbox.defaultChecked] = count_checked_filters_on_a_row(dropdown);
         }
     }
     var none = createButtonWithCheckbox(d, {"filter_type":"none"}, "None");
-    if(checkboxes_count==0){ all.button.remove(); none.button.remove(); }
-    else{ [all.checkbox.defaultChecked, none.checkbox.defaultChecked] = count_checked_filters_on_a_row(d); }
+    if(checkboxes_count==0){ all.remove(); none.remove(); }
+    else{ d.all = all; d.none = none; [all.checkbox.defaultChecked, none.checkbox.defaultChecked] = count_checked_filters_on_a_row(d); }
 
     var buttons = d.getElementsByClassName("dotvrlt-filter-button");
     var BL = buttons.length;
     for(let i = 0; i<BL; i++){
         buttons[i].addEventListener("click", function(){ click_a_filter_button(d,name,buttons,i); });
+        buttons[i].all = all;
+        buttons[i].none = none;
     }
 
     var dropdowns = d.getElementsByClassName("dotvrlt-filter-dropdown");
@@ -683,9 +663,11 @@ function create_one_filters_row(div,name,filters){
         let dropdown_buttons = dropdown.getElementsByClassName("dotvrlt-filter-dropdown-button");
         let DL = dropdown_buttons.length;
         for(let i = 0; i<DL; i++){
-            dropdown_buttons[i].addEventListener("click", function(){ click_a_filter_button(dropdown,dropdown.dotvrlt.button_name,dropdown_buttons,i); });
+            dropdown_buttons[i].addEventListener("click", function(){ click_a_filter_button(dropdown,name,dropdown_buttons,i); });
         }
     }
+
+    return d;
 }
 
 function count_checked_filters_on_a_row(filter_div){
@@ -698,36 +680,29 @@ function count_checked_filters_on_a_row(filter_div){
     for(let j = 0; j < L; j++){
         var button = filters[j];
         if ( !["all","none"].includes(button.dotvrlt.filter_type) ){
-            all *= button.firstElementChild.checked;
-            none *= !button.firstElementChild.checked;
+            all *= button.checkbox.checked;
+            none *= !button.checkbox.checked;
         }
     }
     return [Boolean(all), Boolean(none)];
 }
 
 function click_a_filter_button(filter_row, row_name, buttons, index_in_row){
-    var BL = buttons.length;
     var button = buttons[index_in_row];
-    var checkbox = button.firstElementChild;
-    var all_button, none_button;
-    for(let b of buttons){
-        if( b.dotvrlt.filter_type == "all" ){ all_button = b; }
-        else if( b.dotvrlt.filter_type == "none" ){ none_button = b; }
-    }
+    var checkbox = button.checkbox;
     if ( ["all","none"].includes(button.dotvrlt.filter_type) ){
         for(let b of buttons){
-            if( !["all","none"].includes(b.dotvrlt.filter_type) ){
-                let cb = b.firstElementChild;
-                if( button.dotvrlt.filter_type == "checkbox" ){
-                    ( my_filters[row_name] = my_filters[row_name] || {} )[b.dotvrlt.button_name] = button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked;
-                    GM_setValue("filters_"+row_name+"_"+b.dotvrlt.button_name, button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked);
-                }
-                else if( button.dotvrlt.filter_type == "dropdown" ){
-                    my_filters[row_name] = my_filters[row_name] || {};
-                    ( my_filters[row_name][b.dotvrlt.dropdown_name] = my_filters[row_name][b.dotvrlt.dropdown_name] || {} )[b.dotvrlt.button_name] = button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked;
-                    GM_setValue("filters_"+row_name+"_"+b.dotvrlt.dropdown_name+"_"+b.dotvrlt.button_name, button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked);
-                }
-                cb.checked = button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked;
+            if( b.dotvrlt.filter_type == "checkbox" ){
+                ( my_filters[row_name] = my_filters[row_name] || {} )[b.dotvrlt.button_name] = button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked;
+                GM_setValue("filters_"+row_name+"_"+b.dotvrlt.button_name, button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked);
+            }
+            else if( b.dotvrlt.filter_type == "dropdown" ){
+                my_filters[row_name] = my_filters[row_name] || {};
+                ( my_filters[row_name][b.dotvrlt.dropdown_name] = my_filters[row_name][b.dotvrlt.dropdown_name] || {} )[b.dotvrlt.button_name] = button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked;
+                GM_setValue("filters_"+row_name+"_"+b.dotvrlt.dropdown_name+"_"+b.dotvrlt.button_name, button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked);
+            }
+            if( !["all", "none"].includes(b.dotvrlt.filter_type) ){
+                b.checkbox.checked = button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked;
             }
         }
     }
@@ -742,12 +717,13 @@ function click_a_filter_button(filter_row, row_name, buttons, index_in_row){
             GM_setValue("filters_"+row_name+"_"+button.dotvrlt.dropdown_name+"_"+button.dotvrlt.button_name, checkbox.checked);
         }
     }
-    [all_button.firstElementChild.checked, none_button.firstElementChild.checked] = count_checked_filters_on_a_row(filter_row);
+    [filter_row.all.checkbox.checked, filter_row.none.checkbox.checked] = count_checked_filters_on_a_row(filter_row);
     createTab(current_tab);
 }
 
 function fill_filters_div(){
     var filter_div = document.getElementById("DotVRLT filters div");
+    filter_div.innerHTML = ""; // After re-fetching raid-filters.json, previous filters buttons must be cleared before (re)making new ones.
     create_one_filters_row(filter_div,"Raids: ",{ "Select raids to display": {filter_type:"dropdown", key:"Name", value:Object.keys(raid_list)} });
     for(let row in raid_filters){ create_one_filters_row(filter_div,row,raid_filters[row]); }
 }
@@ -758,7 +734,7 @@ function get_filtered_out_values(){ // Returns an object with the following keys
     for(let c of classes){
         var buttons = document.getElementsByClassName(c);
         for(let button of buttons){
-            if( !["all","none"].includes(button.dotvrlt.filter_type) && !button.firstElementChild.checked ){
+            if( !["all","none"].includes(button.dotvrlt.filter_type) && !button.checkbox.checked ){
                 filters[button.dotvrlt.key] = ( filters[button.dotvrlt.key] || [] ).concat(button.dotvrlt.value);
             }
         }
@@ -818,8 +794,7 @@ function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a s
     var modes = unwanted_values.Mode || [],
         names = unwanted_values.Name || [],
         columns_to_remove = [].concat(ColumnsToRemove);
-    var counters={Easy:0,Hard:0,Legendary:0};
-    document.getElementById("DotVRLT main title div").innerHTML = unwanted_values == {} ? "All raids" : name;
+    document.getElementById("DotVRLT main title div").innerHTML = name;
     create_question_mark(document.getElementById("DotVRLT main title div"));
     var nc=document.createElement("div");
     nc.id="DotVRLT notes container";
@@ -878,7 +853,6 @@ function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a s
                                     }
                                 }
                             }
-                            counters[j]=counters[j]+1;
                         }
                     }
                 }
@@ -943,7 +917,6 @@ function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a s
                                     }
                                 }
                             }
-                            counters[j]=counters[j]+1;
                         }
                     }
                 }
@@ -955,7 +928,6 @@ function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a s
     nc.style.display = Notes.length == 0 ? "none" : "";
     add_notes(Notes,ita);
     for(let c of (columns_to_remove || [])){ delete_column(t,c); }
-    update_counters(counters);
 }
 
 function createAboutTab(){
@@ -992,7 +964,6 @@ function createAboutTab(){
 }
 
 async function createTab(name){
-    update_counters();
     document.getElementById("DotVRLT main title div").innerHTML="";
     document.getElementById("DotVRLT main table div").innerHTML="";
     if(name=="About"){ createAboutTab(); }
@@ -1014,15 +985,13 @@ function createTabButton(div,bname){
 
 function fill_tab_buttons_div(){
     var t = document.getElementById("DotVRLT tab buttons div");
-    //var t1=document.createElement("div"); t1.classList.add("dotvrlt_row_of_buttons_1"); t1.innerHTML="Raid size: "; t.appendChild(t1);
-    //var t2=document.createElement("div"); t2.classList.add("dotvrlt_row_of_buttons_1"); t2.innerHTML="Raid type: "; t.appendChild(t2);
-    //var t3=document.createElement("div"); t3.classList.add("dotvrlt_row_of_buttons_2"); /*t3.innerHTML="Other: ";*/ t.appendChild(t3);
-    var t3 = document.createElement("div"); t3.classList.add("dotvrlt_row_of_buttons_2"); t3.innerHTML="Tabs: "; t.appendChild(t3);
-    createTabButton(t3,"Loot tiers");
-    createTabButton(t3,"Damage taken");
-    //createTabButton(t3,"Your stats"); /* ACTIVATE WHEN DAMAGE TAKEN FORMULA IS DISCOVERED */
-    createTabButton(t3,"Stat points gain comparison");
-    createTabButton(t3,"About");
+    t.classList.add("dotvrlt_row_of_buttons_1");
+    t.innerHTML="Tabs: ";
+    createTabButton(t,"Loot tiers");
+    createTabButton(t,"Damage taken");
+    //createTabButton(t,"Your stats"); /* ACTIVATE WHEN DAMAGE TAKEN FORMULA IS DISCOVERED */
+    createTabButton(t,"Stat points gain comparison");
+    createTabButton(t,"About");
 }
 
 function fill_extra_div(){
@@ -1421,7 +1390,6 @@ function damage_taken(base,element){ return "?"; }
 function createDamageTakenTable(){
     var unwanted_values = get_filtered_out_values();
     document.getElementById("DotVRLT main title div").innerHTML="Damage taken from 20-hits";
-    var counters={Easy:0, Hard:0, Legendary:0};
     var t=document.createElement("table");
     t.border="1";
     t.classList.add("dotvrlt_table");
@@ -1453,13 +1421,11 @@ function createDamageTakenTable(){
                                 tl.innerHTML=`<td>`+j+`</td> <td>`+dmg+" (base: "+raid_list[k][mode].Damage[j]+`)</td>`;
                             }
                         }
-                        counters[j]=counters[j]+1;
                     }
                 }
             }
         }
     }
-    update_counters(counters);
     t.getElementsByClassName("dotvrlt_first_column")[t.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
     t.getElementsByTagName("tr")[t.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
 }
@@ -1529,27 +1495,9 @@ function add_notes(Notes,d){
     }
 }
 
-function update_counters(counters){
-    /*var L=["All","Easy","Hard","Legendary"];
-    if (counters==undefined){
-        for(let l of L){ document.getElementById("dotvrlt_counter_"+l).style.display="none"; }
-    }
-    else{
-        var a=0;
-        for(let c in counters){
-            a=a+counters[c];
-            document.getElementById("dotvrlt_counter_"+c).style.display="";
-            document.getElementById("dotvrlt_counter_"+c).innerHTML="<i>("+counters[c]+") </i>";
-        }
-        document.getElementById("dotvrlt_counter_All").style.display="";
-        document.getElementById("dotvrlt_counter_All").innerHTML="<i>("+a+") </i>";
-    }*/
-}
-
 function createAverageStatsPointsTab(){
     document.getElementById("DotVRLT main title div").innerHTML="Average stat points per 100,000 damage";
     create_question_mark(document.getElementById("DotVRLT main title div"));
-    var counters={Easy:0, Hard:0, Legendary:0};
     var t=document.createElement("table");
     t.border="1";
     t.classList.add("dotvrlt_table");
@@ -1583,7 +1531,6 @@ function createAverageStatsPointsTab(){
                     }
                     for(let j of D){
                         if(raid_list[k][mode]["Average stat points"][j]!=[]){
-                            var increment_counter=0;
                             let len=( raid_list[k][mode].Tiers[j] || [] ).length; // Reminder: for raids with an image loot table, raid_list[k][mode].Tiers is, by default, an empty object.
                             for(let v=0; v<len; v++){
                                 if(![undefined,""].includes(raid_list[k][mode]["Average stat points per 100,000 damage"][j]?.[v])){
@@ -1596,17 +1543,14 @@ function createAverageStatsPointsTab(){
                                 <td>`+j+`</td>
                                 <td>`+tiers_text+`</td>
                                 <td>`+raid_list[k][mode]["Average stat points per 100,000 damage"][j][v]+`</td>`;
-                                    increment_counter=increment_counter+1;
                                 }
                             }
-                            counters[j]=counters[j]+(increment_counter>0)*1;
                         }
                     }
                 }
             }
         }
     }
-    update_counters(counters);
     t.getElementsByClassName("dotvrlt_first_column")[t.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
     t.getElementsByTagName("tr")[t.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
 }
