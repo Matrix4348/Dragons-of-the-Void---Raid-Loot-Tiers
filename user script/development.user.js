@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      10.0
+// @version      11.0
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -9,20 +9,21 @@
 // @grant        GM_info
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @grant        GM_listValues
 // @grant        GM.getValue
 // @grant        GM.setValue
+// @grant        GM.listValues
 // @grant        unsafeWindow
 // ==/UserScript==
 
 // Global variables.
 
-var raid_list;
+var raid_list, raid_filters;
 var options_div, main_div, in_raid_div, detailed_div;
 var button_pressed=false, in_raid_button_pressed=false;
-var difficulties_to_display_default={"Easy":1,"Hard":1,"Legendary":1};
 var automatically_show_in_raid_div_default=1, show_detailed_div_default=true, show_advanced_view_default=false, put_detailed_div_above_raid_chat_default=false;
 var current_tab_default="About", latest_loot_table_URL="", tiers_to_share="";
-var difficulties_to_display, automatically_show_in_raid_div, current_tab, show_detailed_div, show_advanced_view, put_detailed_div_above_raid_chat;
+var my_filters, automatically_show_in_raid_div, current_tab, show_detailed_div, show_advanced_view, put_detailed_div_above_raid_chat;
 var custom_colours={"Easy":"rgb(0,255,0)","Hard":"rgb(255,165,0)","Legendary":"rgb(238,130,238)","Main":"rgb(153,255,170)","Buttons":"rgb(153,187,255)"};
 var colourless_mode_default=0, colourless_mode, rounded_corners_default=1, rounded_corners, current_difficulty;
 var player_stats={};
@@ -31,6 +32,7 @@ var player_stats={};
 
 if( typeof(GM_getValue)=="undefined" ){ GM_getValue=GM.getValue; }
 if( typeof(GM_setValue)=="undefined" ){ GM_setValue=GM.setValue; }
+if( typeof(GM_listValues)=="undefined" ){ GM_listValues=GM.listValues; }
 
 // Functions.
 
@@ -61,13 +63,16 @@ function makeRequest(method, url) {
 async function fetch_online_raid_data(){
     try{
         var r = await makeRequest("GET", "https://matrix4348.github.io/Dragons-of-the-Void---Raid-Loot-Tiers/raid-list.json");
-        raid_list=sanitized_object(JSON.parse(r));
+        raid_list = sanitized_object(JSON.parse(r));
+        var f = await makeRequest("GET", "https://matrix4348.github.io/Dragons-of-the-Void---Raid-Loot-Tiers/raid-filters.json");
+        raid_filters = sanitized_object(JSON.parse(f));
     }
     catch(e){
-        // Fall back to the data known as of last update. DO NOT TOUCH THE LINE BELOW!
+        // Fall back to the data known as of last update. DO NOT TOUCH THE LINES BELOW!
         /* MARKER 1 */ raid_list=raid_list||{}; /* MARKER 1 */
+        /* MARKER 2 */ raid_filters=raid_filters||{}; /* MARKER 2 */
     }
-    setTimeout(fetch_online_raid_data,3600000); // Update raid data every hour, for long sessions.
+    setTimeout( function(){ fetch_online_raid_data(); fill_filters_div(); },3600000); // Update raid data and raid filters every hour, for long sessions.
 }
 
 function create_css(){
@@ -115,27 +120,23 @@ function create_css(){
             height: 25px;
             margin-left: 2px;
             margin-right: 3px;
-            margin-bottom: 5px;
+            margin-top: 3px;
             font-size: 14px;
             width: auto;
         }
         .dotvrlt_row_of_buttons_1 {
             font-size: 15px;
             width: 100%;
-            height: 30px;
             text-align: left;
+            margin-top: 3px;
+            margin-bottom: 3px;
         }
         .dotvrlt_row_of_buttons_2 {
             font-size: 15px;
             width: 100%;
-            height: 55px;
-            text-align: left;
-        }
-        .dotvrlt_row_of_buttons_3 {
-            font-size: 15px;
-            width: 100%;
-            height: 25px;
             text-align: center;
+            margin-top: 3px;
+            margin-bottom: 3px;
         }
         .dotvrlt_notes_container {
             max-height: 100px;
@@ -191,7 +192,56 @@ function create_css(){
             font-size: 14px;
             border: 1px solid black;
         }
-        
+        .dotvrlt-filter-row {
+            margin-top: 3px;
+            margin-bottom: 3px;
+        }
+        .dotvrlt-filter-dropdown {
+            display: inline-block;
+        }
+        .dotvrlt-dropdown-anchor {
+            position: relative;
+            cursor: pointer;
+            display: inline-block;
+            padding: 5px 30px 5px 10px;
+            border: 1px solid #ccc;
+            background-color: ButtonFace;
+            font-size: 14px;
+        }
+        .dotvrlt-dropdown-anchor:after {
+            position: absolute;
+            content: "";
+            border-left: 2px solid black;
+            border-top: 2px solid black;
+            padding: 5px;
+            right: 10px;
+            top: 20%;
+            transform: rotate(-135deg);
+        }
+        .dotvrlt-dropdown-anchor:active:after {
+            right: 8px;
+            top: 21%;
+        }
+        .dotvrlt-filter-dropdown u1 {
+            padding: 2px;
+            display: none;
+            margin: 0;
+            border: 1px solid #ccc;
+            border-top: none;
+            z-index: 2;
+            position: absolute;
+            max-height: 150px;
+            overflow: auto;
+            background-color: ButtonFace;
+        }
+        .dotvrlt-filter-dropdown li {
+            list-style: none;
+        }
+        .dotvrlt-filter-dropdown-button {
+            width: 100%;
+            text-align: left;
+        }
+
         .broadcast-damage-container, .raid-chat-container, .studious-inspector-container {
             z-index: 1;
         }
@@ -201,7 +251,7 @@ function create_css(){
             height: 50px;
         }
         #DotVRLT\\ main\\ div {
-            width: 601px;
+            max-width: 630px;
             max-height: 500px;
             display: var(--options-and-main-divs-display);
             overflow: auto;
@@ -223,7 +273,7 @@ function create_css(){
         }
         #DotVRLT\\ options\\ div {
             width: 550px;
-            height: 220px;
+            max-height: 500px;
             display: var(--options-and-main-divs-display);
             overflow: auto;
             background-color: var(--main-colour);
@@ -237,16 +287,15 @@ function create_css(){
             font-size: 22px;
             text-align: center;
         }
-        #DotVRLT\\ difficulty\\ div {
-            width: 100%;
-            height: 30px;
+        #DotVRLT\\ filters\\ div {
+            width: 99%;
+            margin-left: 5px;
             font-size: 15px;
             text-align: left;
         }
         #DotVRLT\\ tab\\ buttons\\ div {
-            width: 100%;
-            height: 120px;
-            text-align: center;
+            width: 99%;
+            margin-left: 5px;
         }
         #DotVRLT\\ in-raid\\ button {
             width: 127px;
@@ -393,10 +442,24 @@ function create_scrollbars_css(){
 }
 
 async function initialize_saved_variables(){ // Note: Just in case, global variables and stored variables will be used in parallel.
-    difficulties_to_display={};
-    difficulties_to_display.Easy=await GM_getValue("Easy_stored",difficulties_to_display_default.Easy);
-    difficulties_to_display.Hard=await GM_getValue("Hard_stored",difficulties_to_display_default.Hard);
-    difficulties_to_display.Legendary=await GM_getValue("Legendary_stored",difficulties_to_display_default.Legendary);
+    // Existing filters
+    my_filters = {};
+    var set_values = await GM_listValues();
+    var l = set_values.length;
+    for(let k=0; k<l; k++){
+        let v = set_values[k];
+        if( v.search("filters_") == 0){
+            let keys = v.replace("filters_","").split("_");
+            let n = keys.length;
+            let f = my_filters;
+            for(let j=0; j<n-1; j++){
+                f[keys[j]] = f[keys[j]] || {};
+                f = f[keys[j]];
+            }
+            f[keys[n-1]] = await GM_getValue(v,true);
+        }
+    }
+    // The rest
     current_tab=await GM_getValue("current_tab_stored",current_tab_default);
     automatically_show_in_raid_div=await GM_getValue("automatically_show_in_raid_div_stored",automatically_show_in_raid_div_default);
     show_detailed_div=await GM_getValue("show_detailed_div_stored",show_detailed_div_default);
@@ -460,19 +523,24 @@ function create_options_div(){
     d.style.top=button_boundaries.y+button_boundaries.height+10+window.scrollY+"px";
     document.body.appendChild(d);
     options_div=d;
-}
-
-function create_options_title_div(){
+    // Title
     var t=document.createElement("div");
     t.id="DotVRLT options title div";
     t.innerHTML="Options";
     options_div.appendChild(t);
-}
-
-function create_difficulty_div(){
-    var d=document.createElement("div");
-    d.id="DotVRLT difficulty div";
-    options_div.appendChild(d);
+    // Filters
+    var f=document.createElement("div");
+    f.id="DotVRLT filters div";
+    options_div.appendChild(f);
+    // Tab buttons
+    var B=document.createElement("div");
+    B.id="DotVRLT tab buttons div";
+    options_div.appendChild(B);
+    // Extra settings
+    var x=document.createElement("div");
+    x.id="DotVRLT extra settings div";
+    x.classList.add("dotvrlt_row_of_buttons_2");
+    options_div.appendChild(x);
 }
 
 function createNewCheckbox(div, id, content){
@@ -488,52 +556,209 @@ function createNewCheckbox(div, id, content){
     return checkbox;
 }
 
-function create_difficulty_selector(){
-    var d=document.getElementById("DotVRLT difficulty div");
+function createButtonWithCheckbox(div, dotvrlt, content){
+    var b=document.createElement("button");
+    b.classList.add( "dropdown_name" in dotvrlt ? "dotvrlt-filter-dropdown-button" : "dotvrlt-filter-button" );
+    b.dotvrlt = dotvrlt;
+    b.dotvrlt.button_name = content;
+    div.appendChild(b);
+    var checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    b.appendChild(checkbox);
+    b.checkbox = checkbox;
     var t=document.createElement("span");
-    t.innerHTML="Difficulty to display: ";
+    t.innerHTML = content;
+    b.appendChild(t);
+    b.addEventListener("click", function(e){ if(e.target!=checkbox){ checkbox.checked = !checkbox.checked; } });
+    return b;
+}
+
+function createDropdownButton(div, dotvrlt, content){
+    var d = document.createElement("div");
+    d.classList.add("dotvrlt-filter-dropdown");
+    d.dotvrlt = dotvrlt;
+    d.dotvrlt.button_name = content;
+    d.dotvrlt.dropdown_name = content;
+    div.appendChild(d);
+    var s = document.createElement("span");
+    s.classList.add("dotvrlt-dropdown-anchor");
+    s.innerHTML = content;
+    d.appendChild(s);
+    var u = document.createElement("u1");
+    u.style.display = "none";
+    d.appendChild(u);
+
+    var L = document.createElement("li"); u.appendChild(L);
+    var all = createButtonWithCheckbox(L, {"filter_type":"all", "dropdown_name":content}, "All");
+    var none = createButtonWithCheckbox(L, {"filter_type":"none", "dropdown_name":content}, "None");
+    all.style.width = "50%"; none.style.width = "50%";
+    all.all = all; all.none = none;
+    none.all = all; none.none = none;
+    var values = dotvrlt.value;
+    var buttons = [all, none];
+    for(let f of values){
+        let dotvrlt2 = {};
+        for(let z in dotvrlt){ dotvrlt2[z] = dotvrlt[z]; }
+        dotvrlt2.value = f;
+        let l = document.createElement("li");
+        u.appendChild(l);
+        let x = createButtonWithCheckbox(l, dotvrlt2, f);
+        x.all = all;
+        x.none = none;
+        buttons = buttons.concat(x);
+    }
+
+    var expanded = false;
+    s.addEventListener("click", function(){ u.style.display = expanded ? "none" : "block"; expanded = !expanded; });
+    document.addEventListener("click", function(e){ if( e.target != u && e.target.offsetParent != u && expanded && e.target != s ){ s.click(); } });
+
+    d.buttons = buttons;
+    d.all = all;
+    d.none = none;
+    return d;
+}
+
+function create_one_filters_row(div,name,filters){
+    var d = document.createElement("div");
+    d.classList.add("dotvrlt-filter-row");
+    div.appendChild(d);
+    var t = document.createElement("span");
+    t.innerHTML = name;
     d.appendChild(t);
-    var all=createNewCheckbox(d, "DotVRLT show all checkbox", " All <span id='dotvrlt_counter_All'></span>");
-    var easy=createNewCheckbox(d, "DotVRLT show easy checkbox", " Easy <span id='dotvrlt_counter_Easy'></span>");
-    var hard=createNewCheckbox(d, "DotVRLT show hard checkbox", " Hard <span id='dotvrlt_counter_Hard'></span>");
-    var legendary=createNewCheckbox(d, "DotVRLT show legendary checkbox", " Legendary <span id='dotvrlt_counter_Legendary'></span>");
-    easy.defaultChecked=difficulties_to_display.Easy;
-    easy.onclick=async function(){
-        difficulties_to_display.Easy=easy.checked;
-        await GM_setValue("Easy_stored",difficulties_to_display.Easy);
-        if(difficulties_to_display.Easy&difficulties_to_display.Hard&difficulties_to_display.Legendary){ all.checked=true; }
-        else{ all.checked=false; }
-        createTab(current_tab);
-    };
-    hard.defaultChecked=difficulties_to_display.Hard;
-    hard.onclick=async function(){
-        difficulties_to_display.Hard=hard.checked;
-        await GM_setValue("Hard_stored",difficulties_to_display.Hard);
-        if(difficulties_to_display.Easy&difficulties_to_display.Hard&difficulties_to_display.Legendary){ all.checked=true; }
-        else{ all.checked=false; }
-        createTab(current_tab);
-    };
-    legendary.defaultChecked=difficulties_to_display.Legendary;
-    legendary.onclick=async function(){
-        difficulties_to_display.Legendary=legendary.checked;
-        await GM_setValue("Legendary_stored",difficulties_to_display.Legendary);
-        if(difficulties_to_display.Easy&difficulties_to_display.Hard&difficulties_to_display.Legendary){ all.checked=true; }
-        else{ all.checked=false; }
-        createTab(current_tab);
-    };
-    all.defaultChecked=difficulties_to_display.Easy&difficulties_to_display.Hard&difficulties_to_display.Legendary;
-    all.onclick=async function(){
-        difficulties_to_display.Easy=all.checked;
-        await GM_setValue("Easy_stored",difficulties_to_display.Easy);
-        easy.checked=all.checked;
-        difficulties_to_display.Hard=all.checked;
-        await GM_setValue("Hard_stored",difficulties_to_display.Hard);
-        hard.checked=all.checked;
-        difficulties_to_display.Legendary=all.checked;
-        await GM_setValue("Legendary_stored",difficulties_to_display.Legendary);
-        legendary.checked=all.checked;
-        createTab(current_tab);
-    };
+    var all = createButtonWithCheckbox(d, {"filter_type":"all"}, "All");
+    var checkboxes_count = 0;
+    for(let filter in filters){
+        if( filters[filter].filter_type == "checkbox" ){
+            var f = createButtonWithCheckbox(d, filters[filter], filter);
+            var v = my_filters?.[name]?.[filter];
+            f.checkbox.defaultChecked = v!=undefined ? v : true;
+            checkboxes_count += 1;
+        }
+        else if( filters[filter].filter_type == "dropdown" ){
+            var dropdown = createDropdownButton(d, filters[filter], filter);
+            for(let k=0; k<dropdown.buttons.length; k++){
+                let bk = dropdown.buttons[k];
+                if( !["all","none"].includes(bk.dotvrlt.filter_type) ){
+                    let vk = my_filters?.[name]?.[filter]?.[bk.dotvrlt.value];
+                    bk.checkbox.defaultChecked = vk!=undefined ? vk : true;
+                }
+            }
+            [dropdown.all.checkbox.defaultChecked, dropdown.none.checkbox.defaultChecked] = count_checked_filters_on_a_row(dropdown);
+        }
+    }
+    var none = createButtonWithCheckbox(d, {"filter_type":"none"}, "None");
+    if(checkboxes_count==0){ all.remove(); none.remove(); }
+    else{ d.all = all; d.none = none; [all.checkbox.defaultChecked, none.checkbox.defaultChecked] = count_checked_filters_on_a_row(d); }
+
+    var buttons = d.getElementsByClassName("dotvrlt-filter-button");
+    var BL = buttons.length;
+    for(let i = 0; i<BL; i++){
+        buttons[i].addEventListener("click", function(){ click_a_filter_button(d,name,buttons,i); });
+        buttons[i].all = all;
+        buttons[i].none = none;
+    }
+
+    var dropdowns = d.getElementsByClassName("dotvrlt-filter-dropdown");
+    for(let dropdown of dropdowns){
+        let dropdown_buttons = dropdown.getElementsByClassName("dotvrlt-filter-dropdown-button");
+        let DL = dropdown_buttons.length;
+        for(let i = 0; i<DL; i++){
+            dropdown_buttons[i].addEventListener("click", function(){ click_a_filter_button(dropdown,name,dropdown_buttons,i); });
+        }
+    }
+
+    return d;
+}
+
+function count_checked_filters_on_a_row(filter_div){
+    // Actually counts either checked classic filters on a row OR checked filters in a dropdown menu, depending on what filter_div is.
+    // Returns an array with two booleans: the first is true if everything is checked, the other is nothing is checked.
+    var c = filter_div.classList.contains("dotvrlt-filter-dropdown") ? "dotvrlt-filter-dropdown-button" : "dotvrlt-filter-button";
+    var filters = filter_div.getElementsByClassName(c);
+    var L = filters.length;
+    var all = 1, none = 1;
+    for(let j = 0; j < L; j++){
+        var button = filters[j];
+        if ( !["all","none"].includes(button.dotvrlt.filter_type) ){
+            all *= button.checkbox.checked;
+            none *= !button.checkbox.checked;
+        }
+    }
+    return [Boolean(all), Boolean(none)];
+}
+
+function click_a_filter_button(filter_row, row_name, buttons, index_in_row){
+    var button = buttons[index_in_row];
+    var checkbox = button.checkbox;
+    if ( ["all","none"].includes(button.dotvrlt.filter_type) ){
+        for(let b of buttons){
+            if( b.dotvrlt.filter_type == "checkbox" ){
+                ( my_filters[row_name] = my_filters[row_name] || {} )[b.dotvrlt.button_name] = button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked;
+                GM_setValue("filters_"+row_name+"_"+b.dotvrlt.button_name, button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked);
+            }
+            else if( b.dotvrlt.filter_type == "dropdown" ){
+                my_filters[row_name] = my_filters[row_name] || {};
+                ( my_filters[row_name][b.dotvrlt.dropdown_name] = my_filters[row_name][b.dotvrlt.dropdown_name] || {} )[b.dotvrlt.button_name] = button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked;
+                GM_setValue("filters_"+row_name+"_"+b.dotvrlt.dropdown_name+"_"+b.dotvrlt.button_name, button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked);
+            }
+            if( !["all", "none"].includes(b.dotvrlt.filter_type) ){
+                b.checkbox.checked = button.dotvrlt.filter_type == "all" ? checkbox.checked : !checkbox.checked;
+            }
+        }
+    }
+    else{
+        if( button.dotvrlt.filter_type == "checkbox" ){
+            ( my_filters[row_name] = my_filters[row_name] || {} )[button.dotvrlt.button_name] = checkbox.checked;
+            GM_setValue("filters_"+row_name+"_"+button.dotvrlt.button_name, checkbox.checked);
+        }
+        else if( button.dotvrlt.filter_type == "dropdown" ){
+            my_filters[row_name] = my_filters[row_name] || {};
+            ( my_filters[row_name][button.dotvrlt.dropdown_name] = my_filters[row_name][button.dotvrlt.dropdown_name] || {} )[button.dotvrlt.button_name] = checkbox.checked;
+            GM_setValue("filters_"+row_name+"_"+button.dotvrlt.dropdown_name+"_"+button.dotvrlt.button_name, checkbox.checked);
+        }
+    }
+    [filter_row.all.checkbox.checked, filter_row.none.checkbox.checked] = count_checked_filters_on_a_row(filter_row);
+    createTab(current_tab);
+}
+
+function fill_filters_div(){
+    var filter_div = document.getElementById("DotVRLT filters div");
+    filter_div.innerHTML = ""; // After re-fetching raid-filters.json, previous filters buttons must be cleared before (re)making new ones.
+    create_one_filters_row(filter_div,"Raids: ",{ "Select raids to display": {filter_type:"dropdown", key:"Name", value:Object.keys(raid_list)} });
+    for(let row in raid_filters){ create_one_filters_row(filter_div,row,raid_filters[row]); }
+}
+
+function get_filtered_out_values(){ // Returns an object with the following keys: Difficulty and any key in raids. Each key is associated to an array containing all disallowed values for said key.
+    var filters = {};
+    var classes = ["dotvrlt-filter-button","dotvrlt-filter-dropdown-button"];
+    for(let c of classes){
+        var buttons = document.getElementsByClassName(c);
+        for(let button of buttons){
+            if( !["all","none"].includes(button.dotvrlt.filter_type) && !button.checkbox.checked ){
+                filters[button.dotvrlt.key] = ( filters[button.dotvrlt.key] || [] ).concat(button.dotvrlt.value);
+            }
+        }
+    }
+    return filters;
+}
+
+function is_raid_allowed(raid, filters){
+    var is_wanted = true;
+    for(let f in filters){
+        if(f in raid){
+            let x = raid[f];
+            if( typeof(x) == "string" ){ is_wanted *= !filters[f].includes(x); }
+            else if( Array.isArray(x) ){
+                let b = false, l = x.length, k = 0;
+                while( k<l && !b ){
+                    b = !filters[f].includes(x[k]);
+                    k++;
+                }
+                is_wanted *= b; // Raid is accepted as long as the array x includes at least one allowed value (which also means that the raid is rejected if x is empty).
+            }
+        }
+    }
+    return is_wanted;
 }
 
 function delete_column(t,colname){
@@ -583,14 +808,12 @@ function delete_column(t,colname){
     }
 }
 
-function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, types and ColumnsToRemove can be either a string or an array.
-    var modes,size,type,columns_to_remove;
-    typeof(Modes)=="string" ? modes=[Modes] : modes=Modes;
-    typeof(sizes)=="string" ? size=[sizes] : size=sizes;
-    typeof(types)=="string" ? type=[types] : type=types;
-    typeof(ColumnsToRemove)=="string" ? columns_to_remove=[ColumnsToRemove] : columns_to_remove=ColumnsToRemove;
-    var counters={Easy:0,Hard:0,Legendary:0};
-    document.getElementById("DotVRLT main title div").innerHTML=name;
+function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a string or an array.
+    var unwanted_values = get_filtered_out_values();
+    var modes = unwanted_values.Mode || [],
+        names = unwanted_values.Name || [],
+        columns_to_remove = [].concat(ColumnsToRemove);
+    document.getElementById("DotVRLT main title div").innerHTML = name;
     create_question_mark(document.getElementById("DotVRLT main title div"));
     var nc=document.createElement("div");
     nc.id="DotVRLT notes container";
@@ -607,44 +830,44 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
     if(show_advanced_view==false){
         t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column">Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> </tr>`;
         for(let k in raid_list){
-            for(let mode of modes){
-                if(mode in raid_list[k]){
-                    if( ( size == "All" || size.includes(raid_list[k][mode]["Raid size"]) ) && ( type=="All" || type.includes(raid_list[k][mode]["Raid type"]) ) ){
-                        let D=raid_list[k][mode]["Available difficulties"];
-                        let diffsum=difficulties_to_display.Easy*D.includes("Easy")+difficulties_to_display.Hard*D.includes("Hard")+difficulties_to_display.Legendary*D.includes("Legendary");
+            for(let mode in raid_list[k]){
+                if( !modes.includes(mode) && !names.includes(k) ){ // Once raid.Mode (and raid.Name) exists, put that with the rest
+                    if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
+                        let D=[];
+                        for(let j of raid_list[k][mode]["Available difficulties"]){
+                            if( !( unwanted_values.Difficulty || [] ).includes(j) ){ D = D.concat(j); }
+                        }
+                        let diffsum = D.length;
                         let firstdiff=1;
                         for(let j of D){
                             if(diffsum>0){
-                                if(difficulties_to_display[j]==1){
-                                    let notes=raid_list[k][mode].notes[j];
-                                    if(notes!=[]){
-                                        for(let n of notes){
-                                            if( !Notes.includes(n) ){ Notes[Notes.length]=n; }
-                                        }
+                                let notes=raid_list[k][mode].notes[j];
+                                if(notes!=[]){
+                                    for(let n of notes){
+                                        if( !Notes.includes(n) ){ Notes[Notes.length]=n; }
                                     }
-                                    if(raid_list[k][mode]["Loot format"]=="EHL"){
-                                        let tl=t.insertRow();
-                                        if(firstdiff==1){
-                                            tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td>`+raid_list[k][mode]["Tiers as string"][j]+`</td>`;
-                                            firstdiff=0;
-                                        }
-                                        else{
-                                            tl.innerHTML=`<td>`+j+`</td> <td>`+raid_list[k][mode]["Tiers as string"][j]+`</td>`;
-                                        }
+                                }
+                                if( raid_list[k][mode]["Loot format"]=="EHL" || raid_list[k][mode]["Loot format"]=="Guesses" ){
+                                    let tl=t.insertRow();
+                                    if(firstdiff==1){
+                                        tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td>`+raid_list[k][mode]["Tiers as string"][j]+`</td>`;
+                                        firstdiff=0;
                                     }
-                                    else if(raid_list[k][mode]["Loot format"]=="Image"){
-                                        let tllt=t.insertRow();
-                                        if(firstdiff==1){
-                                            tllt.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
-                                            firstdiff=0;
-                                        }
-                                        else{
-                                            tllt.innerHTML=`<td>`+j+`</td> <td style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
-                                        }
+                                    else{
+                                        tl.innerHTML=`<td>`+j+`</td> <td>`+raid_list[k][mode]["Tiers as string"][j]+`</td>`;
+                                    }
+                                }
+                                else if(raid_list[k][mode]["Loot format"]=="Image"){
+                                    let tllt=t.insertRow();
+                                    if(firstdiff==1){
+                                        tllt.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
+                                        firstdiff=0;
+                                    }
+                                    else{
+                                        tllt.innerHTML=`<td>`+j+`</td> <td style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
                                     }
                                 }
                             }
-                            counters[j]=counters[j]+1;
                         }
                     }
                 }
@@ -655,56 +878,56 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
         t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column" rowspan="2">Name</td> <td rowspan="2">Type</td> <td rowspan="2">Size</td> <td colspan="9">Loot tiers</td> </tr>
         <tr class="dotvrlt_fixed_row_2"> <td>Difficulty</td> <td>Damage</td> <td colspan="3">Common | rare | mythic</td> <td colspan="3">Summoner | hidden | bonus</td> <td>Average stat points</td> </tr>`;
         for(let k in raid_list){
-            for(let mode of modes){
-                if(mode in raid_list[k]){
-                    if( ( size == "All" || size.includes(raid_list[k][mode]["Raid size"]) ) && ( type=="All" || type.includes(raid_list[k][mode]["Raid type"]) ) ){
-                        let D=raid_list[k][mode]["Available difficulties"];
-                        let e=raid_list[k][mode]?.Tiers?.Easy?.length||(raid_list[k][mode]["Loot tables"]?.Easy?.length!=undefined)*1||0,
-                            h=raid_list[k][mode]?.Tiers?.Hard?.length||(raid_list[k][mode]["Loot tables"]?.Hard?.length!=undefined)*1||0,
-                            l=raid_list[k][mode]?.Tiers?.Legendary?.length||(raid_list[k][mode]["Loot tables"]?.Legendary?.length!=undefined)*1||0;
-                        let diffsum=difficulties_to_display.Easy*D.includes("Easy")*e+difficulties_to_display.Hard*D.includes("Hard")*h+difficulties_to_display.Legendary*D.includes("Legendary")*l;
+            for(let mode in raid_list[k]){
+                if( !modes.includes(mode) && !names.includes(k) ){ // Once raid.Mode (and raid.Name) exists, put that with the rest
+                    if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
+                        let D=[];
+                        let diffsum = 0;
+                        for(let j of raid_list[k][mode]["Available difficulties"]){
+                            if( !( unwanted_values.Difficulty || [] ).includes(j) ){
+                                D = D.concat(j);
+                                diffsum += raid_list[k][mode]?.Tiers?.[j]?.length || (raid_list[k][mode]["Loot tables"]?.[j]?.length!=undefined)*1 || 0;
+                            }
+                        }
                         let firstdiff=1;
                         for(let j of D){
                             if(diffsum>0){
-                                if(difficulties_to_display[j]==1){
-                                    let notes=raid_list[k][mode].notes[j];
-                                    if(notes!=[]){
-                                        for(let n of notes){
-                                            if( !Notes.includes(n) ){ Notes[Notes.length]=n; }
-                                        }
+                                let notes=raid_list[k][mode].notes[j];
+                                if(notes!=[]){
+                                    for(let n of notes){
+                                        if( !Notes.includes(n) ){ Notes[Notes.length]=n; }
                                     }
-                                    if(raid_list[k][mode]["Loot format"]=="EHL"){
-                                        let tl=t.insertRow();
-                                        var tiers0_text=raid_list[k][mode].Tiers[j][0];
-                                        if(tiers0_text==raid_list[k][mode].FS[j]){ tiers0_text="<b>FS: "+tiers0_text+"</b>"; }
-                                        if(firstdiff==1){
-                                            tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td rowspan="`+raid_list[k][mode].Tiers[j].length+`">`+j+`</td> <td>`+tiers0_text+`</td> <td>`+raid_list[k][mode].Drops.Common[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Rare[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Mythic[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Summoner[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Hidden[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Bonus[j][0]+`</td> <td>`+(raid_list[k][mode]["Average stat points"][j]?.[0] ?? "?")+`</td>`;
-                                            firstdiff=0;
-                                        }
-                                        else{
-                                            tl.innerHTML=`<td rowspan="`+raid_list[k][mode].Tiers[j].length+`">`+j+`</td> <td>`+tiers0_text+`</td> <td>`+raid_list[k][mode].Drops.Common[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Rare[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Mythic[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Summoner[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Hidden[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Bonus[j][0]+`</td> <td>`+(raid_list[k][mode]["Average stat points"][j]?.[0] ?? "?")+`</td>`;
-                                        }
-                                        for(let v=1; v<raid_list[k][mode].Tiers[j].length; v++){
-                                            let tlv=t.insertRow();
-                                            var tiers_text=raid_list[k][mode].Tiers[j][v];
-                                            if(tiers_text==raid_list[k][mode].FS[j]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
-                                            tlv.innerHTML=`<td>`+tiers_text+`</td> <td>`+raid_list[k][mode].Drops.Common[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Rare[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Mythic[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Summoner[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Hidden[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Bonus[j][v]+`</td> <td>`+(raid_list[k][mode]["Average stat points"][j]?.[v] ?? "?")+`</td>`;
-                                        }
+                                }
+                                if( raid_list[k][mode]["Loot format"]=="EHL" || raid_list[k][mode]["Loot format"]=="Guesses" ){
+                                    let tl=t.insertRow();
+                                    var tiers0_text=raid_list[k][mode].Tiers[j][0];
+                                    if(tiers0_text==raid_list[k][mode].FS[j]){ tiers0_text="<b>FS: "+tiers0_text+"</b>"; }
+                                    if(firstdiff==1){
+                                        tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td rowspan="`+raid_list[k][mode].Tiers[j].length+`">`+j+`</td> <td>`+tiers0_text+`</td> <td>`+raid_list[k][mode].Drops.Common[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Rare[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Mythic[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Summoner[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Hidden[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Bonus[j][0]+`</td> <td>`+(raid_list[k][mode]["Average stat points"][j]?.[0] ?? "?")+`</td>`;
+                                        firstdiff=0;
+                                    }
+                                    else{
+                                        tl.innerHTML=`<td rowspan="`+raid_list[k][mode].Tiers[j].length+`">`+j+`</td> <td>`+tiers0_text+`</td> <td>`+raid_list[k][mode].Drops.Common[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Rare[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Mythic[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Summoner[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Hidden[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Bonus[j][0]+`</td> <td>`+(raid_list[k][mode]["Average stat points"][j]?.[0] ?? "?")+`</td>`;
+                                    }
+                                    for(let v=1; v<raid_list[k][mode].Tiers[j].length; v++){
+                                        let tlv=t.insertRow();
+                                        var tiers_text=raid_list[k][mode].Tiers[j][v];
+                                        if(tiers_text==raid_list[k][mode].FS[j]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
+                                        tlv.innerHTML=`<td>`+tiers_text+`</td> <td>`+raid_list[k][mode].Drops.Common[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Rare[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Mythic[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Summoner[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Hidden[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Bonus[j][v]+`</td> <td>`+(raid_list[k][mode]["Average stat points"][j]?.[v] ?? "?")+`</td>`;
+                                    }
 
+                                }
+                                else if(raid_list[k][mode]["Loot format"]=="Image"){
+                                    let tllt=t.insertRow();
+                                    if(firstdiff==1){
+                                        tllt.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td colspan="8" style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
+                                        firstdiff=0;
                                     }
-                                    else if(raid_list[k][mode]["Loot format"]=="Image"){
-                                        let tllt=t.insertRow();
-                                        if(firstdiff==1){
-                                            tllt.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td colspan="8" style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
-                                            firstdiff=0;
-                                        }
-                                        else{
-                                            tllt.innerHTML=`<td>`+j+`</td> <td colspan="8" style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
-                                        }
+                                    else{
+                                        tllt.innerHTML=`<td>`+j+`</td> <td colspan="8" style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
                                     }
                                 }
                             }
-                            counters[j]=counters[j]+1;
                         }
                     }
                 }
@@ -716,7 +939,6 @@ function createTable(name,Modes,sizes,types,ColumnsToRemove){ // Modes, sizes, t
     nc.style.display = Notes.length == 0 ? "none" : "";
     add_notes(Notes,ita);
     for(let c of (columns_to_remove || [])){ delete_column(t,c); }
-    update_counters(counters);
 }
 
 function createAboutTab(){
@@ -753,25 +975,11 @@ function createAboutTab(){
 }
 
 async function createTab(name){
-    update_counters();
     document.getElementById("DotVRLT main title div").innerHTML="";
     document.getElementById("DotVRLT main table div").innerHTML="";
     if(name=="About"){ createAboutTab(); }
-    else if(name=="Small"){ createTable("Small raids",["raiding","healthless"],"Small","All","Size"); }
-    else if(name=="Medium"){ createTable("Medium raids",["raiding","healthless"],"Medium","All","Size"); }
-    else if(name=="Large"){ createTable("Large raids",["raiding","healthless"],"Large","All","Size"); }
-    else if(name=="Immense"){ createTable("Immense raids",["raiding","healthless"],"Immense","All","Size"); }
-    else if(name=="Epic"){ createTable("Epic raids",["raiding","healthless"],"Epic","All","Size"); }
-    else if(name=="World"){ createTable("World-size raids",["raiding","healthless"],"World","All","Size"); }
-    else if(name=="Regular"){ createTable("Regular raids","raiding","All","","Type"); }
-    else if(name=="Guild"){ createTable("Guild raids",["raiding","healthless"],"All","Guild raid","Type"); }
-    else if(name=="Event"){ createTable("Event raids",["raiding","healthless"],"All","Event raid",["Type","Size"]); }
-    else if(name=="World "){ createTable("World raids",["raiding","healthless"],"All","World raid",["Type","Size"]); }
-    else if(name=="Timed"){ createTable("Timed raids",["raiding","healthless"],"All","Timed raid",["Type","Size"]); }
-    else if(name=="Questing"){ createTable("Quests","questing","All",["Quest boss","Quest miniboss"],["Size"]); }
-    else if(name=="All"){ createTable("All raids",["raiding","healthless"],"All","All"); }
-    else if(name=="Damage taken (raids)"){ createDamageTakenTable(["raiding","healthless"]); }
-    else if(name=="Damage taken (quests)"){ createDamageTakenTable("questing"); }
+    else if(name=="Loot tiers"){ createTable("Loot tiers"); }
+    else if(name=="Damage taken"){ createDamageTakenTable(); }
     else if(name=="Your stats"){ createStatsTab(); }
     else if(name=="Stat points gain comparison"){ createAverageStatsPointsTab(); }
     current_tab=name;
@@ -786,40 +994,19 @@ function createTabButton(div,bname){
     div.appendChild(b);
 }
 
-function create_tab_buttons_div(){
-    var t=document.createElement("div"); t.id="DotVRLT tab buttons div"; options_div.appendChild(t);
-    var t1=document.createElement("div"); t1.classList.add("dotvrlt_row_of_buttons_1"); t1.innerHTML="Raid size: "; t.appendChild(t1);
-    var t2=document.createElement("div"); t2.classList.add("dotvrlt_row_of_buttons_1"); t2.innerHTML="Raid type: "; t.appendChild(t2);
-    var t3=document.createElement("div"); t3.classList.add("dotvrlt_row_of_buttons_2"); t3.innerHTML="Other: "; t.appendChild(t3);
-    // Filter by raid size
-    createTabButton(t1,"Small");
-    createTabButton(t1,"Medium");
-    createTabButton(t1,"Large");
-    createTabButton(t1,"Immense");
-    createTabButton(t1,"Epic");
-    createTabButton(t1,"World");
-    createTabButton(t1,"All");
-    // Filter by raid type
-    createTabButton(t2,"Regular");
-    createTabButton(t2,"Guild");
-    createTabButton(t2,"Event");
-    createTabButton(t2,"World ");
-    createTabButton(t2,"Timed");
-    createTabButton(t2,"All");
-    createTabButton(t2,"Questing");
-    // Other buttons
-    createTabButton(t3,"Damage taken (raids)");
-    createTabButton(t3,"Damage taken (quests)");
-    //createTabButton(t3,"Your stats"); /* ACTIVATE WHEN DAMAGE TAKEN FORMULA IS DISCOVERED */
-    createTabButton(t3,"Stat points gain comparison");
-    createTabButton(t3,"About");
+function fill_tab_buttons_div(){
+    var t = document.getElementById("DotVRLT tab buttons div");
+    t.classList.add("dotvrlt_row_of_buttons_1");
+    t.innerHTML="Tabs: ";
+    createTabButton(t,"Loot tiers");
+    createTabButton(t,"Damage taken");
+    //createTabButton(t,"Your stats"); /* ACTIVATE WHEN DAMAGE TAKEN FORMULA IS DISCOVERED */
+    createTabButton(t,"Stat points gain comparison");
+    createTabButton(t,"About");
 }
 
-function create_extra_div(){
-    var d=document.createElement("div");
-    d.id="DotVRLT extra settings div";
-    d.classList.add("dotvrlt_row_of_buttons_3");
-    options_div.appendChild(d);
+function fill_extra_div(){
+    var d=document.getElementById("DotVRLT extra settings div");
     var adv=createNewCheckbox(d, "DotVRLT advanced view checkbox", " Advanced view ");
     adv.defaultChecked=show_advanced_view;
     adv.onclick=async function(){
@@ -919,7 +1106,7 @@ async function create_in_raid_div(raid_name,mode,raid_difficulty){
     var t=document.createElement("table");
     t.classList.add("dotvrlt_table");
     t.border=1;
-    if(raid_list[raid_name][mode]["Loot format"]=="EHL"){
+    if( raid_list[raid_name][mode]["Loot format"]=="EHL" || raid_list[raid_name][mode]["Loot format"]=="Guesses" ){
         t.innerHTML=`<td class="dotvrlt_corners_top" style="padding-left: 7px; padding-right: 7px;">`+raid_list[raid_name][mode]["Tiers as string"][raid_difficulty]+`</td>`;
         tiers_to_share = "Loot tiers: " + t.innerText;
     }
@@ -959,7 +1146,7 @@ async function create_detailed_div(raid_name,mode,raid_difficulty){
     detailed_div=d;
     set_detailed_div_state();
     // Table creation.
-    if(raid_list[raid_name][mode]["Loot format"]=="EHL"){
+    if( raid_list[raid_name][mode]["Loot format"]=="EHL" || raid_list[raid_name][mode]["Loot format"]=="Guesses" ){
         var ncol=4+raid_list[raid_name][mode]["Has extra drops"].Hidden[raid_difficulty]+raid_list[raid_name][mode]["Has extra drops"].Summoner[raid_difficulty]+raid_list[raid_name][mode]["Has extra drops"].Bonus[raid_difficulty]+(raid_list[raid_name][mode]["Average stat points"][raid_difficulty].length>0);
         var t=document.createElement("table");
         t.id="DotVRLT detailed table";
@@ -1117,7 +1304,7 @@ async function in_raid_stuff(A){
         var rd1=rd0.substring(5,rd0.length);
         assign_current_difficulty(rd1[0].toUpperCase()+rd1.substring(1,rd1.length));
         actualize_colours(colourless_mode);
-        await check_latest_loot_table(raid_name,mode,current_difficulty); // This allows to only check for the correct URL once, but we need to wait for the result.
+        await check_latest_loot_table(raid_name,mode,current_difficulty); // This allows to check for the correct URL only once, but we need to wait for the result.
         if( raid_list[raid_name]?.[mode] ){
             check_existence_of_area_for_button();
             in_raid_button();
@@ -1211,29 +1398,30 @@ function THE_WATCHER(){
 
 function damage_taken(base,element){ return "?"; }
 
-function createDamageTakenTable(M){
-    var modes = typeof(M)=="string" ? modes=[M] : modes=M;
-    var tx= modes.includes("questing") ? "quest bosses" : "raids"; // To update if more damage taken tables are ever made.
-    document.getElementById("DotVRLT main title div").innerHTML="Damage taken from "+tx+" (20-hit)";
-    var counters={Easy:0, Hard:0, Legendary:0};
+function createDamageTakenTable(){
+    var unwanted_values = get_filtered_out_values();
+    document.getElementById("DotVRLT main title div").innerHTML="Damage taken from 20-hits";
     var t=document.createElement("table");
     t.border="1";
     t.classList.add("dotvrlt_table");
     document.getElementById("DotVRLT main table div").appendChild(t);
-    t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column">Name</td> <td>Damage type</td> <td colspan="2">Damage taken</td></tr>`;
+    t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column">Name</td> <td>Type</td> <td>Damage type</td> <td colspan="2">Damage taken</td></tr>`;
     for(let k in raid_list){
         for(let mode in raid_list[k]){
-            if(modes.includes(mode)){
-                var D=raid_list[k][mode]["Available difficulties"];
-                let diffsum=difficulties_to_display.Easy*D.includes("Easy")+difficulties_to_display.Hard*D.includes("Hard")+difficulties_to_display.Legendary*D.includes("Legendary");
-                let firstdiff=1;
-                for(let j of D){
-                    if(diffsum>0){
-                        if(difficulties_to_display[j]==1){
+            if( !( unwanted_values.Mode || [] ).includes(mode) && !( unwanted_values.Name || [] ).includes(k) ){ // To remove once raid.Mode exists (remove from createTable, createDamageTakenTable and stats points gain comparison
+                if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
+                    let D=[];
+                    for(let j of raid_list[k][mode]["Available difficulties"]){
+                        if( !( unwanted_values.Difficulty || [] ).includes(j) ){ D = D.concat(j); }
+                    }
+                    let diffsum = D.length;
+                    let firstdiff=1;
+                    for(let j of D){
+                        if(diffsum>0){
                             let dmg=damage_taken(raid_list[k][mode].Damage[j],raid_list[k][mode].Damage.Type);
                             let tl=t.insertRow();
                             if(firstdiff==1){
-                                tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode].Damage.Type+`</td> <td>`+j+`</td> <td>`+dmg+" (base: "+raid_list[k][mode].Damage[j]+`)</td>`;
+                                tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode].Damage.Type+`</td> <td>`+j+`</td> <td>`+dmg+" (base: "+raid_list[k][mode].Damage[j]+`)</td>`;
                                 firstdiff=0;
                             }
                             else{
@@ -1241,12 +1429,10 @@ function createDamageTakenTable(M){
                             }
                         }
                     }
-                    counters[j]=counters[j]+1;
                 }
             }
         }
     }
-    update_counters(counters);
     t.getElementsByClassName("dotvrlt_first_column")[t.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
     t.getElementsByTagName("tr")[t.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
 }
@@ -1316,27 +1502,9 @@ function add_notes(Notes,d){
     }
 }
 
-function update_counters(counters){
-    var L=["All","Easy","Hard","Legendary"];
-    if (counters==undefined){
-        for(let l of L){ document.getElementById("dotvrlt_counter_"+l).style.display="none"; }
-    }
-    else{
-        var a=0;
-        for(let c in counters){
-            a=a+counters[c];
-            document.getElementById("dotvrlt_counter_"+c).style.display="";
-            document.getElementById("dotvrlt_counter_"+c).innerHTML="<i>("+counters[c]+") </i>";
-        }
-        document.getElementById("dotvrlt_counter_All").style.display="";
-        document.getElementById("dotvrlt_counter_All").innerHTML="<i>("+a+") </i>";
-    }
-}
-
 function createAverageStatsPointsTab(){
     document.getElementById("DotVRLT main title div").innerHTML="Average stat points per 100,000 damage";
     create_question_mark(document.getElementById("DotVRLT main title div"));
-    var counters={Easy:0, Hard:0, Legendary:0};
     var t=document.createElement("table");
     t.border="1";
     t.classList.add("dotvrlt_table");
@@ -1355,35 +1523,37 @@ function createAverageStatsPointsTab(){
         headers.getElementsByTagName("TD")[h].addEventListener("click",function(){ sortTable(t,h); });
     }
     /* ----- */
+    var unwanted_values = get_filtered_out_values();
     for(let k in raid_list){
         for(let mode in raid_list[k]){
-            let D=raid_list[k][mode]["Available difficulties"];
-            for(let j of D){
-                if(difficulties_to_display[j]==1){
-                    if(raid_list[k][mode]["Average stat points"][j]!=[]){
-                        var increment_counter=0;
-                        let len=( raid_list[k][mode].Tiers[j] || [] ).length; // Reminder: for raids with an image loot table, raid_list[k][mode].Tiers is, by default, an empty object.
-                        for(let v=0; v<len; v++){
-                            if(![undefined,""].includes(raid_list[k][mode]["Average stat points per 100,000 damage"][j]?.[v])){
-                                let tl=t.insertRow();
-                                var tiers_text=raid_list[k][mode].Tiers[j][v];
-                                if(tiers_text==raid_list[k][mode].FS[j]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
-                                tl.innerHTML=`<td class="dotvrlt_first_column">`+k+`</td>
+            if( !( unwanted_values.Mode || [] ).includes(mode) && !( unwanted_values.Name || [] ).includes(k) ){ // To remove once raid.Mode exists (remove from createTable, createDamageTakenTable and stats points gain comparison
+                if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
+                    let D=[];
+                    for(let j of raid_list[k][mode]["Available difficulties"]){
+                        if( !( unwanted_values.Difficulty || [] ).includes(j) ){ D = D.concat(j); }
+                    }
+                    for(let j of D){
+                        if(raid_list[k][mode]["Average stat points"][j]!=[]){
+                            let len=( raid_list[k][mode].Tiers[j] || [] ).length; // Reminder: for raids with an image loot table, raid_list[k][mode].Tiers is, by default, an empty object.
+                            for(let v=0; v<len; v++){
+                                if(![undefined,""].includes(raid_list[k][mode]["Average stat points per 100,000 damage"][j]?.[v])){
+                                    let tl=t.insertRow();
+                                    var tiers_text=raid_list[k][mode].Tiers[j][v];
+                                    if(tiers_text==raid_list[k][mode].FS[j]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
+                                    tl.innerHTML=`<td class="dotvrlt_first_column">`+k+`</td>
                                 <td>`+raid_list[k][mode]["Raid type"]+`</td>
                                 <td>`+raid_list[k][mode]["Raid size"]+`</td>
                                 <td>`+j+`</td>
                                 <td>`+tiers_text+`</td>
                                 <td>`+raid_list[k][mode]["Average stat points per 100,000 damage"][j][v]+`</td>`;
-                                increment_counter=increment_counter+1;
+                                }
                             }
                         }
-                        counters[j]=counters[j]+(increment_counter>0)*1;
                     }
                 }
             }
         }
     }
-    update_counters(counters);
     t.getElementsByClassName("dotvrlt_first_column")[t.getElementsByClassName("dotvrlt_first_column").length-1].classList.add("dotvrlt_corners_bottom_left");
     t.getElementsByTagName("tr")[t.getElementsByTagName("tr").length-1].lastElementChild.classList.add("dotvrlt_corners_bottom_right");
 }
@@ -1527,11 +1697,9 @@ async function DotVRLT(){
     create_main_button();
     create_main_div();
     create_options_div();
-    create_options_title_div();
-    create_difficulty_div();
-    create_difficulty_selector();
-    create_tab_buttons_div();
-    create_extra_div();
+    fill_tab_buttons_div();
+    fill_filters_div();
+    fill_extra_div();
     createTab(current_tab);
     actualize_colours(colourless_mode);
     actualize_corners(rounded_corners);

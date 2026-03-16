@@ -51,6 +51,6 @@ It contains the following files and folder:
 
 <div align="center">
   
-  [< What is a csv file?](what-is-a-csv-file.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [raid-list.json >](raid-list-json.md)
+  [< What is a csv file?](what-is-a-csv-file.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [Basic data >](basic-data-folder.md)
   
 </div>

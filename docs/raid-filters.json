@@ -1,0 +1,27 @@
+{
+    "Difficulties: ": {
+        "Easy": {"filter_type":"checkbox", "key":"Difficulty", "value":"Easy"},
+        "Hard": {"filter_type":"checkbox", "key":"Difficulty", "value":"Hard"},
+        "Legendary": {"filter_type":"checkbox", "key":"Difficulty", "value":"Legendary"}
+    },
+    "Modes: ": {
+        "Raiding": {"filter_type":"checkbox", "key":"Mode", "value":"raiding"},
+        "Questing": {"filter_type":"checkbox", "key":"Mode", "value":"questing"},
+        "No health bar": {"filter_type":"checkbox", "key":"Mode", "value":"healthless"}
+    },
+    "Raid sizes: ": {
+        "Small": {"filter_type":"checkbox", "key":"Raid size", "value":"Small"},
+        "Medium": {"filter_type":"checkbox", "key":"Raid size", "value":"Medium"},
+        "Large": {"filter_type":"checkbox", "key":"Raid size", "value":"Large"},
+        "Immense": {"filter_type":"checkbox", "key":"Raid size", "value":"Immense"},
+        "Epic": {"filter_type":"checkbox", "key":"Raid size", "value":"Epic"},
+        "World": {"filter_type":"checkbox", "key":"Raid size", "value":"World"}
+    },
+    "Raid types: ": {
+        "Regular": {"filter_type":"checkbox", "key":"Raid type", "value":""},
+        "Guild": {"filter_type":"checkbox", "key":"Raid type", "value":"Guild raid"},
+        "Event": {"filter_type":"checkbox", "key":"Raid type", "value":"Event raid"},
+        "World": {"filter_type":"checkbox", "key":"Raid type", "value":"World raid"},
+        "Timed": {"filter_type":"checkbox", "key":"Raid type", "value":"Timed raid"}
+    }
+}

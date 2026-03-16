@@ -46,6 +46,6 @@ About what to input in a few columns:
 
 <div align="center">
   
-  [< raid-list.json](raid-list-json.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [Base damage taken >](base-damage-taken-folder.md)
+  [< Community-gathered data](community-gathered-data.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [Base damage taken >](base-damage-taken-folder.md)
   
 </div>

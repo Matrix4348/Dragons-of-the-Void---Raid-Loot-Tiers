@@ -18,7 +18,7 @@
 
 <div align="right">
 
-  [The .github folder >](github-folder.md)
+  [The docs folder >](docs.md)
   
 </div>
 
@@ -55,6 +55,6 @@ The "user script" folder contains:
 
 <div align="center">
   
-  [< Raid types attributes.csv](raid-types-attributes-csv.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [The .github folder >](github-folder.md)
+  [< Raid types attributes.csv](raid-types-attributes-csv.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [The docs folder >](docs.md)
   
 </div>

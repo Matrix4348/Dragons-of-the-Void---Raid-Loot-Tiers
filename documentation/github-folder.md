@@ -12,7 +12,7 @@
 
 <div align="left">
   
-  [< Updating the user script](updating-user-script.md)
+  [< The docs folder](docs.md)
   
 </div>
 
@@ -44,6 +44,6 @@ Right now, only csv files and images in `community-gathered data` could relevant
 
 <div align="center">
   
-  [< Updating the user script](updating-user-script.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [Table of content >](table-of-content.md)
+  [< raid-filters.json](raid-filters-json.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [Table of content >](table-of-content.md)
   
 </div>
