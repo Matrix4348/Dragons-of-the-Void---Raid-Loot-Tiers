@@ -12,13 +12,13 @@
 
 <div align="left">
   
-  [< Community-gathered data](community-gathered-data.md)
+  [< The docs folder](docs.md)
   
 </div>
 
 <div align="right">
 
-  [Updating the user script >](updating-user-script.md)
+  [The .github folder >](github-folder.md)
   
 </div>
 
@@ -40,6 +40,6 @@ There is no reason to touch it. Any manual change made to it would end up being 
 
 <div align="center">
   
-  [< Community-gathered data](community-gathered-data.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [Basic data >](basic-data-folder.md)
+  [< The docs folder](docs.md) $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [raid-filters.json >](raid-filters-json.md)
   
 </div>

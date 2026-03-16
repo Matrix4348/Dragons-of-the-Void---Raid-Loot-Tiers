@@ -1,8 +1,8 @@
 {
     "Difficulties: ": {
-        "Easy": {"filter_type":"checkbox", "key":"difficulty", "value":"Easy"},
-        "Hard": {"filter_type":"checkbox", "key":"difficulty", "value":"Hard"},
-        "Legendary": {"filter_type":"checkbox", "key":"difficulty", "value":"Legendary"}
+        "Easy": {"filter_type":"checkbox", "key":"Difficulty", "value":"Easy"},
+        "Hard": {"filter_type":"checkbox", "key":"Difficulty", "value":"Hard"},
+        "Legendary": {"filter_type":"checkbox", "key":"Difficulty", "value":"Legendary"}
     },
     "Modes: ": {
         "Raiding": {"filter_type":"checkbox", "key":"Mode", "value":"raiding"},

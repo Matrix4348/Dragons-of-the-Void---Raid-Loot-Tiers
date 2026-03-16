@@ -32,6 +32,12 @@
 
 [Updating the user script](updating-user-script.md)
 
+[The docs folder](docs.md)
+
+* [raid-list.json](raid-list-json.md)
+
+* [raid-filters.json](raid-filters-json.md)
+
 [The .github folder](github-folder.md)
 
 [Table of content](table-of-content.md)

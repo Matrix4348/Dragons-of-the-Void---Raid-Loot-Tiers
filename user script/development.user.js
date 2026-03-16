@@ -610,7 +610,7 @@ function createDropdownButton(div, dotvrlt, content){
 
     var expanded = false;
     s.addEventListener("click", function(){ u.style.display = expanded ? "none" : "block"; expanded = !expanded; });
-    unsafeWindow.addEventListener("click", function(e){ if( e.target != u && e.target.offsetParent != u && expanded && e.target != s ){ s.click(); } });
+    document.addEventListener("click", function(e){ if( e.target != u && e.target.offsetParent != u && expanded && e.target != s ){ s.click(); } });
 
     d.buttons = buttons;
     d.all = all;
@@ -728,7 +728,7 @@ function fill_filters_div(){
     for(let row in raid_filters){ create_one_filters_row(filter_div,row,raid_filters[row]); }
 }
 
-function get_filtered_out_values(){ // Returns an object with the following keys: difficulty and any key in raids. Each key is associated to an array containing all disallowed values for said key.
+function get_filtered_out_values(){ // Returns an object with the following keys: Difficulty and any key in raids. Each key is associated to an array containing all disallowed values for said key.
     var filters = {};
     var classes = ["dotvrlt-filter-button","dotvrlt-filter-dropdown-button"];
     for(let c of classes){
@@ -740,6 +740,25 @@ function get_filtered_out_values(){ // Returns an object with the following keys
         }
     }
     return filters;
+}
+
+function is_raid_allowed(raid, filters){
+    var is_wanted = true;
+    for(let f in filters){
+        if(f in raid){
+            let x = raid[f];
+            if( typeof(x) == "string" ){ is_wanted *= !filters[f].includes(x); }
+            else if( Array.isArray(x) ){
+                let b = false, l = x.length, k = 0;
+                while( k<l && !b ){
+                    b = !filters[f].includes(x[k]);
+                    k++;
+                }
+                is_wanted *= b; // Raid is accepted as long as the array x includes at least one allowed value (which also means that the raid is rejected if x is empty).
+            }
+        }
+    }
+    return is_wanted;
 }
 
 function delete_column(t,colname){
@@ -813,14 +832,10 @@ function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a s
         for(let k in raid_list){
             for(let mode in raid_list[k]){
                 if( !modes.includes(mode) && !names.includes(k) ){ // Once raid.Mode (and raid.Name) exists, put that with the rest
-                    let is_wanted = true;
-                    for(let f in unwanted_values){
-                        if(f in raid_list[k][mode]){ is_wanted *= !unwanted_values[f].includes(raid_list[k][mode][f]); }
-                    }
-                    if( is_wanted ){
+                    if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
                         let D=[];
                         for(let j of raid_list[k][mode]["Available difficulties"]){
-                            if( !( unwanted_values.difficulty || [] ).includes(j) ){ D = D.concat(j); }
+                            if( !( unwanted_values.Difficulty || [] ).includes(j) ){ D = D.concat(j); }
                         }
                         let diffsum = D.length;
                         let firstdiff=1;
@@ -865,15 +880,11 @@ function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a s
         for(let k in raid_list){
             for(let mode in raid_list[k]){
                 if( !modes.includes(mode) && !names.includes(k) ){ // Once raid.Mode (and raid.Name) exists, put that with the rest
-                    let is_wanted = true;
-                    for(let f in unwanted_values){
-                        if(f in raid_list[k][mode]){ is_wanted *= !unwanted_values[f].includes(raid_list[k][mode][f]); }
-                    }
-                    if( is_wanted ){
+                    if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
                         let D=[];
                         let diffsum = 0;
                         for(let j of raid_list[k][mode]["Available difficulties"]){
-                            if( !( unwanted_values.difficulty || [] ).includes(j) ){
+                            if( !( unwanted_values.Difficulty || [] ).includes(j) ){
                                 D = D.concat(j);
                                 diffsum += raid_list[k][mode]?.Tiers?.[j]?.length || (raid_list[k][mode]["Loot tables"]?.[j]?.length!=undefined)*1 || 0;
                             }
@@ -1293,7 +1304,7 @@ async function in_raid_stuff(A){
         var rd1=rd0.substring(5,rd0.length);
         assign_current_difficulty(rd1[0].toUpperCase()+rd1.substring(1,rd1.length));
         actualize_colours(colourless_mode);
-        await check_latest_loot_table(raid_name,mode,current_difficulty); // This allows to only check for the correct URL once, but we need to wait for the result.
+        await check_latest_loot_table(raid_name,mode,current_difficulty); // This allows to check for the correct URL only once, but we need to wait for the result.
         if( raid_list[raid_name]?.[mode] ){
             check_existence_of_area_for_button();
             in_raid_button();
@@ -1397,15 +1408,11 @@ function createDamageTakenTable(){
     t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column">Name</td> <td>Type</td> <td>Damage type</td> <td colspan="2">Damage taken</td></tr>`;
     for(let k in raid_list){
         for(let mode in raid_list[k]){
-            if( !( unwanted_values.Mode || [] ).includes(mode) && !( unwanted_values.Name || [] ).includes(k) ){ // To remove once raid.Mode exists (remove from crateTable, createDamageTakenTable and stats points gain comparison
-                let is_wanted = true;
-                for(let f in unwanted_values){
-                    if(f in raid_list[k][mode]){ is_wanted *= !unwanted_values[f].includes(raid_list[k][mode][f]); }
-                }
-                if( is_wanted ){
+            if( !( unwanted_values.Mode || [] ).includes(mode) && !( unwanted_values.Name || [] ).includes(k) ){ // To remove once raid.Mode exists (remove from createTable, createDamageTakenTable and stats points gain comparison
+                if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
                     let D=[];
                     for(let j of raid_list[k][mode]["Available difficulties"]){
-                        if( !( unwanted_values.difficulty || [] ).includes(j) ){ D = D.concat(j); }
+                        if( !( unwanted_values.Difficulty || [] ).includes(j) ){ D = D.concat(j); }
                     }
                     let diffsum = D.length;
                     let firstdiff=1;
@@ -1519,15 +1526,11 @@ function createAverageStatsPointsTab(){
     var unwanted_values = get_filtered_out_values();
     for(let k in raid_list){
         for(let mode in raid_list[k]){
-            if( !( unwanted_values.Mode || [] ).includes(mode) && !( unwanted_values.Name || [] ).includes(k) ){ // To remove once raid.Mode exists (remove from crateTable, createDamageTakenTable and stats points gain comparison
-                let is_wanted = true;
-                for(let f in unwanted_values){
-                    if(f in raid_list[k][mode]){ is_wanted *= !unwanted_values[f].includes(raid_list[k][mode][f]); }
-                }
-                if( is_wanted ){
+            if( !( unwanted_values.Mode || [] ).includes(mode) && !( unwanted_values.Name || [] ).includes(k) ){ // To remove once raid.Mode exists (remove from createTable, createDamageTakenTable and stats points gain comparison
+                if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
                     let D=[];
                     for(let j of raid_list[k][mode]["Available difficulties"]){
-                        if( !( unwanted_values.difficulty || [] ).includes(j) ){ D = D.concat(j); }
+                        if( !( unwanted_values.Difficulty || [] ).includes(j) ){ D = D.concat(j); }
                     }
                     for(let j of D){
                         if(raid_list[k][mode]["Average stat points"][j]!=[]){
