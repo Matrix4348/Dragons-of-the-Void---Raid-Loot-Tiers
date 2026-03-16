@@ -27,16 +27,6 @@ def itc(n): # Takes a number and writes it with comma separators.
         else:
             return "{:,}".format(n)
 
-def return_difficuties(d): # Returns each difficulty which first letter is in d.
-    diff=[]
-    if "E" in d:
-        diff.append("Easy")
-    if "H" in d:
-        diff.append("Hard")
-    if "L" in d:
-        diff.append("Legendary")
-    return diff
-
 def return_naming_for_type(dict,type): # Returns the (first) key in dict such that dict[key]["Raid type"]=type
     for key in dict:
         if dict[key]["Raid type"] == type:
@@ -73,6 +63,8 @@ extra_drops = {
     "Loot expansion?": "Loot expansion"
 }
 
+diff_health_mult={"Easy":1,"Hard":3,"Legendary":9} # Health multiplier for each difficulty for raiding mode (questing mode works differently).
+
 ### Basic data files
 default_dict = defaultdict(list)
 
@@ -101,9 +93,9 @@ for p0 in dico:
             if "Loot format" not in default_dict[raid_name][m]:
                 default_dict[raid_name][m]["Loot format"]=dico[p0]["Loot format"]
             if "Available difficulties" in default_dict[raid_name][m]:
-                default_dict[raid_name][m]["Available difficulties"] = return_difficuties(default_dict[raid_name][m].pop("Available difficulties"))
+                default_dict[raid_name][m]["Available difficulties"] = default_dict[raid_name][m].pop("Available difficulties").split("_")
             else:
-                default_dict[raid_name][m]["Available difficulties"] = return_difficuties(dico[p0]["Available difficulties"])
+                default_dict[raid_name][m]["Available difficulties"] = dico[p0]["Available difficulties"].split("_")
             # Let us replace empty cells with "?" and correct a few values:
             default_dict[raid_name][m]["Has extra drops"]={}
             default_dict[raid_name][m]["Extra drops"]={} # Most of this dictionary will be filled later.
@@ -179,7 +171,6 @@ for r in raid_list:
                 raid_list[r][M]["Drops"][extra_drops[b]]={a:[] for a in all_d}
             # Health, FS:
             if M=="raiding":
-                diff_health_mult={"Easy":1,"Hard":3,"Legendary":9}
                 for d in all_d:
                     m=diff_health_mult[d]
                     hoe=cti(raid_list[r][M]["Health on easy"])
