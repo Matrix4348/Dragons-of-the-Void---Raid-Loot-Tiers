@@ -172,57 +172,66 @@ for r in raid_list:
             # Health, FS:
             if M=="raiding":
                 for d in all_d:
-                    m=diff_health_mult[d]
+                    m=diff_health_mult.get(d)
                     hoe=cti(raid_list[r][M]["Health on easy"])
                     mnp=raid_list[r][M]["Maximum number of participants"]
-                    if isinstance(hoe,int):
-                        raid_list[r][M]["Health"][d]=itc(m*hoe)
-                        raid_list[r][M]["FS"][d]=itc(m*hoe/mnp)
-                    else:
-                        raid_list[r][M]["Health"][d]=hoe
+                    try:
+                        if "Health on "+d.lower() in raid_list[r][M]:
+                            raid_list[r][M]["Health"][d] = cti(raid_list[r][M]["Health on "+d.lower()])
+                        else:
+                            raid_list[r][M]["Health"][d]=itc(m*hoe)
+                        raid_list[r][M]["FS"][d]=itc(cti(raid_list[r][M]["Health"][d])/mnp)
+                    except:
+                        raid_list[r][M]["Health"][d]=raid_list[r][M]["Health"].get(d) or hoe
                         raid_list[r][M]["FS"][d]="?"
             elif M=="questing":
                 for d in all_d:
-                    raid_list[r][M]["Health"][d]=cti(raid_list[r][M]["Health on "+d.lower()])
+                    raid_list[r][M]["Health"][d]=cti(raid_list[r][M].get("Health on "+d.lower()))
             # Tiers, drops:
             for d in all_d:
                 raid_list[r][M]["Tiers"][d]=[]
                 folder_name = return_naming_for_type(dico,raid_list[r][M]["Raid type"])
                 try:
                     f=open(loot_path+folder_name+"/"+r+"/"+d+".csv", 'r')
+                    f_exists = True
                 except:
-                    f=open(loot_path+folder_name+"/"+"_Example_/"+d+".csv", 'r')
+                    try:
+                        f=open(loot_path+folder_name+"/"+"_Example_/"+d+".csv", 'r')
+                        f_exists = True
+                    except:
+                        f_exists = False
                 finally:
-                    reader = csv.DictReader(f, delimiter=',')
-                    for line in reader:
-                        dam=line.pop('Damage')
-                        if dam=="Health": # For questing, _Example_ will contain the general drop pattern
-                            dam=itc(raid_list[r][M]["Health"][d])
-                        elif dam=="FS":
-                            dam=itc(raid_list[r][M]["FS"][d])
-                        raid_list[r][M]["Tiers"][d].append(dam)
-                        raid_list[r][M]["Drops"]["Common"][d].append(line.pop('Common'))
-                        raid_list[r][M]["Drops"]["Rare"][d].append(line.pop('Rare'))
-                        raid_list[r][M]["Drops"]["Mythic"][d].append(line.pop('Mythic'))
-                        for b in bonus_drops_tier_based:
-                            x=extra_drops[b]
-                            if x in line:
-                                raid_list[r][M]["Drops"][x][d].append(line.pop(x))
-                                if raid_list[r][M]["Drops"][x][d][-1].lower() not in ["","0","no","false","-"]:
-                                    raid_list[r][M]["Has extra drops"][x][d]=True
-                            elif raid_list[r][M]["Has extra drops"][x][d]:
-                                raid_list[r][M]["Drops"][x][d].append("?")
-                            else:
-                                raid_list[r][M]["Drops"][x][d].append("-")
-                        if "Average stat points" in line:
-                            raid_list[r][M]["Average stat points"][d].append(line.pop("Average stat points"))
-                            try:
-                                avg=itc(round(cti(raid_list[r][M]["Average stat points"][d][-1])/cti(dam)*100000,2))
-                            except:
-                                avg=""
-                            finally:
-                                raid_list[r][M]["Average stat points per 100,000 damage"][d].append(avg)
-                    f.close()
+                    if f_exists:
+                        reader = csv.DictReader(f, delimiter=',')
+                        for line in reader:
+                            dam=line.pop('Damage')
+                            if dam=="Health": # For questing, _Example_ will contain the general drop pattern
+                                dam=itc(raid_list[r][M]["Health"][d])
+                            elif dam=="FS":
+                                dam=itc(raid_list[r][M]["FS"][d])
+                            raid_list[r][M]["Tiers"][d].append(dam)
+                            raid_list[r][M]["Drops"]["Common"][d].append(line.pop('Common'))
+                            raid_list[r][M]["Drops"]["Rare"][d].append(line.pop('Rare'))
+                            raid_list[r][M]["Drops"]["Mythic"][d].append(line.pop('Mythic'))
+                            for b in bonus_drops_tier_based:
+                                x=extra_drops[b]
+                                if x in line:
+                                    raid_list[r][M]["Drops"][x][d].append(line.pop(x))
+                                    if raid_list[r][M]["Drops"][x][d][-1].lower() not in ["","0","no","false","-"]:
+                                        raid_list[r][M]["Has extra drops"][x][d]=True
+                                elif raid_list[r][M]["Has extra drops"][x][d]:
+                                    raid_list[r][M]["Drops"][x][d].append("?")
+                                else:
+                                    raid_list[r][M]["Drops"][x][d].append("-")
+                            if "Average stat points" in line:
+                                raid_list[r][M]["Average stat points"][d].append(line.pop("Average stat points"))
+                                try:
+                                    avg=itc(round(cti(raid_list[r][M]["Average stat points"][d][-1])/cti(dam)*100000,2))
+                                except:
+                                    avg=""
+                                finally:
+                                    raid_list[r][M]["Average stat points per 100,000 damage"][d].append(avg)
+                        f.close()
                 l=len(raid_list[r][M]["Tiers"][d]) # This will be used several times below.
                 if l==0:
                     if M=="raiding":
@@ -281,7 +290,7 @@ for r in raid_list:
             except:
                 f=open(loot_path+folder_name+"/"+"_Example_/Loot tables.csv", 'r')
             finally:
-                for d in all_d: # This will have to be reworked if a case with several difficulties arise
+                for d in all_d: # This will have to be reworked if a case with several difficulties arises
                     raid_list[r][M]["Loot tables"][d]=[]
                     reader = csv.DictReader(f, delimiter=',')
                     for line in reader:
