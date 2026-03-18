@@ -33,7 +33,7 @@
 Raid types attributes.csv contains general variables associated to each type of raid folder:
 * the associated raid type (which is generally the singular of the folder name...)
 * what I call (fighting) mode ("raiding" for regular raiding, "questing" for... questing, "healthless" for raids without any health bar)
-* loot format ("EHL" for tiers that have to be figured out, "Image" for raids with loot tiers available as an image)
+* loot format ("Guesses" for tiers that have to be figured out, "Image" for raids with loot tiers available as an image)
 * all difficulties the raid type is generally available in, separated by an underscore ("Easy_Hard_Legendary" most of the time, "Legendary" for world raids, "Easy" for timed raids...)
 
 <hr>

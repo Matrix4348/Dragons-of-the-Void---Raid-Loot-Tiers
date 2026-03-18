@@ -163,7 +163,7 @@ for r in raid_list:
         raid_list[r][M]["Drops"]={}
         raid_list[r][M]["Average stat points"]={a:[] for a in all_d}
         raid_list[r][M]["Average stat points per 100,000 damage"]={a:[] for a in all_d}
-        if raid_list[r][M]["Loot format"]=="EHL":
+        if raid_list[r][M]["Loot format"]=="Guesses":
             raid_list[r][M]["Drops"]["Common"]={a:[] for a in all_d}
             raid_list[r][M]["Drops"]["Rare"]={a:[] for a in all_d}
             raid_list[r][M]["Drops"]["Mythic"]={a:[] for a in all_d}

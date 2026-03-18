@@ -1,8 +1,8 @@
 Folder/file name,Raid type,Fighting mode,Loot format,Available difficulties
 Event raids,Event raid,healthless,Image,Legendary
-Guild raids,Guild raid,raiding,EHL,Easy_Hard_Legendary
-Quest bosses,Quest boss,questing,EHL,Easy_Hard_Legendary
-Quest minibosses,Quest miniboss,questing,EHL,Easy_Hard_Legendary
-Regular raids,,raiding,EHL,Easy_Hard_Legendary
-Timed raids,Timed raid,healthless,EHL,Easy
+Guild raids,Guild raid,raiding,Guesses,Easy_Hard_Legendary
+Quest bosses,Quest boss,questing,Guesses,Easy_Hard_Legendary
+Quest minibosses,Quest miniboss,questing,Guesses,Easy_Hard_Legendary
+Regular raids,,raiding,Guesses,Easy_Hard_Legendary
+Timed raids,Timed raid,healthless,Guesses,Easy
 World raids,World raid,healthless,Image,Legendary
