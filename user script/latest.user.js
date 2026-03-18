@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      11.1
+// @version      11.1.1
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -847,7 +847,7 @@ function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a s
                                     if( !Notes.includes(n) ){ Notes[Notes.length]=n; }
                                 }
                             }
-                            if( raid_list[k][mode]["Loot format"]=="EHL" || raid_list[k][mode]["Loot format"]=="Guesses" ){
+                            if( raid_list[k][mode]["Loot format"]=="Guesses" ){
                                 let tl=t.insertRow();
                                 if(firstdiff==1){
                                     tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td>`+raid_list[k][mode]["Tiers as string"][j]+`</td>`;
@@ -896,7 +896,7 @@ function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a s
                                     if( !Notes.includes(n) ){ Notes[Notes.length]=n; }
                                 }
                             }
-                            if( raid_list[k][mode]["Loot format"]=="EHL" || raid_list[k][mode]["Loot format"]=="Guesses" ){
+                            if( raid_list[k][mode]["Loot format"]=="Guesses" ){
                                 let tl=t.insertRow();
                                 var tiers0_text=raid_list[k][mode].Tiers[j][0];
                                 if(tiers0_text==raid_list[k][mode].FS[j]){ tiers0_text="<b>FS: "+tiers0_text+"</b>"; }
@@ -1103,7 +1103,7 @@ async function create_in_raid_div(raid_name,mode,raid_difficulty){
     var t=document.createElement("table");
     t.classList.add("dotvrlt_table");
     t.border=1;
-    if( raid_list[raid_name][mode]["Loot format"]=="EHL" || raid_list[raid_name][mode]["Loot format"]=="Guesses" ){
+    if( raid_list[raid_name][mode]["Loot format"]=="Guesses" ){
         t.innerHTML=`<td class="dotvrlt_corners_top" style="padding-left: 7px; padding-right: 7px;">`+raid_list[raid_name][mode]["Tiers as string"][raid_difficulty]+`</td>`;
         tiers_to_share = "Loot tiers: " + t.innerText;
     }
@@ -1143,7 +1143,7 @@ async function create_detailed_div(raid_name,mode,raid_difficulty){
     detailed_div=d;
     set_detailed_div_state();
     // Table creation.
-    if( raid_list[raid_name][mode]["Loot format"]=="EHL" || raid_list[raid_name][mode]["Loot format"]=="Guesses" ){
+    if( raid_list[raid_name][mode]["Loot format"]=="Guesses" ){
         var ncol=4+raid_list[raid_name][mode]["Has extra drops"].Hidden[raid_difficulty]+raid_list[raid_name][mode]["Has extra drops"].Summoner[raid_difficulty]+raid_list[raid_name][mode]["Has extra drops"].Bonus[raid_difficulty]+(raid_list[raid_name][mode]["Average stat points"][raid_difficulty].length>0);
         var t=document.createElement("table");
         t.id="DotVRLT detailed table";
