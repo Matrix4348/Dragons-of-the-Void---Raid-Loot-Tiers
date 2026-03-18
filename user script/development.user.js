@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      11.0
+// @version      11.1
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -249,9 +249,12 @@ function create_css(){
         #DotVRLT\\ main\\ button {
             width: 55px;
             height: 50px;
+            position: absolute;
+            right: -10px;
+            top: 10px;
         }
         #DotVRLT\\ main\\ div {
-            max-width: 630px;
+            max-width: 700px;
             max-height: 500px;
             display: var(--options-and-main-divs-display);
             overflow: auto;
@@ -486,8 +489,8 @@ function pressButton(){
     else{
         document.documentElement.style.setProperty("--options-and-main-divs-display","yes");
         button_pressed=true;
-        main_div.style.left=document.getElementById("DotVRLT main button").getBoundingClientRect().x+window.scrollX-100+"px";
-        options_div.style.left=document.getElementById("DotVRLT main button").getBoundingClientRect().x-options_div.getBoundingClientRect().width-110+window.scrollX+"px";
+        options_div.style.left=document.getElementById("DotVRLT main button").getBoundingClientRect().x+window.scrollX-205+"px";
+        main_div.style.left=options_div.getBoundingClientRect().x+window.scrollX+options_div.getBoundingClientRect().width+10+"px";
     }
 }
 
@@ -498,7 +501,7 @@ function create_main_button(){
     b.classList.add("dotvrlt_corners");
     b.classList.add("dotvrlt_button");
     b.onclick=pressButton;
-    document.getElementsByClassName("dotv-nav")[0].appendChild(b);
+    document.getElementsByClassName("avatar")[0].appendChild(b);
 }
 
 function create_main_div(){
@@ -506,8 +509,8 @@ function create_main_div(){
     d.id="DotVRLT main div";
     d.classList.add("dotvrlt_corners");
     var button_boundaries=document.getElementById("DotVRLT main button").getBoundingClientRect();
-    d.style.left=button_boundaries.x+window.scrollX-100+"px";
-    d.style.top=button_boundaries.y+button_boundaries.height+10+window.scrollY+"px";
+    d.style.left=button_boundaries.x+window.scrollX+455+"px";
+    d.style.top=button_boundaries.y+button_boundaries.height+20+window.scrollY+"px";
     document.body.appendChild(d);
     main_div=d;
     var td=document.createElement("div"); td.id="DotVRLT main title div"; main_div.appendChild(td);
@@ -519,8 +522,8 @@ function create_options_div(){
     d.id="DotVRLT options div";
     d.classList.add("dotvrlt_corners");
     var button_boundaries=document.getElementById("DotVRLT main button").getBoundingClientRect();
-    d.style.left=button_boundaries.x-660+window.scrollX+"px";
-    d.style.top=button_boundaries.y+button_boundaries.height+10+window.scrollY+"px";
+    d.style.left=button_boundaries.x+window.scrollX-205+"px";
+    d.style.top=button_boundaries.y+button_boundaries.height+20+window.scrollY+"px";
     document.body.appendChild(d);
     options_div=d;
     // Title
@@ -810,9 +813,7 @@ function delete_column(t,colname){
 
 function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a string or an array.
     var unwanted_values = get_filtered_out_values();
-    var modes = unwanted_values.Mode || [],
-        names = unwanted_values.Name || [],
-        columns_to_remove = [].concat(ColumnsToRemove);
+    var columns_to_remove = [].concat(ColumnsToRemove);
     document.getElementById("DotVRLT main title div").innerHTML = name;
     create_question_mark(document.getElementById("DotVRLT main title div"));
     var nc=document.createElement("div");
@@ -831,41 +832,39 @@ function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a s
         t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column">Name</td> <td>Type</td> <td>Size</td> <td colspan="2">Loot tiers</td> </tr>`;
         for(let k in raid_list){
             for(let mode in raid_list[k]){
-                if( !modes.includes(mode) && !names.includes(k) ){ // Once raid.Mode (and raid.Name) exists, put that with the rest
-                    if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
-                        let D=[];
-                        for(let j of raid_list[k][mode]["Available difficulties"]){
-                            if( !( unwanted_values.Difficulty || [] ).includes(j) ){ D = D.concat(j); }
-                        }
-                        let diffsum = D.length;
-                        let firstdiff=1;
-                        for(let j of D){
-                            if(diffsum>0){
-                                let notes=raid_list[k][mode].notes[j];
-                                if(notes!=[]){
-                                    for(let n of notes){
-                                        if( !Notes.includes(n) ){ Notes[Notes.length]=n; }
-                                    }
+                if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
+                    let D=[];
+                    for(let j of raid_list[k][mode]["Available difficulties"]){
+                        if( !( unwanted_values.Difficulty || [] ).includes(j) ){ D = D.concat(j); }
+                    }
+                    let diffsum = D.length;
+                    let firstdiff=1;
+                    for(let j of D){
+                        if(diffsum>0){
+                            let notes=raid_list[k][mode].notes[j];
+                            if(notes!=[]){
+                                for(let n of notes){
+                                    if( !Notes.includes(n) ){ Notes[Notes.length]=n; }
                                 }
-                                if( raid_list[k][mode]["Loot format"]=="EHL" || raid_list[k][mode]["Loot format"]=="Guesses" ){
-                                    let tl=t.insertRow();
-                                    if(firstdiff==1){
-                                        tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td>`+raid_list[k][mode]["Tiers as string"][j]+`</td>`;
-                                        firstdiff=0;
-                                    }
-                                    else{
-                                        tl.innerHTML=`<td>`+j+`</td> <td>`+raid_list[k][mode]["Tiers as string"][j]+`</td>`;
-                                    }
+                            }
+                            if( raid_list[k][mode]["Loot format"]=="EHL" || raid_list[k][mode]["Loot format"]=="Guesses" ){
+                                let tl=t.insertRow();
+                                if(firstdiff==1){
+                                    tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td>`+raid_list[k][mode]["Tiers as string"][j]+`</td>`;
+                                    firstdiff=0;
                                 }
-                                else if(raid_list[k][mode]["Loot format"]=="Image"){
-                                    let tllt=t.insertRow();
-                                    if(firstdiff==1){
-                                        tllt.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
-                                        firstdiff=0;
-                                    }
-                                    else{
-                                        tllt.innerHTML=`<td>`+j+`</td> <td style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
-                                    }
+                                else{
+                                    tl.innerHTML=`<td>`+j+`</td> <td>`+raid_list[k][mode]["Tiers as string"][j]+`</td>`;
+                                }
+                            }
+                            else if(raid_list[k][mode]["Loot format"]=="Image"){
+                                let tllt=t.insertRow();
+                                if(firstdiff==1){
+                                    tllt.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
+                                    firstdiff=0;
+                                }
+                                else{
+                                    tllt.innerHTML=`<td>`+j+`</td> <td style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
                                 }
                             }
                         }
@@ -879,53 +878,51 @@ function createTable(name,ColumnsToRemove){ // ColumnsToRemove can be either a s
         <tr class="dotvrlt_fixed_row_2"> <td>Difficulty</td> <td>Damage</td> <td colspan="3">Common | rare | mythic</td> <td colspan="3">Summoner | hidden | bonus</td> <td>Average stat points</td> </tr>`;
         for(let k in raid_list){
             for(let mode in raid_list[k]){
-                if( !modes.includes(mode) && !names.includes(k) ){ // Once raid.Mode (and raid.Name) exists, put that with the rest
-                    if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
-                        let D=[];
-                        let diffsum = 0;
-                        for(let j of raid_list[k][mode]["Available difficulties"]){
-                            if( !( unwanted_values.Difficulty || [] ).includes(j) ){
-                                D = D.concat(j);
-                                diffsum += raid_list[k][mode]?.Tiers?.[j]?.length || (raid_list[k][mode]["Loot tables"]?.[j]?.length!=undefined)*1 || 0;
-                            }
+                if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
+                    let D=[];
+                    let diffsum = 0;
+                    for(let j of raid_list[k][mode]["Available difficulties"]){
+                        if( !( unwanted_values.Difficulty || [] ).includes(j) ){
+                            D = D.concat(j);
+                            diffsum += raid_list[k][mode]?.Tiers?.[j]?.length || (raid_list[k][mode]["Loot tables"]?.[j]?.length!=undefined)*1 || 0;
                         }
-                        let firstdiff=1;
-                        for(let j of D){
-                            if(diffsum>0){
-                                let notes=raid_list[k][mode].notes[j];
-                                if(notes!=[]){
-                                    for(let n of notes){
-                                        if( !Notes.includes(n) ){ Notes[Notes.length]=n; }
-                                    }
+                    }
+                    let firstdiff=1;
+                    for(let j of D){
+                        if(diffsum>0){
+                            let notes=raid_list[k][mode].notes[j];
+                            if(notes!=[]){
+                                for(let n of notes){
+                                    if( !Notes.includes(n) ){ Notes[Notes.length]=n; }
                                 }
-                                if( raid_list[k][mode]["Loot format"]=="EHL" || raid_list[k][mode]["Loot format"]=="Guesses" ){
-                                    let tl=t.insertRow();
-                                    var tiers0_text=raid_list[k][mode].Tiers[j][0];
-                                    if(tiers0_text==raid_list[k][mode].FS[j]){ tiers0_text="<b>FS: "+tiers0_text+"</b>"; }
-                                    if(firstdiff==1){
-                                        tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td rowspan="`+raid_list[k][mode].Tiers[j].length+`">`+j+`</td> <td>`+tiers0_text+`</td> <td>`+raid_list[k][mode].Drops.Common[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Rare[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Mythic[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Summoner[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Hidden[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Bonus[j][0]+`</td> <td>`+(raid_list[k][mode]["Average stat points"][j]?.[0] ?? "?")+`</td>`;
-                                        firstdiff=0;
-                                    }
-                                    else{
-                                        tl.innerHTML=`<td rowspan="`+raid_list[k][mode].Tiers[j].length+`">`+j+`</td> <td>`+tiers0_text+`</td> <td>`+raid_list[k][mode].Drops.Common[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Rare[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Mythic[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Summoner[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Hidden[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Bonus[j][0]+`</td> <td>`+(raid_list[k][mode]["Average stat points"][j]?.[0] ?? "?")+`</td>`;
-                                    }
-                                    for(let v=1; v<raid_list[k][mode].Tiers[j].length; v++){
-                                        let tlv=t.insertRow();
-                                        var tiers_text=raid_list[k][mode].Tiers[j][v];
-                                        if(tiers_text==raid_list[k][mode].FS[j]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
-                                        tlv.innerHTML=`<td>`+tiers_text+`</td> <td>`+raid_list[k][mode].Drops.Common[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Rare[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Mythic[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Summoner[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Hidden[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Bonus[j][v]+`</td> <td>`+(raid_list[k][mode]["Average stat points"][j]?.[v] ?? "?")+`</td>`;
-                                    }
+                            }
+                            if( raid_list[k][mode]["Loot format"]=="EHL" || raid_list[k][mode]["Loot format"]=="Guesses" ){
+                                let tl=t.insertRow();
+                                var tiers0_text=raid_list[k][mode].Tiers[j][0];
+                                if(tiers0_text==raid_list[k][mode].FS[j]){ tiers0_text="<b>FS: "+tiers0_text+"</b>"; }
+                                if(firstdiff==1){
+                                    tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td rowspan="`+raid_list[k][mode].Tiers[j].length+`">`+j+`</td> <td>`+tiers0_text+`</td> <td>`+raid_list[k][mode].Drops.Common[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Rare[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Mythic[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Summoner[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Hidden[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Bonus[j][0]+`</td> <td>`+(raid_list[k][mode]["Average stat points"][j]?.[0] ?? "?")+`</td>`;
+                                    firstdiff=0;
+                                }
+                                else{
+                                    tl.innerHTML=`<td rowspan="`+raid_list[k][mode].Tiers[j].length+`">`+j+`</td> <td>`+tiers0_text+`</td> <td>`+raid_list[k][mode].Drops.Common[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Rare[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Mythic[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Summoner[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Hidden[j][0]+`</td> <td>`+raid_list[k][mode].Drops.Bonus[j][0]+`</td> <td>`+(raid_list[k][mode]["Average stat points"][j]?.[0] ?? "?")+`</td>`;
+                                }
+                                for(let v=1; v<raid_list[k][mode].Tiers[j].length; v++){
+                                    let tlv=t.insertRow();
+                                    var tiers_text=raid_list[k][mode].Tiers[j][v];
+                                    if(tiers_text==raid_list[k][mode].FS[j]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
+                                    tlv.innerHTML=`<td>`+tiers_text+`</td> <td>`+raid_list[k][mode].Drops.Common[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Rare[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Mythic[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Summoner[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Hidden[j][v]+`</td> <td>`+raid_list[k][mode].Drops.Bonus[j][v]+`</td> <td>`+(raid_list[k][mode]["Average stat points"][j]?.[v] ?? "?")+`</td>`;
+                                }
 
+                            }
+                            else if(raid_list[k][mode]["Loot format"]=="Image"){
+                                let tllt=t.insertRow();
+                                if(firstdiff==1){
+                                    tllt.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td colspan="8" style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
+                                    firstdiff=0;
                                 }
-                                else if(raid_list[k][mode]["Loot format"]=="Image"){
-                                    let tllt=t.insertRow();
-                                    if(firstdiff==1){
-                                        tllt.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid size"]+`</td> <td>`+j+`</td> <td colspan="8" style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
-                                        firstdiff=0;
-                                    }
-                                    else{
-                                        tllt.innerHTML=`<td>`+j+`</td> <td colspan="8" style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
-                                    }
+                                else{
+                                    tllt.innerHTML=`<td>`+j+`</td> <td colspan="8" style="word-break:break-all"><i>`+get_last(raid_list[k][mode]["Loot tables"][j]).URL+`</i></td>`;
                                 }
                             }
                         }
@@ -1408,25 +1405,23 @@ function createDamageTakenTable(){
     t.innerHTML=`<tr class="dotvrlt_fixed_row"> <td class="dotvrlt_first_column">Name</td> <td>Type</td> <td>Damage type</td> <td colspan="2">Damage taken</td></tr>`;
     for(let k in raid_list){
         for(let mode in raid_list[k]){
-            if( !( unwanted_values.Mode || [] ).includes(mode) && !( unwanted_values.Name || [] ).includes(k) ){ // To remove once raid.Mode exists (remove from createTable, createDamageTakenTable and stats points gain comparison
-                if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
-                    let D=[];
-                    for(let j of raid_list[k][mode]["Available difficulties"]){
-                        if( !( unwanted_values.Difficulty || [] ).includes(j) ){ D = D.concat(j); }
-                    }
-                    let diffsum = D.length;
-                    let firstdiff=1;
-                    for(let j of D){
-                        if(diffsum>0){
-                            let dmg=damage_taken(raid_list[k][mode].Damage[j],raid_list[k][mode].Damage.Type);
-                            let tl=t.insertRow();
-                            if(firstdiff==1){
-                                tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode].Damage.Type+`</td> <td>`+j+`</td> <td>`+dmg+" (base: "+raid_list[k][mode].Damage[j]+`)</td>`;
-                                firstdiff=0;
-                            }
-                            else{
-                                tl.innerHTML=`<td>`+j+`</td> <td>`+dmg+" (base: "+raid_list[k][mode].Damage[j]+`)</td>`;
-                            }
+            if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
+                let D=[];
+                for(let j of raid_list[k][mode]["Available difficulties"]){
+                    if( !( unwanted_values.Difficulty || [] ).includes(j) ){ D = D.concat(j); }
+                }
+                let diffsum = D.length;
+                let firstdiff=1;
+                for(let j of D){
+                    if(diffsum>0){
+                        let dmg=damage_taken(raid_list[k][mode].Damage[j],raid_list[k][mode].Damage.Type);
+                        let tl=t.insertRow();
+                        if(firstdiff==1){
+                            tl.innerHTML=`<td class="dotvrlt_first_column" rowspan="`+diffsum+`">`+k+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode]["Raid type"]+`</td> <td rowspan="`+diffsum+`">`+raid_list[k][mode].Damage.Type+`</td> <td>`+j+`</td> <td>`+dmg+" (base: "+raid_list[k][mode].Damage[j]+`)</td>`;
+                            firstdiff=0;
+                        }
+                        else{
+                            tl.innerHTML=`<td>`+j+`</td> <td>`+dmg+" (base: "+raid_list[k][mode].Damage[j]+`)</td>`;
                         }
                     }
                 }
@@ -1490,8 +1485,8 @@ function resizing_listener(){
     if(document.getElementById("DotVRLT detailed div")!=undefined){
         set_detailed_div_state();
     }
-    main_div.style.left=document.getElementById("DotVRLT main button").getBoundingClientRect().x+window.scrollX-100+"px";
-    options_div.style.left=document.getElementById("DotVRLT main button").getBoundingClientRect().x-options_div.getBoundingClientRect().width-110+window.scrollX+"px";
+    options_div.style.left=document.getElementById("DotVRLT main button").getBoundingClientRect().x+window.scrollX-205+"px";
+    main_div.style.left=options_div.getBoundingClientRect().x+window.scrollX+options_div.getBoundingClientRect().width+10+"px";
 }
 
 function add_notes(Notes,d){
@@ -1526,27 +1521,25 @@ function createAverageStatsPointsTab(){
     var unwanted_values = get_filtered_out_values();
     for(let k in raid_list){
         for(let mode in raid_list[k]){
-            if( !( unwanted_values.Mode || [] ).includes(mode) && !( unwanted_values.Name || [] ).includes(k) ){ // To remove once raid.Mode exists (remove from createTable, createDamageTakenTable and stats points gain comparison
-                if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
-                    let D=[];
-                    for(let j of raid_list[k][mode]["Available difficulties"]){
-                        if( !( unwanted_values.Difficulty || [] ).includes(j) ){ D = D.concat(j); }
-                    }
-                    for(let j of D){
-                        if(raid_list[k][mode]["Average stat points"][j]!=[]){
-                            let len=( raid_list[k][mode].Tiers[j] || [] ).length; // Reminder: for raids with an image loot table, raid_list[k][mode].Tiers is, by default, an empty object.
-                            for(let v=0; v<len; v++){
-                                if(![undefined,""].includes(raid_list[k][mode]["Average stat points per 100,000 damage"][j]?.[v])){
-                                    let tl=t.insertRow();
-                                    var tiers_text=raid_list[k][mode].Tiers[j][v];
-                                    if(tiers_text==raid_list[k][mode].FS[j]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
-                                    tl.innerHTML=`<td class="dotvrlt_first_column">`+k+`</td>
+            if( is_raid_allowed(raid_list[k][mode], unwanted_values) ){
+                let D=[];
+                for(let j of raid_list[k][mode]["Available difficulties"]){
+                    if( !( unwanted_values.Difficulty || [] ).includes(j) ){ D = D.concat(j); }
+                }
+                for(let j of D){
+                    if(raid_list[k][mode]["Average stat points"][j]!=[]){
+                        let len=( raid_list[k][mode].Tiers[j] || [] ).length; // Reminder: for raids with an image loot table, raid_list[k][mode].Tiers is, by default, an empty object.
+                        for(let v=0; v<len; v++){
+                            if(![undefined,""].includes(raid_list[k][mode]["Average stat points per 100,000 damage"][j]?.[v])){
+                                let tl=t.insertRow();
+                                var tiers_text=raid_list[k][mode].Tiers[j][v];
+                                if(tiers_text==raid_list[k][mode].FS[j]){ tiers_text="<b>FS: "+tiers_text+"</b>"; }
+                                tl.innerHTML=`<td class="dotvrlt_first_column">`+k+`</td>
                                 <td>`+raid_list[k][mode]["Raid type"]+`</td>
                                 <td>`+raid_list[k][mode]["Raid size"]+`</td>
                                 <td>`+j+`</td>
                                 <td>`+tiers_text+`</td>
                                 <td>`+raid_list[k][mode]["Average stat points per 100,000 damage"][j][v]+`</td>`;
-                                }
                             }
                         }
                     }
@@ -1710,7 +1703,7 @@ async function DotVRLT(){
 // Execution.
 
 function timed_execution(A){
-    if(typeof(document.getElementsByClassName("dotv-nav")[0])==='object'){ DotVRLT(); }
+    if(typeof(document.getElementsByClassName("avatar")[0])==='object'){ DotVRLT(); }
     else if(A){setTimeout(function(B){timed_execution(B);},1000,A-1);}
 }
 timed_execution(1000);
