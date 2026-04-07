@@ -17,12 +17,12 @@ jobs:
       TEXT: '{"false":"[${{ github.event.pusher.name }}] Update raid-list.json", "true":"[${{ github.triggering_actor }}] Update raid-list.json"}'
     steps:
       - name: Checkout repository content
-        uses: actions/checkout@v4 # Checkout the repository content to github runner.
+        uses: actions/checkout@v6 # Checkout the repository content to github runner.
         with:
           token: ${{ secrets.MY_PAT }}
           path: main
       - name: Setup Python version
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.8 # Install the python version needed
       - name: Install Python dependencies

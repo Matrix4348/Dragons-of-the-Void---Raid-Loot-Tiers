@@ -12,9 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository content
-        uses: actions/checkout@v4 # Checkout the repository content to github runner.
+        uses: actions/checkout@v6 # Checkout the repository content to github runner.
       - name: Setup Python version
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.8 # Install the python version needed
       - name: Install Python dependencies
