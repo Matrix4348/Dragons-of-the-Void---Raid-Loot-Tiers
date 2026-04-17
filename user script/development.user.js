@@ -1235,7 +1235,7 @@ function set_detailed_div_state(){
     document.documentElement.style.setProperty("--detailed-div-right",right+"px");
 
     // Width (in case we need to change it later but also to be able to use document.documentElement.style.getProperty, which is not possible without a prior use of ...setProperty)
-    var W=420;
+    var W=520;
     if( !(raid_name in raid_list) || raid_list[raid_name]?.[current_fighting_mode()]?.["Loot format"]=="Image" ){ W=Math.min(400,W); }
     document.documentElement.style.setProperty("--in-raid-table-max-width",W+"px");
 
