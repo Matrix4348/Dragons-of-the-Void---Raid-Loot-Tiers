@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      11.1.2
+// @version      11.2
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -249,7 +249,7 @@ function create_css(){
         #DotVRLT\\ main\\ button {
             width: 55px;
             height: 50px;
-            position: absolute;
+            position: relative;
             right: -10px;
             top: 10px;
         }
@@ -501,7 +501,7 @@ function create_main_button(){
     b.classList.add("dotvrlt_corners");
     b.classList.add("dotvrlt_button");
     b.onclick=pressButton;
-    document.getElementsByClassName("avatar")[0].appendChild(b);
+    document.getElementsByClassName("character-resource-container")[0].appendChild(b);
 }
 
 function create_main_div(){
