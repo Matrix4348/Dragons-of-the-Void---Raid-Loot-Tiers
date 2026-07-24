@@ -15,4 +15,4 @@ Damage,Common,Rare,Mythic,Hidden,Bonus,Average stat points
 "~10,253,141",6,5,2,DV4,?,?
 "11,700,000",6,5,3,"SK1, SK2","DV4, DV7",?
 DV4,+0,+1,+0,-,DV4,-
-DV7,+0,+0,+0,-,DV7,-
+DV7,+0,+0,+1,-,DV7,-
