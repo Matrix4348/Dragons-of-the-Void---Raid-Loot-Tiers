@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      11.31
+// @version      11.32
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -1031,11 +1031,11 @@ function in_raid_button(){
     var b=document.createElement("button");
     b.id="DotVRLT in-raid button";
     b.innerHTML="Loot tiers";
-    b.style.top=document.getElementsByClassName("raid-headeractions")[0].getBoundingClientRect().bottom+"px";
+    b.style.top=document.getElementsByClassName("raid-header__actions")[0].getBoundingClientRect().bottom+"px";
     b.classList.add("dotvrlt_corners");
     b.classList.add("dotvrlt_button");
     b.onclick=press_in_raid_button;
-    document.getElementsByClassName("raid-headeractions")[0].appendChild(b);
+    document.getElementsByClassName("raid-header__actions")[0].appendChild(b);
     in_raid_button_pressed=false;
 }
 
@@ -1064,7 +1064,7 @@ function create_share_button(){
         var b=document.createElement("button");
         b.id="DotVRLT share tiers button";
         b.innerHTML="Share tiers to raid chat";
-        b.style.left=document.getElementsByClassName("raid-headeractions")[0].getBoundingClientRect().right+10+"px";
+        b.style.left=document.getElementsByClassName("raid-header__actions")[0].getBoundingClientRect().right+10+"px";
         b.classList.add("dotvrlt_corners");
         b.classList.add("dotvrlt_button");
         b.onclick=function(){
@@ -1204,7 +1204,7 @@ async function create_detailed_div(raid_name,mode,raid_difficulty){
 function set_detailed_div_state(){
     var top=6+window.scrollY, y_limit=-15, right=10;
     var raid=document.getElementById("game-view")||document.body;
-    var magics_area=document.getElementsByClassName("raid-headereffects")[0]||document.createElement("div");
+    var magics_area=document.getElementsByClassName("raid-header__effects")[0]||document.createElement("div");
     var raid_center=document.getElementsByClassName("raid-header__identity")[0]||document.createElement("div");
     var chat_container=document.getElementsByClassName("raid-chat-container")[0];
 
@@ -1280,16 +1280,16 @@ function current_fighting_mode(){
 }
 
 function check_existence_of_area_for_button(){
-    if(document.getElementsByClassName("raid-headeractions").length==0){ // I noticed on July 11th, 2024 that there is (now) always a "raid-headeractions" area. I am keeping that in case it changes in the future.
+    if(document.getElementsByClassName("raid-header__actions").length==0){ // I noticed on July 11th, 2024 that there is (now) always a "raid-header__actions" area. I am keeping that in case it changes in the future.
         var d=document.createElement("div");
-        d.classList.add("raid-headeractions");
+        d.classList.add("raid-header__actions");
         d.setAttribute("data-v-6fbb6b33",""); // Check weither or not the name of this attribute changes overtime.
         document.getElementsByClassName("raid-header__identity")[0].appendChild(d);
     }
     if(document.getElementsByClassName("dotv-btn dotv-btn-sm active").length==0){
         var d2=document.createElement("div");
         d2.style.marginTop="100px";
-        document.getElementsByClassName("raid-headeractions")[0].appendChild(d2);
+        document.getElementsByClassName("raid-header__actions")[0].appendChild(d2);
     }
 }
 
