@@ -1031,11 +1031,11 @@ function in_raid_button(){
     var b=document.createElement("button");
     b.id="DotVRLT in-raid button";
     b.innerHTML="Loot tiers";
-    b.style.top=document.getElementsByClassName("leader-board")[0].getBoundingClientRect().bottom+"px";
+    b.style.top=document.getElementsByClassName("raid-headeractions")[0].getBoundingClientRect().bottom+"px";
     b.classList.add("dotvrlt_corners");
     b.classList.add("dotvrlt_button");
     b.onclick=press_in_raid_button;
-    document.getElementsByClassName("leader-board")[0].appendChild(b);
+    document.getElementsByClassName("raid-headeractions")[0].appendChild(b);
     in_raid_button_pressed=false;
 }
 
@@ -1064,7 +1064,7 @@ function create_share_button(){
         var b=document.createElement("button");
         b.id="DotVRLT share tiers button";
         b.innerHTML="Share tiers to raid chat";
-        b.style.left=document.getElementsByClassName("leader-board")[0].getBoundingClientRect().right+10+"px";
+        b.style.left=document.getElementsByClassName("raid-headeractions")[0].getBoundingClientRect().right+10+"px";
         b.classList.add("dotvrlt_corners");
         b.classList.add("dotvrlt_button");
         b.onclick=function(){
@@ -1204,8 +1204,8 @@ async function create_detailed_div(raid_name,mode,raid_difficulty){
 function set_detailed_div_state(){
     var top=6+window.scrollY, y_limit=-15, right=10;
     var raid=document.getElementById("game-view")||document.body;
-    var magics_area=document.getElementsByClassName("raid-effects")[0]||document.createElement("div");
-    var raid_center=document.getElementsByClassName("raid-header-center")[0]||document.createElement("div");
+    var magics_area=document.getElementsByClassName("raid-headereffects")[0]||document.createElement("div");
+    var raid_center=document.getElementsByClassName("raid-header__identity")[0]||document.createElement("div");
     var chat_container=document.getElementsByClassName("raid-chat-container")[0];
 
     // Top
@@ -1274,27 +1274,27 @@ async function check_latest_loot_table(raid_name,mode,raid_difficulty){
 }
 
 function current_fighting_mode(){
-    if( document.getElementsByClassName("raid-header-center")[0].innerHTML.search("https://files.dragonsofthevoid.com/ui/bars/health-line.jpg")==-1 ){ return "healthless"; }
-    else if( document.getElementsByClassName("dotv-btn dotv-btn-xl active").length<2 ){ return "questing"; }
+    if( document.getElementsByClassName("raid-header__identity")[0].innerHTML.search("https://files.dragonsofthevoid.com/ui/bars/health-line.jpg")==-1 ){ return "healthless"; }
+    else if( document.getElementsByClassName("dotv-btn dotv-btn-sm active").length<3 ){ return "questing"; }
     else { return "raiding"; }
 }
 
 function check_existence_of_area_for_button(){
-    if(document.getElementsByClassName("leader-board").length==0){ // I noticed on July 11th, 2024 that there is (now) always a "leader-board" area. I am keeping that in case it changes in the future.
+    if(document.getElementsByClassName("raid-headeractions").length==0){ // I noticed on July 11th, 2024 that there is (now) always a "raid-headeractions" area. I am keeping that in case it changes in the future.
         var d=document.createElement("div");
-        d.classList.add("leader-board");
+        d.classList.add("raid-headeractions");
         d.setAttribute("data-v-6fbb6b33",""); // Check weither or not the name of this attribute changes overtime.
-        document.getElementsByClassName("raid-header-center")[0].appendChild(d);
+        document.getElementsByClassName("raid-header__identity")[0].appendChild(d);
     }
-    if(document.getElementsByClassName("dotv-btn dotv-btn-xl active").length==0){
+    if(document.getElementsByClassName("dotv-btn dotv-btn-sm active").length==0){
         var d2=document.createElement("div");
         d2.style.marginTop="100px";
-        document.getElementsByClassName("leader-board")[0].appendChild(d2);
+        document.getElementsByClassName("raid-headeractions")[0].appendChild(d2);
     }
 }
 
 async function in_raid_stuff(A){
-    if( document.getElementsByClassName("raid-header-center").length>0 && document.getElementById("DotVRLT in-raid button")==null ){
+    if( document.getElementsByClassName("raid-header__identity").length>0 && document.getElementById("DotVRLT in-raid button")==null ){
         var mode=current_fighting_mode();
         var raid_name=document.getElementsByClassName("boss-name-container")[0].firstChild.innerHTML;
         var rd0=document.getElementsByClassName("boss-name-container")[0].firstChild.className;
