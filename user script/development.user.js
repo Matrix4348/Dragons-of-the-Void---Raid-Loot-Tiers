@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      11.2
+// @version      11.3
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
