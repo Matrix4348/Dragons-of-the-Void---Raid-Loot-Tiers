@@ -1275,7 +1275,7 @@ async function check_latest_loot_table(raid_name,mode,raid_difficulty){
 
 function current_fighting_mode(){
     if( document.getElementsByClassName("raid-header__identity")[0].innerHTML.search("https://files.dragonsofthevoid.com/ui/bars/health-line.jpg")==-1 ){ return "healthless"; }
-    else if( document.getElementsByClassName("dotv-btn dotv-btn-sm active").length<3 ){ return "questing"; }
+    else if( document.getElementsByClassName("dotv-btn active").length<3 ){ return "questing"; }
     else { return "raiding"; }
 }
 
