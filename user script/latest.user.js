@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Dragons of the Void - Raid Loot Tiers
-// @version      11.33
+// @version      11.34
 // @author       Matrix4348
 // @description  Look at raid loot tiers in-game.
 // @license      MIT
@@ -1274,9 +1274,18 @@ async function check_latest_loot_table(raid_name,mode,raid_difficulty){
 }
 
 function current_fighting_mode(){
-    if( document.getElementsByClassName("raid-header__identity")[0].innerHTML.search("https://files.dragonsofthevoid.com/ui/bars/health-line.jpg")==-1 ){ return "healthless"; }
-    else if( document.getElementsByClassName("dotv-btn label dotv-btn-sm active").length<2 ){ return "questing"; }
-    else { return "raiding"; }
+    const identity = document.querySelector(".raid-header__identity");
+    if (!identity) { return null; } // not on a raid page
+
+    // No HP bar → world raid
+    if (identity.innerHTML.indexOf("ui/bars/health-line.jpg") === -1) { return "healthless"; }
+
+    // Has a "Boards" (leaderboard) button → vitality raid
+    const actions = document.querySelector(".raid-header__actions") || document;
+    if (actions.querySelector('h5.dotv-text[title="Boards"]')) { return "raiding"; }
+
+    // Otherwise → quest
+    return "questing";
 }
 
 function check_existence_of_area_for_button(){
