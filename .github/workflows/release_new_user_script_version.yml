@@ -9,7 +9,7 @@ on:
 jobs:
   inject_raid_list_json:
     name: Inject raid-list.json into the user script before releasing the new version
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository content
         uses: actions/checkout@v7 # Checkout the repository content to github runner.

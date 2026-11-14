@@ -10,7 +10,7 @@ on:
 jobs:
   create_raid_list_json:
     name: Create the raid list json
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       COMMITTER_NAME_TEXT: '{"false":"${{ github.actor }}", "true":"github-actions[bot]"}'
       COMMITTER_ID_TEXT: '{"false":"${{ github.actor_id }}", "true":"41898282"}'
