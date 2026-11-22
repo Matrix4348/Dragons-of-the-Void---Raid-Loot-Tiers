@@ -1,15 +1,19 @@
-Raid name,Raid size,Health on easy,On-hit drops?,Loot expansion?
-Amanus Charmer,Large,"9,600,000",No,Yes
-Basiliscus,Medium,"3,200,000",No,No
-Fen Lure Plant,Immense,"12,400,000",Yes,Yes
-Fungal Fiend,Small,"100,000",No,No
-Gargouille Sentry,Large,"6,500,000",No,Yes
-Icy Whelp Siplada,Large,"5,600,000",Yes,Yes
-Lord Kaspar Laurent,Immense,"9,500,000",No,Yes
-Marauding Mercenaries,Medium,"2,500,000",No,No
-Mushveli,Small,"1,500,000",No,No
-Nitroglycergnat,Medium,"750,000",No,No
-Purple Slime,Medium,"4,500,000",No,No
-Rogue Slime,Small,"750,000",No,No
-Shambling Ghoul,Medium,"2,900,000",No,No
-Tunnanu,Large,"4,600,000",No,Yes
+Raid name,Raid size,Health on easy,On-hit drops?,Loot expansion?,Available difficulties
+Amanus Charmer,Large,"9,600,000",No,Yes,Easy_Hard_Legendary
+Basiliscus,Medium,"3,200,000",No,No,Easy_Hard_Legendary
+Cladavian the Desolator,Gigantic,"180,000,000",Yes,Yes,Easy
+Dragon's Hoard,Immense,"13,500,000",Yes,Yes,Easy_Hard_Legendary
+Fen Lure Plant,Immense,"12,400,000",Yes,Yes,Easy_Hard_Legendary
+Fungal Fiend,Small,"100,000",No,No,Easy_Hard_Legendary
+Gargouille Sentry,Large,"6,500,000",No,Yes,Easy_Hard_Legendary
+Giant Sandswimmer,Epic,"16,800,000",No,Yes,Easy_Hard_Legendary
+Icy Whelp Siplada,Large,"5,600,000",Yes,Yes,Easy_Hard_Legendary
+Lord Kaspar Laurent,Immense,"9,500,000",No,Yes,Easy_Hard_Legendary
+Marauding Mercenaries,Medium,"2,500,000",No,No,Easy_Hard_Legendary
+Mushveli,Small,"1,500,000",No,No,Easy_Hard_Legendary
+Nitroglycergnat,Medium,"750,000",No,No,Easy_Hard_Legendary
+Purple Slime,Medium,"4,500,000",No,No,Easy_Hard_Legendary
+Rogue Slime,Small,"750,000",No,No,Easy_Hard_Legendary
+Shambling Ghoul,Medium,"2,900,000",No,No,Easy_Hard_Legendary
+Tower Mimic,Large,"10,500,000",Yes,Yes,Easy_Hard_Legendary
+Tunnanu,Large,"4,600,000",No,Yes,Easy_Hard_Legendary

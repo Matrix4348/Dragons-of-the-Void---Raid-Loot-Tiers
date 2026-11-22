@@ -2,6 +2,12 @@ Condition (Python),Note
 type == 'Guild raid' and difficulty == 'Hard',Hard guild raids always drop an additional void token. Must reach Minimum tier.
 type == 'Guild raid' and difficulty == 'Legendary',Legendary guild raids always drop an additional void token. Must reach Minimum tier.
 type == 'Guild raid' and difficulty == 'Legendary' and name == 'Icy Whelp Siplada',Legendary Icy Whelp Siplada always drops 2 void tokens. Must reach Minimum tier.
+type == 'Guild raid' and difficulty == 'Easy' and name == 'Icy Whelp Siplada',Easy Icy Whelp Siplada always drops 1 void token. Must reach Minimum tier.
+type == 'Guild raid' and difficulty == 'Legendary' and name == 'Fen Lure Plant',Legendary Fen Lure Plant always drops 2 void tokens. Must reach Minimum tier.
+type == 'Guild raid' and difficulty == 'Legendary' and name == 'Tower Mimic',Legendary Tower Mimic always drops 2 void tokens. Must reach Minimum tier.
+type == 'Guild raid' and difficulty == 'Legendary' and name == 'Giant Sandswimmer',Legendary Giant Sandswimmer always drops 2 void tokens. Must reach Minimum tier.
+type == 'Guild raid' and difficulty == 'Legendary' and name == 'Dragon\'s Hoard',Legendary Dragon's Hoard always drops 2 void tokens. Must reach Minimum tier.
+type == 'Guild raid' and difficulty == 'Easy' and name == 'Cladavian the Desolator',Easy Cladavian the Desolator always drops 3 void tokens. Must reach Minimum tier.
 name == 'Secutor',Secutor always drops 1 Thiadoran Fig. Must reach Minimum tier.
 name == 'Bone Dragon' and difficulty == 'Easy' and mode == 'raiding', Easy Bone Dragon always drops 1 stat point. Must reach Minimum tier.
 name == 'Bone Dragon' and difficulty == 'Hard' and mode == 'raiding', Hard Bone Dragon always drops 2 stat points. Must reach Minimum tier.
